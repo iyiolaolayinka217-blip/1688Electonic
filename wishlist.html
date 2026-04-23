@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="wishlist.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <a href="#" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn active" onclick="goToWishlist()">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>My Wishlist</span>
+        </div>
+    </div>
+
+    <!-- Wishlist Content -->
+    <main class="wishlist-page">
+        <div class="container">
+            <div class="wishlist-header">
+                <h1><i class="fas fa-heart"></i> My Wishlist</h1>
+                <p class="wishlist-subtitle">Save your favorite items and buy them later</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-wishlist" id="emptyWishlist" style="display: none;">
+                <div class="empty-icon">
+                    <i class="far fa-heart"></i>
+                </div>
+                <h2>Your Wishlist is Empty</h2>
+                <p>Start adding products you love to your wishlist. Just click the heart icon on any product!</p>
+                <a href="index.html" class="btn btn-primary btn-large">
+                    <i class="fas fa-shopping-bag"></i> Continue Shopping
+                </a>
+            </div>
+
+            <!-- Wishlist Grid -->
+            <div class="wishlist-grid" id="wishlistGrid">
+                <!-- Products loaded by JS -->
+            </div>
+
+            <!-- Wishlist Actions -->
+            <div class="wishlist-actions" id="wishlistActions" style="display: none;">
+                <button class="btn btn-secondary" onclick="clearWishlist()">
+                    <i class="fas fa-trash"></i> Clear Wishlist
+                </button>
+                <button class="btn btn-primary" onclick="addAllToCart()">
+                    <i class="fas fa-shopping-cart"></i> Add All to Cart
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p>Your trusted wholesale electronics marketplace.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart">Your cart is empty</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

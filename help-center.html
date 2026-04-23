@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .help-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .help-hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box-large {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-box-large input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+        }
+        
+        .search-box-large button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .help-categories {
+            padding: 60px 0;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .category-card {
+            background: white;
+            padding: 35px 25px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .category-card i {
+            font-size: 45px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .category-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .category-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .faq-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+        }
+        
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .faq-question {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .faq-question i {
+            transition: var(--transition);
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 25px 20px;
+            max-height: 300px;
+        }
+        
+        .faq-answer p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        
+        .contact-cta {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .contact-cta h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .contact-cta p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+        
+        .contact-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-option {
+            padding: 30px 40px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            min-width: 200px;
+        }
+        
+        .contact-option i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .contact-options {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <a href="help-center.html" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='wishlist.html'">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Help Center</span>
+        </div>
+    </div>
+
+    <!-- Help Hero -->
+    <section class="help-hero">
+        <div class="container">
+            <h1>How Can We Help?</h1>
+            <p>Search our knowledge base or browse categories below</p>
+            <div class="search-box-large">
+                <input type="text" placeholder="Search for answers..." id="helpSearch">
+                <button onclick="searchHelp()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="help-categories">
+        <div class="container">
+            <div class="categories-grid">
+                <div class="category-card" onclick="window.location.href='shipping.html'">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h3>Shipping & Delivery</h3>
+                    <p>Track orders, shipping methods, and delivery times</p>
+                </div>
+                <div class="category-card" onclick="window.location.href='returns.html'">
+                    <i class="fas fa-undo"></i>
+                    <h3>Returns & Refunds</h3>
+                    <p>Return policy, process, and refund information</p>
+                </div>
+                <div class="category-card" onclick="window.location.href='track-order.html'">
+                    <i class="fas fa-box"></i>
+                    <h3>Order Management</h3>
+                    <p>Place orders, track status, and manage purchases</p>
+                </div>
+                <div class="category-card" onclick="showToast('Payment guides coming soon')">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Payment Options</h3>
+                    <p>Payment methods, security, and billing questions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How do I track my order?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can track your order by visiting our <a href="track-order.html">Track Order</a> page and entering your order number. You can also find tracking information in your order confirmation email or by logging into your account and viewing your order history.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What is your return policy?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We accept returns within 30 days of delivery for most items. Products must be in original condition with all packaging and accessories. Some items like software and consumables may not be eligible for return. Visit our <a href="returns.html">Returns</a> page for complete details.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How long does shipping take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Shipping times vary by destination and method. Standard shipping typically takes 7-14 business days internationally. Express shipping delivers in 3-7 business days. For detailed shipping information by region, visit our <a href="shipping.html">Shipping Info</a> page.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Do you offer bulk discounts?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! We specialize in wholesale and offer tiered pricing based on order quantity. The more you buy, the more you save. For large volume orders (100+ units), please contact our sales team at sales@1688mart.com for custom quotes.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How do I create an account?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Creating an account is easy! Click on "Register" in the top right corner of any page, fill in your details, and verify your email address. Business accounts may require additional documentation for wholesale pricing access.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We accept major credit cards (Visa, MasterCard, American Express), PayPal, bank transfers for large orders, and Alibaba Trade Assurance. All payments are processed securely with SSL encryption.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="contact-cta">
+        <div class="container">
+            <h2>Still Need Help?</h2>
+            <p>Our support team is available Monday-Friday, 9am-6pm CST</p>
+            <div class="contact-options">
+                <div class="contact-option">
+                    <i class="fas fa-comments"></i>
+                    <h4>Live Chat</h4>
+                    <p>Get instant help</p>
+                </div>
+                <div class="contact-option" onclick="window.location.href='contact.html'">
+                    <i class="fas fa-envelope"></i>
+                    <h4>Email Us</h4>
+                    <p>Response in 24h</p>
+                </div>
+                <div class="contact-option">
+                    <i class="fas fa-phone"></i>
+                    <h4>Call Us</h4>
+                    <p>+86 755 1234 5678</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin: 20px 0;">Your trusted wholesale electronics marketplace.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="track-order.html">Track Order</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="shipping.html">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 1688 Electronics Plaza, Shenzhen, China</li>
+                        <li><i class="fas fa-phone"></i> +86 755 1234 5678</li>
+                        <li><i class="fas fa-envelope"></i> support@1688mart.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-alipay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+        }
+        
+        function searchHelp() {
+            const query = document.getElementById('helpSearch').value;
+            if (query) {
+                showToast(`Searching for: ${query}`);
+            }
+        }
+    </script>
+</body>
+</html>

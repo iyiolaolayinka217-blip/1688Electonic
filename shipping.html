@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Information - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .shipping-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .shipping-hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+        
+        .methods-section {
+            padding: 60px 0;
+        }
+        
+        .shipping-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .shipping-card {
+            background: white;
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .shipping-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .shipping-card.featured {
+            border-color: var(--primary);
+            position: relative;
+        }
+        
+        .shipping-card.featured::before {
+            content: 'POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .shipping-card i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .shipping-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .shipping-time {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .shipping-card ul {
+            list-style: none;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .shipping-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .shipping-card li i {
+            font-size: 16px;
+            margin-bottom: 0;
+            color: var(--success);
+        }
+        
+        .zones-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+        }
+        
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .zone-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .zone-card h3 {
+            font-size: 20px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .zone-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .zone-card th,
+        .zone-card td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .zone-card th {
+            font-weight: 600;
+            color: var(--secondary);
+            background: var(--bg-light);
+        }
+        
+        .calculator-section {
+            padding: 60px 0;
+        }
+        
+        .calculator-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .calculator-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary);
+        }
+        
+        .calc-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .calc-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .calc-form select,
+        .calc-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+        
+        .calc-result {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            display: none;
+        }
+        
+        .calc-result.show {
+            display: block;
+        }
+        
+        .calc-result h4 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .faq-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+        }
+        
+        @media (max-width: 768px) {
+            .shipping-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .zones-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <a href="help-center.html" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='wishlist.html'">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="help-center.html">Help Center</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Shipping Info</span>
+        </div>
+    </div>
+
+    <!-- Shipping Hero -->
+    <section class="shipping-hero">
+        <div class="container">
+            <h1>Shipping Information</h1>
+            <p>Fast, reliable delivery to over 120 countries worldwide</p>
+        </div>
+    </section>
+
+    <!-- Shipping Methods -->
+    <section class="methods-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Shipping Methods</h2>
+            <div class="shipping-grid">
+                <div class="shipping-card">
+                    <i class="fas fa-ship"></i>
+                    <h3>Standard Shipping</h3>
+                    <div class="shipping-time">7-14 Days</div>
+                    <p style="color: var(--text-muted);">Economical option for non-urgent orders</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Cost-effective rates</li>
+                        <li><i class="fas fa-check"></i> Tracking available</li>
+                        <li><i class="fas fa-check"></i> Door-to-door delivery</li>
+                    </ul>
+                    <button class="btn btn-secondary btn-block" onclick="showToast('Select this at checkout')">Learn More</button>
+                </div>
+                <div class="shipping-card featured">
+                    <i class="fas fa-plane"></i>
+                    <h3>Express Shipping</h3>
+                    <div class="shipping-time">3-7 Days</div>
+                    <p style="color: var(--text-muted);">Fast delivery for urgent orders</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Priority handling</li>
+                        <li><i class="fas fa-check"></i> Real-time tracking</li>
+                        <li><i class="fas fa-check"></i> Insurance included</li>
+                    </ul>
+                    <button class="btn btn-primary btn-block" onclick="showToast('Select this at checkout')">Most Popular</button>
+                </div>
+                <div class="shipping-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Priority Express</h3>
+                    <div class="shipping-time">1-3 Days</div>
+                    <p style="color: var(--text-muted);">Ultra-fast delivery for critical orders</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Fastest option available</li>
+                        <li><i class="fas fa-check"></i> Dedicated support</li>
+                        <li><i class="fas fa-check"></i> Full insurance coverage</li>
+                    </ul>
+                    <button class="btn btn-secondary btn-block" onclick="showToast('Select this at checkout')">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shipping Zones -->
+    <section class="zones-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Shipping Rates by Region</h2>
+            <div class="zones-grid">
+                <div class="zone-card">
+                    <h3><i class="fas fa-globe-asia"></i> Zone 1: Asia Pacific</h3>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>Time</th>
+                            <th>Rate</th>
+                        </tr>
+                        <tr>
+                            <td>Standard</td>
+                            <td>5-10 days</td>
+                            <td>$15</td>
+                        </tr>
+                        <tr>
+                            <td>Express</td>
+                            <td>2-4 days</td>
+                            <td>$35</td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td>1-2 days</td>
+                            <td>$55</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="zone-card">
+                    <h3><i class="fas fa-globe-europe"></i> Zone 2: Europe</h3>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>Time</th>
+                            <th>Rate</th>
+                        </tr>
+                        <tr>
+                            <td>Standard</td>
+                            <td>10-15 days</td>
+                            <td>$25</td>
+                        </tr>
+                        <tr>
+                            <td>Express</td>
+                            <td>5-7 days</td>
+                            <td>$50</td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td>3-5 days</td>
+                            <td>$80</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="zone-card">
+                    <h3><i class="fas fa-globe-americas"></i> Zone 3: Americas</h3>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>Time</th>
+                            <th>Rate</th>
+                        </tr>
+                        <tr>
+                            <td>Standard</td>
+                            <td>12-18 days</td>
+                            <td>$30</td>
+                        </tr>
+                        <tr>
+                            <td>Express</td>
+                            <td>5-8 days</td>
+                            <td>$60</td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td>3-5 days</td>
+                            <td>$90</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="zone-card">
+                    <h3><i class="fas fa-globe"></i> Zone 4: Other Regions</h3>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>Time</th>
+                            <th>Rate</th>
+                        </tr>
+                        <tr>
+                            <td>Standard</td>
+                            <td>14-21 days</td>
+                            <td>$35</td>
+                        </tr>
+                        <tr>
+                            <td>Express</td>
+                            <td>7-12 days</td>
+                            <td>$70</td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td>5-8 days</td>
+                            <td>$100</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shipping Calculator -->
+    <section class="calculator-section">
+        <div class="container">
+            <div class="calculator-box">
+                <h2><i class="fas fa-calculator"></i> Shipping Calculator</h2>
+                <div class="calc-form">
+                    <div class="form-group">
+                        <label>Destination Country</label>
+                        <select id="calcCountry">
+                            <option value="">Select country</option>
+                            <option value="asia">Asia Pacific</option>
+                            <option value="europe">Europe</option>
+                            <option value="americas">North/South America</option>
+                            <option value="africa">Africa/Middle East</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Package Weight (kg)</label>
+                        <input type="number" id="calcWeight" placeholder="e.g., 2.5" min="0.1" step="0.1">
+                    </div>
+                    <button class="btn btn-primary btn-block btn-large" onclick="calculateShipping()">
+                        <i class="fas fa-calculator"></i> Calculate Shipping Cost
+                    </button>
+                </div>
+                <div class="calc-result" id="calcResult">
+                    <h4>Estimated Shipping Costs</h4>
+                    <div class="result-row">
+                        <span>Standard Shipping</span>
+                        <strong id="standardCost">$25.00</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>Express Shipping</span>
+                        <strong id="expressCost">$50.00</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>Priority Shipping</span>
+                        <strong id="priorityCost">$80.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Shipping FAQs</h2>
+            <div class="faq-list" style="max-width: 800px; margin: 0 auto;">
+                <div class="faq-item" style="background: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 15px; box-shadow: var(--shadow-sm);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px;">When will my order ship?</h4>
+                    <p style="color: var(--text-muted);">Orders are processed within 1-2 business days. Express orders receive priority processing and typically ship within 24 hours.</p>
+                </div>
+                <div class="faq-item" style="background: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 15px; box-shadow: var(--shadow-sm);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px;">Do you offer free shipping?</h4>
+                    <p style="color: var(--text-muted);">Yes! We offer free standard shipping on orders over $500. Free shipping applies to Zone 1-3 destinations.</p>
+                </div>
+                <div class="faq-item" style="background: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 15px; box-shadow: var(--shadow-sm);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px;">Can I change my shipping address?</h4>
+                    <p style="color: var(--text-muted);">Address changes can be made within 24 hours of placing your order. Contact our support team immediately for assistance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin: 20px 0;">Your trusted wholesale electronics marketplace.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="track-order.html">Track Order</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="shipping.html">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 1688 Electronics Plaza, Shenzhen, China</li>
+                        <li><i class="fas fa-phone"></i> +86 755 1234 5678</li>
+                        <li><i class="fas fa-envelope"></i> support@1688mart.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-alipay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        function calculateShipping() {
+            const country = document.getElementById('calcCountry').value;
+            const weight = parseFloat(document.getElementById('calcWeight').value);
+            
+            if (!country || !weight) {
+                showToast('Please select a country and enter weight');
+                return;
+            }
+            
+            // Base rates by zone
+            const rates = {
+                asia: { base: 15, express: 35, priority: 55 },
+                europe: { base: 25, express: 50, priority: 80 },
+                americas: { base: 30, express: 60, priority: 90 },
+                africa: { base: 35, express: 70, priority: 100 }
+            };
+            
+            const zone = rates[country];
+            const multiplier = Math.max(1, weight * 0.5);
+            
+            document.getElementById('standardCost').textContent = `$${(zone.base * multiplier).toFixed(2)}`;
+            document.getElementById('expressCost').textContent = `$${(zone.express * multiplier).toFixed(2)}`;
+            document.getElementById('priorityCost').textContent = `$${(zone.priority * multiplier).toFixed(2)}`;
+            
+            document.getElementById('calcResult').classList.add('show');
+        }
+    </script>
+</body>
+</html>

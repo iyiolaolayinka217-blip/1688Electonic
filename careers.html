@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .careers-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .careers-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .careers-hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .values-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .value-card {
+            text-align: center;
+            padding: 40px 30px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .value-card i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .value-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .jobs-section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .job-category {
+            margin-bottom: 50px;
+        }
+        
+        .job-category h3 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .job-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .job-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .job-info h4 {
+            font-size: 20px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .benefits-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .benefit-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 30px;
+            background: white;
+            border-radius: var(--radius-lg);
+        }
+        
+        .benefit-card i {
+            font-size: 30px;
+            color: var(--primary);
+        }
+        
+        .benefit-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .values-grid,
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .job-meta {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <a href="help-center.html" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='wishlist.html'">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Careers</span>
+        </div>
+    </div>
+
+    <!-- Careers Hero -->
+    <section class="careers-hero">
+        <div class="container">
+            <h1>Join Our Team</h1>
+            <p>Be part of a growing global electronics marketplace. We're always looking for talented individuals who are passionate about technology and business.</p>
+            <button class="btn btn-primary btn-large" onclick="document.getElementById('openings').scrollIntoView({behavior: 'smooth'})">
+                View Openings
+            </button>
+        </div>
+    </section>
+
+    <!-- Values -->
+    <section class="values-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Work With Us</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Innovation</h3>
+                    <p>Work with cutting-edge technology and shape the future of B2B e-commerce.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Global Impact</h3>
+                    <p>Connect businesses across 120+ countries and make a real difference.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Great Team</h3>
+                    <p>Collaborate with talented professionals from diverse backgrounds.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Growth</h3>
+                    <p>Continuous learning opportunities and clear career progression paths.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Openings -->
+    <section class="jobs-section" id="openings">
+        <div class="container">
+            <div class="section-title">
+                <h2>Current Openings</h2>
+                <p>Find your perfect role and start your journey with us</p>
+            </div>
+
+            <div class="job-category">
+                <h3><i class="fas fa-laptop-code"></i> Technology</h3>
+                <div class="job-card">
+                    <div class="job-info">
+                        <h4>Senior Full Stack Developer</h4>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Shenzhen</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                            <span><i class="fas fa-yen-sign"></i> 30k-50k/month</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showToast('Application feature coming soon')">Apply Now</button>
+                </div>
+                <div class="job-card">
+                    <div class="job-info">
+                        <h4>DevOps Engineer</h4>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Shenzhen</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                            <span><i class="fas fa-yen-sign"></i> 25k-40k/month</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showToast('Application feature coming soon')">Apply Now</button>
+                </div>
+            </div>
+
+            <div class="job-category">
+                <h3><i class="fas fa-bullhorn"></i> Marketing & Sales</h3>
+                <div class="job-card">
+                    <div class="job-info">
+                        <h4>Digital Marketing Manager</h4>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Shenzhen</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                            <span><i class="fas fa-yen-sign"></i> 20k-35k/month</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showToast('Application feature coming soon')">Apply Now</button>
+                </div>
+                <div class="job-card">
+                    <div class="job-info">
+                        <h4>International Sales Representative</h4>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Shenzhen</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                            <span><i class="fas fa-yen-sign"></i> 15k-30k/month + Commission</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showToast('Application feature coming soon')">Apply Now</button>
+                </div>
+            </div>
+
+            <div class="job-category">
+                <h3><i class="fas fa-headset"></i> Customer Service</h3>
+                <div class="job-card">
+                    <div class="job-info">
+                        <h4>Customer Support Specialist</h4>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Shenzhen</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                            <span><i class="fas fa-yen-sign"></i> 10k-18k/month</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showToast('Application feature coming soon')">Apply Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Benefits & Perks</h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <div>
+                        <h4>Health Insurance</h4>
+                        <p>Comprehensive medical coverage for you and your family</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                        <h4>Free Meals</h4>
+                        <p>Daily lunch and snacks provided at the office</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <h4>Learning Budget</h4>
+                        <p>Annual allowance for courses, books, and conferences</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <h4>Paid Time Off</h4>
+                        <p>15 days annual leave + public holidays</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-bonus"></i>
+                    <div>
+                        <h4>Performance Bonus</h4>
+                        <p>Quarterly bonuses based on individual and company performance</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-dumbbell"></i>
+                    <div>
+                        <h4>Wellness Programs</h4>
+                        <p>Gym membership and wellness activities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin: 20px 0;">Your trusted wholesale electronics marketplace.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="track-order.html">Track Order</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="shipping.html">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 1688 Electronics Plaza, Shenzhen, China</li>
+                        <li><i class="fas fa-phone"></i> +86 755 1234 5678</li>
+                        <li><i class="fas fa-envelope"></i> support@1688mart.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-alipay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

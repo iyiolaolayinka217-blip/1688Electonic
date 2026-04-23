@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="product.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header (Same as index) -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                </div>
+                <div class="header-top-right">
+                    <div id="userMenu"></div>
+                    <a href="#" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="goToWishlist()">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="#" id="breadcrumbCategory">Category</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbProduct">Product Name</span>
+        </div>
+    </div>
+
+    <!-- Product Detail -->
+    <main class="product-detail">
+        <div class="container">
+            <div class="product-layout">
+                <!-- Left: Gallery -->
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <i class="fas fa-mobile-alt" id="mainProductImage"></i>
+                        <span class="zoom-hint"><i class="fas fa-search-plus"></i> Click to zoom</span>
+                    </div>
+                    <div class="thumbnail-list">
+                        <div class="thumbnail active" onclick="changeImage(0)">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="thumbnail" onclick="changeImage(1)">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="thumbnail" onclick="changeImage(2)">
+                            <i class="fas fa-battery-full"></i>
+                        </div>
+                        <div class="thumbnail" onclick="changeImage(3)">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Info -->
+                <div class="product-info-section">
+                    <span class="product-brand" id="productBrand">Brand Name</span>
+                    <h1 class="product-name" id="productName">Product Name</h1>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating" id="productRating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>4.9 (2,847 reviews)</span>
+                        </div>
+                        <span class="product-sku" id="productSku">SKU: PRD-001</span>
+                    </div>
+
+                    <div class="product-price-section">
+                        <span class="current-price" id="currentPrice">$899</span>
+                        <span class="original-price" id="originalPrice">$1,099</span>
+                        <span class="discount-badge" id="discountBadge">-18%</span>
+                    </div>
+
+                    <p class="product-short-desc" id="productDescription">
+                        Experience the latest technology with this premium device. Features cutting-edge performance, stunning display, and all-day battery life.
+                    </p>
+
+                    <!-- Specifications -->
+                    <div class="product-specs" id="productSpecs">
+                        <h3>Key Specifications</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> 6.7" Super Retina XDR Display</li>
+                            <li><i class="fas fa-check"></i> A17 Pro Chip</li>
+                            <li><i class="fas fa-check"></i> 256GB Storage</li>
+                            <li><i class="fas fa-check"></i> 48MP Main Camera</li>
+                        </ul>
+                    </div>
+
+                    <!-- Quantity & Actions -->
+                    <div class="product-actions-section">
+                        <div class="quantity-selector">
+                            <label>Quantity:</label>
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="updateQuantity(-1)">-</button>
+                                <input type="number" id="productQuantity" value="1" min="1" max="99">
+                                <button class="qty-btn" onclick="updateQuantity(1)">+</button>
+                            </div>
+                            <span class="stock-status in-stock" id="stockStatus">
+                                <i class="fas fa-check-circle"></i> In Stock (150 available)
+                            </span>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-large" onclick="addToCartFromDetail()">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="toggleWishlistDetail()" id="wishlistBtn">
+                                <i class="far fa-heart"></i> Add to Wishlist
+                            </button>
+                            <button class="btn btn-outline btn-large" onclick="buyNow()">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="additional-info">
+                        <div class="info-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Free shipping on orders over $500</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>2-year warranty included</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-undo"></i>
+                            <span>30-day return policy</span>
+                        </div>
+                    </div>
+
+                    <!-- Share -->
+                    <div class="product-share">
+                        <span>Share:</span>
+                        <a href="#" class="share-btn"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="share-btn"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Tabs -->
+            <div class="product-tabs-section">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('description')">Description</button>
+                    <button class="tab-btn" onclick="switchTab('specifications')">Specifications</button>
+                    <button class="tab-btn" onclick="switchTab('reviews')">
+                        Reviews <span class="review-count" id="reviewCount">(2,847)</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('shipping')">Shipping & Returns</button>
+                </div>
+
+                <div class="tabs-content">
+                    <!-- Description Tab -->
+                    <div class="tab-panel active" id="descriptionPanel">
+                        <h3>Product Description</h3>
+                        <div class="description-content" id="fullDescription">
+                            <p>Experience the future of technology with our flagship device. Designed for professionals and enthusiasts alike, this device delivers uncompromising performance in a sleek, portable package.</p>
+                            
+                            <h4>Key Features</h4>
+                            <ul>
+                                <li>Revolutionary A17 Pro chip for desktop-class performance</li>
+                                <li>Pro-grade camera system with 48MP main camera</li>
+                                <li>All-day battery life with fast charging support</li>
+                                <li>5G connectivity for ultra-fast downloads</li>
+                                <li>Premium titanium design with ceramic shield</li>
+                            </ul>
+                            
+                            <h4>In the Box</h4>
+                            <ul>
+                                <li>Device</li>
+                                <li>USB-C Cable</li>
+                                <li>Documentation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Specifications Tab -->
+                    <div class="tab-panel" id="specificationsPanel">
+                        <h3>Technical Specifications</h3>
+                        <table class="specs-table">
+                            <tbody id="specsTableBody">
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-panel" id="reviewsPanel">
+                        <div class="reviews-header">
+                            <div class="rating-summary">
+                                <div class="average-rating">
+                                    <span class="big-rating">4.9</span>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span>2,847 reviews</span>
+                                </div>
+                                <div class="rating-breakdown">
+                                    <div class="rating-bar">
+                                        <span>5 star</span>
+                                        <div class="bar"><div style="width: 85%"></div></div>
+                                        <span>85%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>4 star</span>
+                                        <div class="bar"><div style="width: 10%"></div></div>
+                                        <span>10%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>3 star</span>
+                                        <div class="bar"><div style="width: 3%"></div></div>
+                                        <span>3%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>2 star</span>
+                                        <div class="bar"><div style="width: 1%"></div></div>
+                                        <span>1%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>1 star</span>
+                                        <div class="bar"><div style="width: 1%"></div></div>
+                                        <span>1%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="openReviewModal()">
+                                <i class="fas fa-pen"></i> Write a Review
+                            </button>
+                        </div>
+
+                        <div class="reviews-list" id="reviewsList">
+                            <!-- Reviews loaded by JS -->
+                        </div>
+
+                        <div class="reviews-pagination">
+                            <button class="btn btn-secondary" onclick="loadMoreReviews()">Load More Reviews</button>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Tab -->
+                    <div class="tab-panel" id="shippingPanel">
+                        <h3>Shipping Information</h3>
+                        <div class="shipping-info">
+                            <div class="shipping-option">
+                                <i class="fas fa-plane"></i>
+                                <div>
+                                    <h4>Express Shipping</h4>
+                                    <p>3-5 business days - $25</p>
+                                </div>
+                            </div>
+                            <div class="shipping-option">
+                                <i class="fas fa-shipping-fast"></i>
+                                <div>
+                                    <h4>Standard Shipping</h4>
+                                    <p>7-14 business days - FREE on orders over $500</p>
+                                </div>
+                            </div>
+                            <div class="shipping-option">
+                                <i class="fas fa-truck"></i>
+                                <div>
+                                    <h4>Ground Shipping</h4>
+                                    <p>10-20 business days - $15</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Return Policy</h3>
+                        <div class="return-policy">
+                            <p>We offer a 30-day return policy for all unused products in original packaging. To initiate a return:</p>
+                            <ol>
+                                <li>Contact our support team within 30 days of delivery</li>
+                                <li>Package the item securely in original packaging</li>
+                                <li>Include all accessories and documentation</li>
+                                <li>Ship to our return center (return shipping is customer responsibility)</li>
+                            </ol>
+                            <p><strong>Note:</strong> Opened or used products may be subject to a restocking fee.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <section class="related-products">
+                <h2 class="section-title">Related Products</h2>
+                <div class="product-grid" id="relatedProducts">
+                    <!-- Loaded by JS -->
+                </div>
+            </section>
+
+            <!-- Recently Viewed -->
+            <section class="recently-viewed">
+                <h2 class="section-title">Recently Viewed</h2>
+                <div class="product-grid" id="recentlyViewed">
+                    <!-- Loaded by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p>Your trusted wholesale electronics marketplace.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart">Your cart is empty</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- Review Modal -->
+    <div class="review-modal" id="reviewModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeReviewModal()"><i class="fas fa-times"></i></button>
+            <h3>Write a Review</h3>
+            <form id="reviewForm" onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Your Rating</label>
+                    <div class="star-rating-input">
+                        <i class="far fa-star" data-rating="1" onclick="setRating(1)"></i>
+                        <i class="far fa-star" data-rating="2" onclick="setRating(2)"></i>
+                        <i class="far fa-star" data-rating="3" onclick="setRating(3)"></i>
+                        <i class="far fa-star" data-rating="4" onclick="setRating(4)"></i>
+                        <i class="far fa-star" data-rating="5" onclick="setRating(5)"></i>
+                    </div>
+                    <input type="hidden" id="reviewRating" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Your Review</label>
+                    <textarea id="reviewText" rows="5" placeholder="Share your experience with this product..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="reviewerName" placeholder="Enter your name" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="product.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

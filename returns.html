@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns & Refunds - 1688 Electronic Mart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .returns-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .returns-hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+        
+        .policy-section {
+            padding: 60px 0;
+        }
+        
+        .policy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .policy-card {
+            background: white;
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .policy-card i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .policy-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .policy-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        .process-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+        }
+        
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 35px;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: var(--border);
+        }
+        
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .step-number {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .process-step h4 {
+            font-size: 18px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .process-step p {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 200px;
+        }
+        
+        .form-section {
+            padding: 60px 0;
+        }
+        
+        .return-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .return-form h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--secondary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .checkbox-group input {
+            margin-top: 3px;
+        }
+        
+        .eligibility-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+        }
+        
+        .eligibility-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .eligible-list,
+        .not-eligible-list {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .eligible-list h3 {
+            color: var(--success);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .not-eligible-list h3 {
+            color: var(--danger);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .eligible-list ul,
+        .not-eligible-list ul {
+            list-style: none;
+        }
+        
+        .eligible-list li,
+        .not-eligible-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .eligible-list li i {
+            color: var(--success);
+        }
+        
+        .not-eligible-list li i {
+            color: var(--danger);
+        }
+        
+        @media (max-width: 768px) {
+            .policy-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-steps {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .process-steps::before {
+                display: none;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .eligibility-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .return-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <span class="welcome-text">Welcome to 1688 Electronic Mart</span>
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <a href="help-center.html" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Search for electronics..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="action-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='wishlist.html'">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="help-center.html">Help Center</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Returns</span>
+        </div>
+    </div>
+
+    <!-- Returns Hero -->
+    <section class="returns-hero">
+        <div class="container">
+            <h1>Returns & Refunds</h1>
+            <p>Hassle-free returns within 30 days of delivery</p>
+        </div>
+    </section>
+
+    <!-- Policy Overview -->
+    <section class="policy-section">
+        <div class="container">
+            <div class="policy-grid">
+                <div class="policy-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>30-Day Returns</h3>
+                    <p>Return any eligible item within 30 days of delivery for a full refund or exchange.</p>
+                </div>
+                <div class="policy-card">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h3>Free Return Shipping</h3>
+                    <p>We cover return shipping costs for defective items or our errors.</p>
+                </div>
+                <div class="policy-card">
+                    <i class="fas fa-undo-alt"></i>
+                    <h3>Quick Refunds</h3>
+                    <p>Refunds processed within 5-7 business days after we receive your return.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Return Process -->
+    <section class="process-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 50px; font-size: 32px; color: var(--secondary);">How to Return an Item</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h4>Request Return</h4>
+                    <p>Submit a return request through your account or contact support</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h4>Get Authorization</h4>
+                    <p>Receive RMA number and return instructions via email</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h4>Ship Item</h4>
+                    <p>Package securely and ship using provided return label</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h4>Receive Refund</h4>
+                    <p>Refund processed after item inspection and approval</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eligibility -->
+    <section class="eligibility-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Return Eligibility</h2>
+            <div class="eligibility-grid">
+                <div class="eligible-list">
+                    <h3><i class="fas fa-check-circle"></i> Eligible for Return</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Items in original condition</li>
+                        <li><i class="fas fa-check"></i> Unopened electronics (within 30 days)</li>
+                        <li><i class="fas fa-check"></i> Defective or damaged items</li>
+                        <li><i class="fas fa-check"></i> Wrong item received</li>
+                        <li><i class="fas fa-check"></i> Items with manufacturing defects</li>
+                        <li><i class="fas fa-check"></i> Accessories and components</li>
+                    </ul>
+                </div>
+                <div class="not-eligible-list">
+                    <h3><i class="fas fa-times-circle"></i> Not Eligible</h3>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Items past 30-day window</li>
+                        <li><i class="fas fa-times"></i> Software and digital products</li>
+                        <li><i class="fas fa-times"></i> Consumables (inks, toners)</li>
+                        <li><i class="fas fa-times"></i> Custom or personalized items</li>
+                        <li><i class="fas fa-times"></i> Items with removed serial numbers</li>
+                        <li><i class="fas fa-times"></i> Items damaged by misuse</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Return Form -->
+    <section class="form-section">
+        <div class="container">
+            <div class="return-form">
+                <h2>Start a Return</h2>
+                <form onsubmit="handleReturnSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="orderNum">Order Number *</label>
+                            <input type="text" id="orderNum" placeholder="e.g., ORD-123456" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reason">Return Reason *</label>
+                        <select id="reason" required>
+                            <option value="">Select a reason</option>
+                            <option value="defective">Defective/Damaged</option>
+                            <option value="wrong">Wrong Item Received</option>
+                            <option value="not-described">Not as Described</option>
+                            <option value="changed">Changed Mind</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="details">Additional Details</label>
+                        <textarea id="details" placeholder="Please describe the issue with your item..."></textarea>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="condition" required>
+                        <label for="condition">I confirm the item is in its original packaging and all accessories are included.</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-large">
+                        <i class="fas fa-paper-plane"></i> Submit Return Request
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin: 20px 0;">Your trusted wholesale electronics marketplace.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="track-order.html">Track Order</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="shipping.html">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 1688 Electronics Plaza, Shenzhen, China</li>
+                        <li><i class="fas fa-phone"></i> +86 755 1234 5678</li>
+                        <li><i class="fas fa-envelope"></i> support@1688mart.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-alipay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        function handleReturnSubmit(event) {
+            event.preventDefault();
+            showToast('Return request submitted! Check your email for instructions.');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>
