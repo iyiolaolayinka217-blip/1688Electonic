@@ -480,6 +480,50 @@ function toggleMobileMenu() {
     nav.classList.toggle('active');
 }
 
+// Swipe gesture to open mobile menu
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, false);
+
+document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, false);
+
+function handleSwipe() {
+    const nav = document.getElementById('mainNav');
+    const swipeThreshold = 100;
+    
+    // Swipe from center to left (right to left swipe) to open menu
+    if (touchStartX - touchEndX > swipeThreshold) {
+        if (!nav.classList.contains('active')) {
+            nav.classList.add('active');
+        }
+    }
+    // Swipe from left to right to close menu
+    else if (touchEndX - touchStartX > swipeThreshold) {
+        if (nav.classList.contains('active')) {
+            nav.classList.remove('active');
+        }
+    }
+}
+
+// Tap anywhere on screen to close hamburger menu
+document.addEventListener('click', (e) => {
+    const nav = document.getElementById('mainNav');
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    
+    // If menu is open and click is outside the menu and not on the toggle button
+    if (nav.classList.contains('active') && 
+        !nav.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+        nav.classList.remove('active');
+    }
+});
+
 // Newsletter
 function subscribeNewsletter(e) {
     e.preventDefault();
