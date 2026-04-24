@@ -54,12 +54,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // Update profile button visibility based on auth state
 function updateProfileButtonVisibility() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const profileBtn = document.getElementById('profileBtn');
     const authLinks = document.getElementById('authLinks');
-    
-    if (profileBtn) {
-        profileBtn.style.display = currentUser ? 'flex' : 'none';
-    }
     
     if (authLinks) {
         if (currentUser) {
@@ -79,7 +74,12 @@ function updateProfileButtonVisibility() {
 
 // Navigate to profile page
 function goToProfile() {
-    window.location.href = 'profile.html';
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        window.location.href = 'profile.html';
+    } else {
+        window.location.href = 'auth.html';
+    }
 }
 
 // Logout function

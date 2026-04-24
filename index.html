@@ -135,7 +135,7 @@
                         <i class="fas fa-heart"></i>
                         <span class="wishlist-count" id="wishlistCount">0</span>
                     </button>
-                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()" style="display: none;">
+                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()">
                         <i class="fas fa-user"></i>
                     </button>
                     <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
@@ -168,6 +168,9 @@
                     </li>
                     <li class="nav-item" data-category="home">
                         <a href="#"><i class="fas fa-tv"></i> Home Electronics</a>
+                    </li>
+                    <li class="nav-item profile-nav-item">
+                        <a href="#" onclick="goToProfile()"><i class="fas fa-user"></i> My Profile</a>
                     </li>
                 </ul>
             </div>
