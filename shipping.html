@@ -294,51 +294,41 @@
     <section class="shipping-hero">
         <div class="container">
             <h1>Shipping Information</h1>
-            <p>Fast, reliable delivery to over 120 countries worldwide</p>
+            <p>Fast, safe, and global delivery. Electronics are fragile, which is why we use industry-standard anti-static packaging and reinforced boxing for every order.</p>
         </div>
     </section>
 
-    <!-- Shipping Methods -->
+    <!-- Shipping Methods Table -->
     <section class="methods-section">
         <div class="container">
             <h2 style="text-align: center; margin-bottom: 40px; font-size: 32px; color: var(--secondary);">Shipping Methods</h2>
-            <div class="shipping-grid">
-                <div class="shipping-card">
-                    <i class="fas fa-ship"></i>
-                    <h3>Standard Shipping</h3>
-                    <div class="shipping-time">7-14 Days</div>
-                    <p style="color: var(--text-muted);">Economical option for non-urgent orders</p>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Cost-effective rates</li>
-                        <li><i class="fas fa-check"></i> Tracking available</li>
-                        <li><i class="fas fa-check"></i> Door-to-door delivery</li>
-                    </ul>
-                    <button class="btn btn-secondary btn-block" onclick="showToast('Select this at checkout')">Learn More</button>
-                </div>
-                <div class="shipping-card featured">
-                    <i class="fas fa-plane"></i>
-                    <h3>Express Shipping</h3>
-                    <div class="shipping-time">3-7 Days</div>
-                    <p style="color: var(--text-muted);">Fast delivery for urgent orders</p>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Priority handling</li>
-                        <li><i class="fas fa-check"></i> Real-time tracking</li>
-                        <li><i class="fas fa-check"></i> Insurance included</li>
-                    </ul>
-                    <button class="btn btn-primary btn-block" onclick="showToast('Select this at checkout')">Most Popular</button>
-                </div>
-                <div class="shipping-card">
-                    <i class="fas fa-rocket"></i>
-                    <h3>Priority Express</h3>
-                    <div class="shipping-time">1-3 Days</div>
-                    <p style="color: var(--text-muted);">Ultra-fast delivery for critical orders</p>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Fastest option available</li>
-                        <li><i class="fas fa-check"></i> Dedicated support</li>
-                        <li><i class="fas fa-check"></i> Full insurance coverage</li>
-                    </ul>
-                    <button class="btn btn-secondary btn-block" onclick="showToast('Select this at checkout')">Learn More</button>
-                </div>
+            <div style="max-width: 900px; margin: 0 auto; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: var(--secondary); color: white;">
+                            <th style="padding: 20px; text-align: left; font-weight: 600;">Method</th>
+                            <th style="padding: 20px; text-align: left; font-weight: 600;">Estimated Time</th>
+                            <th style="padding: 20px; text-align: left; font-weight: 600;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border-light);">
+                            <td style="padding: 20px; font-weight: 600; color: var(--secondary);"><i class="fas fa-truck" style="color: var(--primary); margin-right: 10px;"></i> Standard Ground</td>
+                            <td style="padding: 20px; color: var(--text);">3–7 Business Days</td>
+                            <td style="padding: 20px; color: var(--text-muted);">Budget-friendly small parts</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-light); background: var(--bg-light);">
+                            <td style="padding: 20px; font-weight: 600; color: var(--secondary);"><i class="fas fa-shipping-fast" style="color: var(--primary); margin-right: 10px;"></i> Expedited</td>
+                            <td style="padding: 20px; color: var(--text);">2–3 Business Days</td>
+                            <td style="padding: 20px; color: var(--text-muted);">Urgent repairs and prototypes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 20px; font-weight: 600; color: var(--secondary);"><i class="fas fa-plane" style="color: var(--primary); margin-right: 10px;"></i> International</td>
+                            <td style="padding: 20px; color: var(--text);">7–14 Business Days</td>
+                            <td style="padding: 20px; color: var(--text-muted);">Global shipping via DHL/FedEx</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
@@ -359,17 +349,17 @@
                         <tr>
                             <td>Standard</td>
                             <td>5-10 days</td>
-                            <td>$15</td>
+                            <td>¥109</td>
                         </tr>
                         <tr>
                             <td>Express</td>
                             <td>2-4 days</td>
-                            <td>$35</td>
+                            <td>¥249</td>
                         </tr>
                         <tr>
                             <td>Priority</td>
                             <td>1-2 days</td>
-                            <td>$55</td>
+                            <td>¥399</td>
                         </tr>
                     </table>
                 </div>
@@ -384,17 +374,17 @@
                         <tr>
                             <td>Standard</td>
                             <td>10-15 days</td>
-                            <td>$25</td>
+                            <td>¥179</td>
                         </tr>
                         <tr>
                             <td>Express</td>
                             <td>5-7 days</td>
-                            <td>$50</td>
+                            <td>¥359</td>
                         </tr>
                         <tr>
                             <td>Priority</td>
                             <td>3-5 days</td>
-                            <td>$80</td>
+                            <td>¥579</td>
                         </tr>
                     </table>
                 </div>
@@ -409,17 +399,17 @@
                         <tr>
                             <td>Standard</td>
                             <td>12-18 days</td>
-                            <td>$30</td>
+                            <td>¥219</td>
                         </tr>
                         <tr>
                             <td>Express</td>
                             <td>5-8 days</td>
-                            <td>$60</td>
+                            <td>¥429</td>
                         </tr>
                         <tr>
                             <td>Priority</td>
                             <td>3-5 days</td>
-                            <td>$90</td>
+                            <td>¥649</td>
                         </tr>
                     </table>
                 </div>
@@ -434,17 +424,17 @@
                         <tr>
                             <td>Standard</td>
                             <td>14-21 days</td>
-                            <td>$35</td>
+                            <td>¥249</td>
                         </tr>
                         <tr>
                             <td>Express</td>
                             <td>7-12 days</td>
-                            <td>$70</td>
+                            <td>¥499</td>
                         </tr>
                         <tr>
                             <td>Priority</td>
                             <td>5-8 days</td>
-                            <td>$100</td>
+                            <td>¥719</td>
                         </tr>
                     </table>
                 </div>
@@ -480,15 +470,15 @@
                     <h4>Estimated Shipping Costs</h4>
                     <div class="result-row">
                         <span>Standard Shipping</span>
-                        <strong id="standardCost">$25.00</strong>
+                        <strong id="standardCost">¥179</strong>
                     </div>
                     <div class="result-row">
                         <span>Express Shipping</span>
-                        <strong id="expressCost">$50.00</strong>
+                        <strong id="expressCost">¥359</strong>
                     </div>
                     <div class="result-row">
                         <span>Priority Shipping</span>
-                        <strong id="priorityCost">$80.00</strong>
+                        <strong id="priorityCost">¥579</strong>
                     </div>
                 </div>
             </div>
@@ -506,7 +496,7 @@
                 </div>
                 <div class="faq-item" style="background: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 15px; box-shadow: var(--shadow-sm);">
                     <h4 style="color: var(--secondary); margin-bottom: 10px;">Do you offer free shipping?</h4>
-                    <p style="color: var(--text-muted);">Yes! We offer free standard shipping on orders over $500. Free shipping applies to Zone 1-3 destinations.</p>
+                    <p style="color: var(--text-muted);">Yes! We offer free standard shipping on orders over ¥3500. Free shipping applies to Zone 1-3 destinations.</p>
                 </div>
                 <div class="faq-item" style="background: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 15px; box-shadow: var(--shadow-sm);">
                     <h4 style="color: var(--secondary); margin-bottom: 10px;">Can I change my shipping address?</h4>
@@ -592,18 +582,18 @@
             
             // Base rates by zone
             const rates = {
-                asia: { base: 15, express: 35, priority: 55 },
-                europe: { base: 25, express: 50, priority: 80 },
-                americas: { base: 30, express: 60, priority: 90 },
-                africa: { base: 35, express: 70, priority: 100 }
+                asia: { base: 109, express: 249, priority: 399 },
+                europe: { base: 179, express: 359, priority: 579 },
+                americas: { base: 219, express: 429, priority: 649 },
+                africa: { base: 249, express: 499, priority: 719 }
             };
             
             const zone = rates[country];
             const multiplier = Math.max(1, weight * 0.5);
             
-            document.getElementById('standardCost').textContent = `$${(zone.base * multiplier).toFixed(2)}`;
-            document.getElementById('expressCost').textContent = `$${(zone.express * multiplier).toFixed(2)}`;
-            document.getElementById('priorityCost').textContent = `$${(zone.priority * multiplier).toFixed(2)}`;
+            document.getElementById('standardCost').textContent = `¥${(zone.base * multiplier).toFixed(0)}`;
+            document.getElementById('expressCost').textContent = `¥${(zone.express * multiplier).toFixed(0)}`;
+            document.getElementById('priorityCost').textContent = `¥${(zone.priority * multiplier).toFixed(0)}`;
             
             document.getElementById('calcResult').classList.add('show');
         }

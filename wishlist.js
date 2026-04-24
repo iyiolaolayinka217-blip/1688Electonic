@@ -47,8 +47,8 @@ function loadWishlistItems() {
                         <span>(${product.reviews.toLocaleString()})</span>
                     </div>
                     <div class="product-price">
-                        <span class="current-price">$${product.price}</span>
-                        ${product.originalPrice ? `<span class="original-price">$${product.originalPrice}</span>` : ''}
+                        <span class="current-price">¥${product.price}</span>
+                        ${product.originalPrice ? `<span class="original-price">¥${product.originalPrice}</span>` : ''}
                     </div>
                     <div class="stock-status in-stock">
                         <i class="fas fa-check-circle"></i> In Stock

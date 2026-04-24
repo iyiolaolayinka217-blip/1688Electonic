@@ -1,27 +1,27 @@
 // Product Data
 const products = [
-    { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'phones', price: 899, originalPrice: 1099, rating: 4.9, reviews: 2847, badge: 'bestseller', icon: 'fa-mobile-alt', tab: 'all' },
-    { id: 2, name: 'Samsung Galaxy S24 Ultra', category: 'phones', price: 799, originalPrice: 999, rating: 4.8, reviews: 1923, badge: 'new', icon: 'fa-mobile-alt', tab: 'trending' },
-    { id: 3, name: 'MacBook Pro M3 14-inch', category: 'laptops', price: 1299, originalPrice: 1599, rating: 4.9, reviews: 1456, badge: 'bestseller', icon: 'fa-laptop', tab: 'bestseller' },
-    { id: 4, name: 'Dell XPS 15 OLED', category: 'laptops', price: 1199, originalPrice: 1499, rating: 4.7, reviews: 892, badge: '', icon: 'fa-laptop', tab: 'all' },
-    { id: 5, name: 'Sony WH-1000XM5 Headphones', category: 'accessories', price: 299, originalPrice: 399, rating: 4.8, reviews: 3421, badge: 'bestseller', icon: 'fa-headphones', tab: 'bestseller' },
-    { id: 6, name: 'AirPods Pro 2nd Gen', category: 'accessories', price: 199, originalPrice: 249, rating: 4.9, reviews: 5678, badge: 'new', icon: 'fa-headphones', tab: 'new' },
-    { id: 7, name: 'RTX 4090 Graphics Card', category: 'components', price: 1499, originalPrice: 1899, rating: 4.9, reviews: 567, badge: 'new', icon: 'fa-microchip', tab: 'trending' },
-    { id: 8, name: 'AMD Ryzen 9 7950X', category: 'components', price: 499, originalPrice: 699, rating: 4.8, reviews: 1234, badge: '', icon: 'fa-microchip', tab: 'all' },
-    { id: 9, name: 'PlayStation 5 Console', category: 'gaming', price: 449, originalPrice: 499, rating: 4.9, reviews: 8901, badge: 'bestseller', icon: 'fa-gamepad', tab: 'bestseller' },
-    { id: 10, name: 'Xbox Series X', category: 'gaming', price: 399, originalPrice: 499, rating: 4.8, reviews: 3456, badge: '', icon: 'fa-gamepad', tab: 'all' },
-    { id: 11, name: 'LG 65" OLED C3 TV', category: 'home', price: 1699, originalPrice: 2299, rating: 4.9, reviews: 789, badge: 'new', icon: 'fa-tv', tab: 'new' },
-    { id: 12, name: 'Samsung 55" QLED 4K', category: 'home', price: 799, originalPrice: 1199, rating: 4.7, reviews: 1234, badge: '', icon: 'fa-tv', tab: 'all' },
-    { id: 13, name: 'iPad Pro 12.9 M2', category: 'phones', price: 999, originalPrice: 1299, rating: 4.8, reviews: 2341, badge: 'new', icon: 'fa-tablet-alt', tab: 'new' },
-    { id: 14, name: 'Samsung Galaxy Tab S9', category: 'phones', price: 649, originalPrice: 849, rating: 4.6, reviews: 876, badge: '', icon: 'fa-tablet-alt', tab: 'all' },
-    { id: 15, name: 'ASUS ROG Gaming Laptop', category: 'laptops', price: 1799, originalPrice: 2199, rating: 4.8, reviews: 654, badge: 'trending', icon: 'fa-laptop', tab: 'trending' }
+    { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'phones', price: 6499, originalPrice: 7999, rating: 4.9, reviews: 2847, badge: 'bestseller', icon: 'fa-mobile-alt', tab: 'all' },
+    { id: 2, name: 'Samsung Galaxy S24 Ultra', category: 'phones', price: 5799, originalPrice: 7299, rating: 4.8, reviews: 1923, badge: 'new', icon: 'fa-mobile-alt', tab: 'trending' },
+    { id: 3, name: 'MacBook Pro M3 14-inch', category: 'laptops', price: 9499, originalPrice: 11699, rating: 4.9, reviews: 1456, badge: 'bestseller', icon: 'fa-laptop', tab: 'bestseller' },
+    { id: 4, name: 'Dell XPS 15 OLED', category: 'laptops', price: 8699, originalPrice: 10899, rating: 4.7, reviews: 892, badge: '', icon: 'fa-laptop', tab: 'all' },
+    { id: 5, name: 'Sony WH-1000XM5 Headphones', category: 'accessories', price: 2199, originalPrice: 2899, rating: 4.8, reviews: 3421, badge: 'bestseller', icon: 'fa-headphones', tab: 'bestseller' },
+    { id: 6, name: 'AirPods Pro 2nd Gen', category: 'accessories', price: 1449, originalPrice: 1799, rating: 4.9, reviews: 5678, badge: 'new', icon: 'fa-headphones', tab: 'new' },
+    { id: 7, name: 'RTX 4090 Graphics Card', category: 'components', price: 10899, originalPrice: 13699, rating: 4.9, reviews: 567, badge: 'new', icon: 'fa-microchip', tab: 'trending' },
+    { id: 8, name: 'AMD Ryzen 9 7950X', category: 'components', price: 3599, originalPrice: 5099, rating: 4.8, reviews: 1234, badge: '', icon: 'fa-microchip', tab: 'all' },
+    { id: 9, name: 'PlayStation 5 Console', category: 'gaming', price: 3299, originalPrice: 3699, rating: 4.9, reviews: 8901, badge: 'bestseller', icon: 'fa-gamepad', tab: 'bestseller' },
+    { id: 10, name: 'Xbox Series X', category: 'gaming', price: 2899, originalPrice: 3699, rating: 4.8, reviews: 3456, badge: '', icon: 'fa-gamepad', tab: 'all' },
+    { id: 11, name: 'LG 65" OLED C3 TV', category: 'home', price: 12299, originalPrice: 16699, rating: 4.9, reviews: 789, badge: 'new', icon: 'fa-tv', tab: 'new' },
+    { id: 12, name: 'Samsung 55" QLED 4K', category: 'home', price: 5799, originalPrice: 8699, rating: 4.7, reviews: 1234, badge: '', icon: 'fa-tv', tab: 'all' },
+    { id: 13, name: 'iPad Pro 12.9 M2', category: 'phones', price: 7199, originalPrice: 9399, rating: 4.8, reviews: 2341, badge: 'new', icon: 'fa-tablet-alt', tab: 'new' },
+    { id: 14, name: 'Samsung Galaxy Tab S9', category: 'phones', price: 4699, originalPrice: 6199, rating: 4.6, reviews: 876, badge: '', icon: 'fa-tablet-alt', tab: 'all' },
+    { id: 15, name: 'ASUS ROG Gaming Laptop', category: 'laptops', price: 12999, originalPrice: 15899, rating: 4.8, reviews: 654, badge: 'trending', icon: 'fa-laptop', tab: 'trending' }
 ];
 
 const flashSaleProducts = [
-    { id: 101, name: 'Logitech MX Master 3S', price: 79, originalPrice: 99, rating: 4.9, reviews: 4321, icon: 'fa-mouse' },
-    { id: 102, name: 'Keychron K2 Mechanical Keyboard', price: 69, originalPrice: 99, rating: 4.7, reviews: 1234, icon: 'fa-keyboard' },
-    { id: 103, name: 'Samsung T7 Portable SSD 1TB', price: 89, originalPrice: 129, rating: 4.8, reviews: 3456, icon: 'fa-hdd' },
-    { id: 104, name: 'Anker 737 Power Bank 24000mAh', price: 99, originalPrice: 149, rating: 4.9, reviews: 5678, icon: 'fa-battery-full' }
+    { id: 101, name: 'Logitech MX Master 3S', price: 569, originalPrice: 719, rating: 4.9, reviews: 4321, icon: 'fa-mouse' },
+    { id: 102, name: 'Keychron K2 Mechanical Keyboard', price: 499, originalPrice: 719, rating: 4.7, reviews: 1234, icon: 'fa-keyboard' },
+    { id: 103, name: 'Samsung T7 Portable SSD 1TB', price: 649, originalPrice: 939, rating: 4.8, reviews: 3456, icon: 'fa-hdd' },
+    { id: 104, name: 'Anker 737 Power Bank 24000mAh', price: 719, originalPrice: 1079, rating: 4.9, reviews: 5678, icon: 'fa-battery-full' }
 ];
 
 // State Management
@@ -98,8 +98,8 @@ function renderProducts(productsToRender, container, isFlash = false) {
                     <span>(${product.reviews.toLocaleString()})</span>
                 </div>
                 <div class="product-price">
-                    <span class="price-current">$${product.price}</span>
-                    ${product.originalPrice ? `<span class="price-original">$${product.originalPrice}</span>` : ''}
+                    <span class="price-current">¥${product.price}</span>
+                    ${product.originalPrice ? `<span class="price-original">¥${product.originalPrice}</span>` : ''}
                 </div>
             </div>
         </div>
@@ -256,7 +256,7 @@ function updateCartUI() {
     cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotal.textContent = `$${total.toFixed(2)}`;
+    cartTotal.textContent = `¥${total.toFixed(0)}`;
     
     if (cart.length === 0) {
         cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
@@ -268,7 +268,7 @@ function updateCartUI() {
                 </div>
                 <div class="cart-item-details">
                     <div class="cart-item-title">${item.name}</div>
-                    <div class="cart-item-price">$${item.price}</div>
+                    <div class="cart-item-price">¥${item.price}</div>
                     <div class="quantity-control">
                         <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
                         <span>${item.quantity}</span>
@@ -296,7 +296,7 @@ function checkout() {
     }
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    alert(`Checkout successful! Total: $${total.toFixed(2)}`);
+    alert(`Checkout successful! Total: ¥${total.toFixed(0)}`);
     cart = [];
     updateCartUI();
     toggleCart();
@@ -320,7 +320,7 @@ function openProductModal(productId) {
                     <span>${product.rating} (${product.reviews.toLocaleString()} reviews)</span>
                 </div>
             </div>
-            <div class="price">$${product.price} <span style="font-size: 16px; color: #999; text-decoration: line-through; margin-left: 10px;">$${product.originalPrice || (product.price * 1.3).toFixed(0)}</span></div>
+            <div class="price">¥${product.price} <span style="font-size: 16px; color: #999; text-decoration: line-through; margin-left: 10px;">¥${product.originalPrice || (product.price * 1.3).toFixed(0)}</span></div>
             <p class="description">
                 Experience premium quality with the ${product.name}. This top-rated product offers exceptional 
                 performance and reliability. Perfect for both personal and professional use. Order now and enjoy 
@@ -517,3 +517,186 @@ window.addEventListener('load', () => {
         performSearch();
     }
 });
+
+// ============================================
+// ANALYTICS & TRACKING
+// ============================================
+
+// Google Analytics 4 Tracking (replace GA_MEASUREMENT_ID with your actual ID)
+function initAnalytics() {
+    // Google Analytics
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID'); // Replace with your GA4 ID
+    
+    // Track page view
+    trackPageView();
+    
+    // Track user interactions
+    trackUserInteractions();
+}
+
+// Track page views
+function trackPageView() {
+    const page = window.location.pathname;
+    const title = document.title;
+    
+    if (window.gtag) {
+        gtag('event', 'page_view', {
+            page_title: title,
+            page_location: window.location.href,
+            page_path: page
+        });
+    }
+    
+    // Meta Pixel tracking (if available)
+    if (window.fbq) {
+        fbq('track', 'PageView');
+    }
+}
+
+// Track user interactions
+function trackUserInteractions() {
+    // Track add to cart
+    const originalAddToCart = window.addToCart;
+    window.addToCart = function(productId) {
+        const product = products.find(p => p.id === productId);
+        if (product && window.gtag) {
+            gtag('event', 'add_to_cart', {
+                currency: 'CNY',
+                value: product.price,
+                items: [{
+                    item_id: product.id.toString(),
+                    item_name: product.name,
+                    item_category: product.category,
+                    price: product.price,
+                    quantity: 1
+                }]
+            });
+        }
+        if (window.fbq) {
+            fbq('track', 'AddToCart', {
+                value: product?.price,
+                currency: 'CNY'
+            });
+        }
+        return originalAddToCart(productId);
+    };
+    
+    // Track wishlist additions
+    const originalToggleWishlist = window.toggleWishlist;
+    window.toggleWishlist = function(productId) {
+        const product = products.find(p => p.id === productId);
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        const isAdding = !wishlist.includes(productId);
+        
+        if (isAdding && window.gtag) {
+            gtag('event', 'add_to_wishlist', {
+                currency: 'CNY',
+                value: product?.price,
+                items: [{
+                    item_id: productId.toString(),
+                    item_name: product?.name
+                }]
+            });
+        }
+        return originalToggleWishlist(productId);
+    };
+    
+    // Track product views
+    const originalOpenProductDetail = window.openProductDetail;
+    window.openProductDetail = function(productId) {
+        const product = products.find(p => p.id === productId);
+        if (product && window.gtag) {
+            gtag('event', 'view_item', {
+                currency: 'CNY',
+                value: product.price,
+                items: [{
+                    item_id: product.id.toString(),
+                    item_name: product.name,
+                    item_category: product.category,
+                    price: product.price
+                }]
+            });
+        }
+        return originalOpenProductDetail(productId);
+    };
+    
+    // Track search
+    const originalPerformSearch = window.performSearch;
+    window.performSearch = function() {
+        const query = document.getElementById('searchInput')?.value;
+        if (query && window.gtag) {
+            gtag('event', 'search', {
+                search_term: query
+            });
+        }
+        return originalPerformSearch();
+    };
+    
+    // Track begin checkout
+    const originalGoToCheckout = window.goToCheckout;
+    if (originalGoToCheckout) {
+        window.goToCheckout = function() {
+            if (window.gtag) {
+                gtag('event', 'begin_checkout', {
+                    currency: 'CNY',
+                    value: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                    items: cart.map(item => ({
+                        item_id: item.id.toString(),
+                        item_name: item.name,
+                        price: item.price,
+                        quantity: item.quantity
+                    }))
+                });
+            }
+            return originalGoToCheckout();
+        };
+    }
+}
+
+// Track custom events
+function trackEvent(eventName, params = {}) {
+    if (window.gtag) {
+        gtag('event', eventName, params);
+    }
+    console.log('Event tracked:', eventName, params);
+}
+
+// Performance tracking
+function trackPerformance() {
+    // Core Web Vitals
+    new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+            if (window.gtag) {
+                gtag('event', 'web_vitals', {
+                    event_category: 'Web Vitals',
+                    event_label: entry.name,
+                    value: Math.round(entry.value),
+                    non_interaction: true
+                });
+            }
+        }
+    }).observe({ type: 'web-vitals' });
+    
+    // Page load time
+    window.addEventListener('load', () => {
+        const timing = performance.timing;
+        const loadTime = timing.loadEventEnd - timing.navigationStart;
+        trackEvent('page_load_time', {
+            value: loadTime,
+            unit: 'milliseconds'
+        });
+    });
+}
+
+// Initialize analytics on load
+window.addEventListener('load', () => {
+    initAnalytics();
+    trackPerformance();
+});
+
+// Export tracking function for global use
+window.trackEvent = trackEvent;

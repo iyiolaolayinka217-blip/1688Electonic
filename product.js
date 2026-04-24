@@ -7,8 +7,8 @@ const productData = {
     brand: 'Apple',
     category: 'phones',
     sku: 'APL-IPH15PM-256',
-    price: 899,
-    originalPrice: 1099,
+    price: 6499,
+    originalPrice: 7999,
     rating: 4.9,
     reviews: 2847,
     stock: 150,
@@ -105,8 +105,8 @@ function loadProductData() {
     document.getElementById('productSku').textContent = `SKU: ${productData.sku}`;
     
     // Price
-    document.getElementById('currentPrice').textContent = `$${productData.price}`;
-    document.getElementById('originalPrice').textContent = `$${productData.originalPrice}`;
+    document.getElementById('currentPrice').textContent = `¥${productData.price}`;
+    document.getElementById('originalPrice').textContent = `¥${productData.originalPrice}`;
     
     const discount = Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100);
     document.getElementById('discountBadge').textContent = `-${discount}%`;
@@ -483,8 +483,8 @@ function createProductCard(product) {
                     <span>(${product.reviews.toLocaleString()})</span>
                 </div>
                 <div class="product-price">
-                    <span class="price-current">$${product.price}</span>
-                    ${product.originalPrice ? `<span class="price-original">$${product.originalPrice}</span>` : ''}
+                    <span class="price-current">¥${product.price}</span>
+                    ${product.originalPrice ? `<span class="price-original">¥${product.originalPrice}</span>` : ''}
                 </div>
             </div>
         </div>

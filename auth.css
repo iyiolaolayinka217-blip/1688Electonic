@@ -307,6 +307,11 @@
     text-decoration: underline;
 }
 
+/* Logo styling - remove underline from link */
+a.logo {
+    text-decoration: none;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .auth-page {

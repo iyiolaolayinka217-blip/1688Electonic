@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your account, orders, and preferences at 1688 Electronic Mart.">
+    <title>My Account - 1688 Electronic Mart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                <div class="header-actions">
+                    <a href="index.html" class="action-btn">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-page">
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Sidebar Navigation -->
+                <aside class="dashboard-sidebar">
+                    <div class="user-card">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="userName">Welcome</h3>
+                            <p id="userEmail">user@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <nav class="dashboard-nav">
+                        <a href="#" class="nav-link active" data-tab="overview" onclick="switchTab('overview')">
+                            <i class="fas fa-th-large"></i> Overview
+                        </a>
+                        <a href="#" class="nav-link" data-tab="orders" onclick="switchTab('orders')">
+                            <i class="fas fa-shopping-bag"></i> My Orders
+                            <span class="badge" id="orderBadge">0</span>
+                        </a>
+                        <a href="#" class="nav-link" data-tab="addresses" onclick="switchTab('addresses')">
+                            <i class="fas fa-map-marker-alt"></i> Addresses
+                        </a>
+                        <a href="#" class="nav-link" data-tab="payments" onclick="switchTab('payments')">
+                            <i class="fas fa-credit-card"></i> Payment Methods
+                        </a>
+                        <a href="#" class="nav-link" data-tab="wishlist" onclick="switchTab('wishlist')">
+                            <i class="fas fa-heart"></i> Wishlist
+                            <span class="badge" id="wishlistBadge">0</span>
+                        </a>
+                        <a href="#" class="nav-link" data-tab="settings" onclick="switchTab('settings')">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="#" class="nav-link logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <!-- Overview Tab -->
+                    <section class="dashboard-section active" id="overviewTab">
+                        <h2><i class="fas fa-th-large"></i> Dashboard Overview</h2>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon orders">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-value" id="statOrders">0</span>
+                                    <span class="stat-label">Total Orders</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon wishlist">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-value" id="statWishlist">0</span>
+                                    <span class="stat-label">Wishlist Items</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon savings">
+                                    <i class="fas fa-piggy-bank"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-value" id="statSavings">¥0</span>
+                                    <span class="stat-label">Total Savings</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon rewards">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-value" id="statPoints">0</span>
+                                    <span class="stat-label">Reward Points</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="recent-orders-section">
+                            <div class="section-header">
+                                <h3>Recent Orders</h3>
+                                <a href="#" class="view-all" onclick="switchTab('orders')">View All</a>
+                            </div>
+                            <div class="recent-orders" id="recentOrders">
+                                <!-- Recent orders loaded dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <h3>Quick Actions</h3>
+                            <div class="action-grid">
+                                <a href="index.html" class="quick-action">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <span>Shop Now</span>
+                                </a>
+                                <a href="track-order.html" class="quick-action">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Track Order</span>
+                                </a>
+                                <a href="#" class="quick-action" onclick="switchTab('addresses')">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Add Address</span>
+                                </a>
+                                <a href="help-center.html" class="quick-action">
+                                    <i class="fas fa-headset"></i>
+                                    <span>Support</span>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Orders Tab -->
+                    <section class="dashboard-section" id="ordersTab">
+                        <h2><i class="fas fa-shopping-bag"></i> My Orders</h2>
+                        
+                        <div class="orders-filter">
+                            <button class="filter-btn active" data-filter="all">All Orders</button>
+                            <button class="filter-btn" data-filter="processing">Processing</button>
+                            <button class="filter-btn" data-filter="shipped">Shipped</button>
+                            <button class="filter-btn" data-filter="delivered">Delivered</button>
+                            <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+                        </div>
+                        
+                        <div class="orders-list" id="ordersList">
+                            <!-- Orders loaded dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Addresses Tab -->
+                    <section class="dashboard-section" id="addressesTab">
+                        <h2><i class="fas fa-map-marker-alt"></i> My Addresses</h2>
+                        
+                        <button class="btn btn-primary" onclick="showAddressModal()">
+                            <i class="fas fa-plus"></i> Add New Address
+                        </button>
+                        
+                        <div class="addresses-grid" id="addressesGrid">
+                            <!-- Addresses loaded dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Payment Methods Tab -->
+                    <section class="dashboard-section" id="paymentsTab">
+                        <h2><i class="fas fa-credit-card"></i> Payment Methods</h2>
+                        
+                        <button class="btn btn-primary" onclick="showCardModal()">
+                            <i class="fas fa-plus"></i> Add New Card
+                        </button>
+                        
+                        <div class="cards-list" id="cardsList">
+                            <!-- Cards loaded dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Wishlist Tab -->
+                    <section class="dashboard-section" id="wishlistTab">
+                        <h2><i class="fas fa-heart"></i> My Wishlist</h2>
+                        
+                        <div class="wishlist-grid" id="wishlistGrid">
+                            <!-- Wishlist items loaded dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Settings Tab -->
+                    <section class="dashboard-section" id="settingsTab">
+                        <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                        
+                        <div class="settings-tabs">
+                            <button class="settings-tab active" data-setting="profile">Profile</button>
+                            <button class="settings-tab" data-setting="password">Password</button>
+                            <button class="settings-tab" data-setting="notifications">Notifications</button>
+                            <button class="settings-tab" data-setting="privacy">Privacy</button>
+                        </div>
+                        
+                        <div class="settings-content">
+                            <!-- Profile Settings -->
+                            <div class="setting-panel active" id="profilePanel">
+                                <form id="profileForm" onsubmit="updateProfile(event)">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>First Name</label>
+                                            <input type="text" id="settingFirstName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last Name</label>
+                                            <input type="text" id="settingLastName" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="settingEmail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="tel" id="settingPhone">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+                            
+                            <!-- Password Settings -->
+                            <div class="setting-panel" id="passwordPanel">
+                                <form id="passwordForm" onsubmit="updatePassword(event)">
+                                    <div class="form-group">
+                                        <label>Current Password</label>
+                                        <input type="password" id="currentPassword" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>New Password</label>
+                                        <input type="password" id="newPassword" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Password</button>
+                                </form>
+                            </div>
+                            
+                            <!-- Notifications Settings -->
+                            <div class="setting-panel" id="notificationsPanel">
+                                <div class="notification-options">
+                                    <label class="checkbox-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-label">Order Updates</span>
+                                        <span class="toggle-desc">Receive notifications about your order status</span>
+                                    </label>
+                                    <label class="checkbox-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-label">Promotional Emails</span>
+                                        <span class="toggle-desc">Get exclusive deals and offers</span>
+                                    </label>
+                                    <label class="checkbox-toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-label">SMS Notifications</span>
+                                        <span class="toggle-desc">Receive text messages for important updates</span>
+                                    </label>
+                                </div>
+                                <button class="btn btn-primary" onclick="saveNotificationSettings()">Save Preferences</button>
+                            </div>
+                            
+                            <!-- Privacy Settings -->
+                            <div class="setting-panel" id="privacyPanel">
+                                <div class="privacy-options">
+                                    <label class="checkbox-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-label">Marketing Consent</span>
+                                        <span class="toggle-desc">Allow us to use your data for personalized marketing</span>
+                                    </label>
+                                    <label class="checkbox-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-label">Analytics</span>
+                                        <span class="toggle-desc">Help us improve by sharing usage data</span>
+                                    </label>
+                                </div>
+                                <button class="btn btn-danger" onclick="deleteAccount()">
+                                    <i class="fas fa-trash"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Address Modal -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Address</h3>
+                <button class="close-btn" onclick="closeAddressModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addressForm" onsubmit="saveAddress(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="addrFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" id="addrLastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Street Address *</label>
+                    <input type="text" id="addrStreet" required>
+                </div>
+                <div class="form-group">
+                    <label>Apartment/Suite</label>
+                    <input type="text" id="addrApt">
+                </div>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="addrCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <select id="addrState" required>
+                            <option value="">Select</option>
+                            <option value="CA">California</option>
+                            <option value="NY">New York</option>
+                            <option value="TX">Texas</option>
+                            <option value="FL">Florida</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ZIP Code *</label>
+                        <input type="text" id="addrZip" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Country *</label>
+                    <select id="addrCountry" required>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                    </select>
+                </div>
+                <label class="checkbox">
+                    <input type="checkbox" id="addrDefault">
+                    <span>Set as default address</span>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddressModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card Modal -->
+    <div class="modal" id="cardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Card</h3>
+                <button class="close-btn" onclick="closeCardModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="cardForm" onsubmit="saveCard(event)">
+                <div class="form-group">
+                    <label>Card Number *</label>
+                    <input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+                <div class="form-group">
+                    <label>Name on Card *</label>
+                    <input type="text" id="cardHolder" required>
+                </div>
+                <div class="form-row two-col">
+                    <div class="form-group">
+                        <label>Expiry Date *</label>
+                        <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CVV *</label>
+                        <input type="text" id="cardCVV" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+                <label class="checkbox">
+                    <input type="checkbox" id="cardDefault">
+                    <span>Set as default card</span>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

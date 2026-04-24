@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Order confirmed! Thank you for shopping at 1688 Electronic Mart.">
+    <meta name="robots" content="noindex">
+    <title>Order Confirmed - 1688 Electronic Mart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="checkout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Order confirmation structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Order",
+        "orderStatus": "https://schema.org/OrderConfirmed"
+    }
+    </script>
+    
+    <style>
+        .success-page {
+            padding: 3rem 0 4rem;
+            background: var(--bg-light, #f8f9fa);
+            min-height: calc(100vh - 140px);
+        }
+        
+        .success-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .success-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .success-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary, #1a1a2e);
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-message {
+            font-size: 1.125rem;
+            color: var(--text-light, #666);
+            margin-bottom: 2rem;
+        }
+        
+        .order-number-box {
+            background: var(--bg-light, #f8f9fa);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .order-number-label {
+            font-size: 0.875rem;
+            color: var(--text-light, #666);
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary, #ff6600);
+            font-family: monospace;
+        }
+        
+        .order-details {
+            text-align: left;
+            margin-top: 2rem;
+        }
+        
+        .detail-section {
+            background: var(--bg-light, #f8f9fa);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-section h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .detail-section h4 i {
+            color: var(--primary, #ff6600);
+        }
+        
+        .detail-content {
+            font-size: 0.875rem;
+            color: var(--text-light, #666);
+            line-height: 1.6;
+        }
+        
+        .detail-content strong {
+            color: var(--text, #333);
+        }
+        
+        .order-items-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        
+        .order-item-details {
+            flex: 1;
+        }
+        
+        .order-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .order-item-meta {
+            font-size: 0.875rem;
+            color: var(--text-light, #666);
+        }
+        
+        .order-item-price {
+            font-weight: 700;
+            color: var(--primary, #ff6600);
+        }
+        
+        .order-totals {
+            background: var(--secondary, #1a1a2e);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .total-row.grand-total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 0.75rem;
+        }
+        
+        .success-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .success-actions .btn {
+            padding: 1rem 2rem;
+        }
+        
+        .track-order-btn {
+            background: var(--primary, #ff6600);
+            color: white;
+        }
+        
+        .print-receipt-btn {
+            background: white;
+            color: var(--text, #333);
+            border: 1px solid var(--border, #e0e0e0);
+        }
+        
+        .continue-shopping-btn {
+            background: var(--bg-light, #f8f9fa);
+            color: var(--text, #333);
+        }
+        
+        .delivery-estimate {
+            background: linear-gradient(135deg, #28a74520, #20c99720);
+            border: 1px solid #28a74540;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+        }
+        
+        .delivery-estimate i {
+            font-size: 2rem;
+            color: #28a745;
+        }
+        
+        .delivery-estimate-content {
+            flex: 1;
+        }
+        
+        .delivery-estimate-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .delivery-estimate-date {
+            color: var(--text-light, #666);
+            font-size: 0.875rem;
+        }
+        
+        .email-confirmation {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: #1565c0;
+        }
+        
+        .email-confirmation i {
+            font-size: 1.25rem;
+        }
+        
+        @media (max-width: 767px) {
+            .success-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .success-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .success-icon i {
+                font-size: 2.5rem;
+            }
+            
+            .success-title {
+                font-size: 1.5rem;
+            }
+            
+            .order-number {
+                font-size: 1.25rem;
+            }
+            
+            .success-actions {
+                flex-direction: column;
+            }
+            
+            .success-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        @media print {
+            .checkout-header,
+            .success-actions,
+            .checkout-footer {
+                display: none !important;
+            }
+            
+            .success-page {
+                background: white;
+            }
+            
+            .success-card {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="checkout-header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">1688</span>
+                <span class="logo-text">Electronic Mart</span>
+            </a>
+            <div class="secure-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>Order Confirmed</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="success-page">
+        <div class="container success-container">
+            <div class="success-card">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                
+                <h1 class="success-title">Order Confirmed!</h1>
+                <p class="success-message">Thank you for your purchase. Your order has been received and is being processed.</p>
+                
+                <div class="order-number-box">
+                    <div class="order-number-label">Order Number</div>
+                    <div class="order-number" id="orderNumber">-</div>
+                </div>
+                
+                <div class="delivery-estimate">
+                    <i class="fas fa-truck"></i>
+                    <div class="delivery-estimate-content">
+                        <div class="delivery-estimate-title">Estimated Delivery</div>
+                        <div class="delivery-estimate-date" id="deliveryDate">-</div>
+                    </div>
+                </div>
+                
+                <div class="email-confirmation">
+                    <i class="fas fa-envelope"></i>
+                    <span>A confirmation email has been sent to <strong id="customerEmail">your email</strong></span>
+                </div>
+                
+                <div class="order-details" id="orderDetails">
+                    <!-- Order details loaded dynamically -->
+                </div>
+                
+                <div class="success-actions">
+                    <a href="track-order.html" class="btn track-order-btn">
+                        <i class="fas fa-map-marker-alt"></i> Track Order
+                    </a>
+                    <button class="btn print-receipt-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Receipt
+                    </button>
+                    <a href="index.html" class="btn continue-shopping-btn">
+                        <i class="fas fa-shopping-bag"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="checkout-footer">
+        <div class="container">
+            <div class="trust-badges">
+                <div class="badge"><i class="fas fa-lock"></i> SSL Secure</div>
+                <div class="badge"><i class="fab fa-cc-visa"></i> Visa</div>
+                <div class="badge"><i class="fab fa-cc-mastercard"></i> Mastercard</div>
+                <div class="badge"><i class="fab fa-cc-paypal"></i> PayPal</div>
+            </div>
+            <p class="copyright">&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load order details from URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderNumber = urlParams.get('order');
+            
+            if (orderNumber) {
+                document.getElementById('orderNumber').textContent = orderNumber;
+                loadOrderDetails(orderNumber);
+            }
+            
+            // Calculate delivery date (5-7 business days from now)
+            const deliveryDate = new Date();
+            deliveryDate.setDate(deliveryDate.getDate() + 7);
+            document.getElementById('deliveryDate').textContent = deliveryDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Get customer email from order
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.orderNumber === orderNumber);
+            if (order && order.shipping && order.shipping.email) {
+                document.getElementById('customerEmail').textContent = order.shipping.email;
+            }
+        });
+        
+        function loadOrderDetails(orderNumber) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.orderNumber === orderNumber);
+            
+            if (!order) return;
+            
+            const container = document.getElementById('orderDetails');
+            
+            container.innerHTML = `
+                <div class="detail-section">
+                    <h4><i class="fas fa-box"></i> Order Items</h4>
+                    <div class="order-items-list">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.image || 'https://via.placeholder.com/60'}" alt="${item.name}">
+                                <div class="order-item-details">
+                                    <div class="order-item-name">${item.name}</div>
+                                    <div class="order-item-meta">Qty: ${item.quantity} × ¥${item.price.toFixed(0)}</div>
+                                </div>
+                                <div class="order-item-price">¥${(item.price * item.quantity).toFixed(0)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="order-totals">
+                        <div class="total-row">
+                            <span>Subtotal</span>
+                            <span>${order.totals.subtotal}</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Shipping</span>
+                            <span>${order.totals.shipping}</span>
+                        </div>
+                        ${order.totals.discount ? `
+                            <div class="total-row">
+                                <span>Discount</span>
+                                <span>${order.totals.discount}</span>
+                            </div>
+                        ` : ''}
+                        <div class="total-row">
+                            <span>Tax</span>
+                            <span>${order.totals.tax}</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span>Total</span>
+                            <span>${order.totals.total}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4><i class="fas fa-truck"></i> Shipping Address</h4>
+                    <div class="detail-content">
+                        <strong>${order.shipping.firstName} ${order.shipping.lastName}</strong><br>
+                        ${order.shipping.address}${order.shipping.apartment ? ', ' + order.shipping.apartment : ''}<br>
+                        ${order.shipping.city}, ${order.shipping.state} ${order.shipping.zip}<br>
+                        ${getCountryName(order.shipping.country)}<br><br>
+                        <strong>Email:</strong> ${order.shipping.email}<br>
+                        <strong>Phone:</strong> ${order.shipping.phone}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4><i class="fas fa-credit-card"></i> Payment Method</h4>
+                    <div class="detail-content">
+                        ${getPaymentMethodDisplay(order.payment)}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getCountryName(code) {
+            const countries = {
+                'US': 'United States',
+                'CA': 'Canada',
+                'UK': 'United Kingdom',
+                'AU': 'Australia',
+                'DE': 'Germany',
+                'FR': 'France'
+            };
+            return countries[code] || code;
+        }
+        
+        function getPaymentMethodDisplay(payment) {
+            const methods = {
+                'card': 'Credit/Debit Card',
+                'paypal': 'PayPal',
+                'stripe': 'Stripe'
+            };
+            
+            let html = `<strong>${methods[payment.method] || payment.method}</strong><br>`;
+            
+            if (payment.method === 'card') {
+                html += `Card ending in ${payment.cardNumber.slice(-4)}<br>`;
+                html += `Cardholder: ${payment.cardName}`;
+            }
+            
+            return html;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages
+Disallow: /admin.html
+Disallow: /order-success.html
+Disallow: /checkout.html
+Disallow: /cart.html
+
+# Sitemap location
+Sitemap: https://1688mart.com/sitemap.xml
+
+# Crawl rate
+Crawl-delay: 1

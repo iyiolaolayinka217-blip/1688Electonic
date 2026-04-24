@@ -3,10 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1688 Electronic Mart - Wholesale Electronics Marketplace</title>
+    <title>1688 Electronic Mart - Wholesale Electronics Marketplace | Bulk Orders & Factory Prices</title>
+    <meta name="description" content="Shop wholesale electronics at 1688 Electronic Mart. Mobile phones, laptops, components & accessories at factory prices. Bulk orders, fast shipping, secure checkout.">
+    <meta name="keywords" content="wholesale electronics, bulk electronics, iPhone wholesale, laptop wholesale, electronic components, 1688 mart">
+    <meta name="author" content="1688 Electronic Mart">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://1688mart.com/">
+    <meta property="og:title" content="1688 Electronic Mart - Wholesale Electronics Marketplace">
+    <meta property="og:description" content="Shop wholesale electronics at factory prices. Bulk orders, fast shipping, secure checkout.">
+    <meta property="og:image" content="https://1688mart.com/hero-bg.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://1688mart.com/">
+    <meta property="twitter:title" content="1688 Electronic Mart - Wholesale Electronics Marketplace">
+    <meta property="twitter:description" content="Shop wholesale electronics at factory prices. Bulk orders, fast shipping, secure checkout.">
+    <meta property="twitter:image" content="https://1688mart.com/hero-bg.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://1688mart.com/">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "1688 Electronic Mart",
+        "url": "https://1688mart.com",
+        "logo": "https://1688mart.com/logo.png",
+        "description": "Your trusted wholesale electronics marketplace. Quality products at factory prices.",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "1688 Electronics Plaza",
+            "addressLocality": "Shenzhen",
+            "addressCountry": "CN"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+86-755-1688-8888",
+            "contactType": "customer service"
+        },
+        "sameAs": [
+            "https://facebook.com/1688mart",
+            "https://twitter.com/1688mart",
+            "https://instagram.com/1688mart"
+        ]
+    }
+    </script>
+    
+    <!-- Structured Data - WebSite -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "1688 Electronic Mart",
+        "url": "https://1688mart.com",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://1688mart.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
+    <!-- Structured Data - Store -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "1688 Electronic Mart",
+        "description": "Wholesale electronics marketplace offering factory prices on mobile phones, laptops, components and accessories.",
+        "url": "https://1688mart.com",
+        "telephone": "+86-755-1688-8888",
+        "openingHours": "Mo-Su 00:00-23:59",
+        "paymentAccepted": "Credit Card, PayPal, Alipay",
+        "priceRange": "¥"
+    }
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -21,7 +106,7 @@
                     </div>
                 </div>
                 <div class="header-top-right">
-                    <a href="#" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
+                    <a href="help-center.html" class="top-link"><i class="fas fa-headset"></i> Help Center</a>
                     <a href="#" class="top-link"><i class="fas fa-globe"></i> English</a>
                 </div>
             </div>
@@ -286,19 +371,19 @@
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Careers</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Customer Service</h4>
                     <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Track Order</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="track-order.html">Track Order</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="shipping.html">Shipping Info</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -334,7 +419,7 @@
         <div class="cart-footer">
             <div class="cart-total">
                 <span>Total:</span>
-                <span id="cartTotal">$0.00</span>
+                <span id="cartTotal">¥0</span>
             </div>
             <button class="btn btn-primary btn-block" onclick="checkout()">Checkout</button>
         </div>
