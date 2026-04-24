@@ -503,6 +503,104 @@
         </div>
     </div>
 
+    <!-- Welcome Modal -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="welcome-overlay" onclick="closeWelcomeModal()"></div>
+        <div class="welcome-content">
+            <button class="welcome-close" onclick="closeWelcomeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="welcome-header">
+                <div class="welcome-logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </div>
+                <h1>Welcome to 1688 Electronic Mart</h1>
+                <p>Your Gateway to Wholesale Electronics</p>
+            </div>
+            
+            <div class="welcome-body">
+                <div class="welcome-hero">
+                    <div class="welcome-illustration">
+                        <div class="globe-animation">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div class="shipping-lines">
+                            <div class="shipping-line line-1"></div>
+                            <div class="shipping-line line-2"></div>
+                            <div class="shipping-line line-3"></div>
+                        </div>
+                    </div>
+                    <h2>Lightning-Fast Worldwide Shipping</h2>
+                    <p>We deliver to 200+ countries with express delivery options</p>
+                </div>
+                
+                <div class="welcome-benefits">
+                    <div class="benefit-item">
+                        <div class="benefit-icon benefit-icon-1">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <h3>Express Delivery</h3>
+                        <p>Get your orders in as fast as 24-48 hours with our premium shipping options</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon benefit-icon-2">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h3>Factory Prices</h3>
+                        <p>Save up to 70% on bulk orders with direct-from-manufacturer pricing</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon benefit-icon-3">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Quality Guarantee</h3>
+                        <p>100% authentic products with comprehensive warranty coverage</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon benefit-icon-4">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7 Support</h3>
+                        <p>Round-the-clock customer service in multiple languages</p>
+                    </div>
+                </div>
+                
+                <div class="welcome-shipping-info">
+                    <div class="shipping-stat">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Countries Served</div>
+                    </div>
+                    <div class="shipping-stat">
+                        <div class="stat-number">24-48h</div>
+                        <div class="stat-label">Express Delivery</div>
+                    </div>
+                    <div class="shipping-stat">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">On-Time Delivery</div>
+                    </div>
+                    <div class="shipping-stat">
+                        <div class="stat-number">5M+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="welcome-footer">
+                <button class="btn btn-primary btn-large" onclick="closeWelcomeModal()">
+                    <i class="fas fa-shopping-bag"></i> Start Shopping
+                </button>
+                <button class="btn btn-secondary btn-large" onclick="window.location.href='auth.html'">
+                    <i class="fas fa-user"></i> Sign Up Now
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>

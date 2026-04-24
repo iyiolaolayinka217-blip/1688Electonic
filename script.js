@@ -42,13 +42,17 @@ const modalBody = document.getElementById('modalBody');
 const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toastMessage');
 
-// Initialize
-window.addEventListener('DOMContentLoaded', () => {
-    loadProducts(currentTab);
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadProducts('all');
     loadFlashSaleProducts();
     startCountdown();
-    setupEventListeners();
-    updateProfileButtonVisibility();
+    updateCartCount();
+    updateWishlistCount();
+    updateAuthLinks();
+    
+    // Check if welcome modal should be shown
+    checkWelcomeModal();
 });
 
 // Update profile button visibility based on auth state
@@ -1304,6 +1308,28 @@ const supportManager = {
         return true;
     }
 };
+
+// Welcome Modal for First-Time Visitors
+function checkWelcomeModal() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const hasSeenWelcomeModal = localStorage.getItem('hasSeenWelcomeModal');
+    
+    // Only show if user is not logged in and hasn't seen the modal before
+    if (!currentUser && !hasSeenWelcomeModal) {
+        // Show modal after a short delay
+        setTimeout(() => {
+            document.getElementById('welcomeModal').classList.add('active');
+        }, 1000);
+    }
+}
+
+function closeWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    modal.classList.remove('active');
+    
+    // Store that user has seen the modal
+    localStorage.setItem('hasSeenWelcomeModal', 'true');
+}
 
 // Load Products
 function loadProducts(tab) {
