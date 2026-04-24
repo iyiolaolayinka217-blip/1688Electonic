@@ -48,7 +48,46 @@ window.addEventListener('DOMContentLoaded', () => {
     loadFlashSaleProducts();
     startCountdown();
     setupEventListeners();
+    updateProfileButtonVisibility();
 });
+
+// Update profile button visibility based on auth state
+function updateProfileButtonVisibility() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const profileBtn = document.getElementById('profileBtn');
+    const authLinks = document.getElementById('authLinks');
+    
+    if (profileBtn) {
+        profileBtn.style.display = currentUser ? 'flex' : 'none';
+    }
+    
+    if (authLinks) {
+        if (currentUser) {
+            authLinks.innerHTML = `
+                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
+                <a href="profile.html" class="top-link">Profile</a>
+                <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
+            `;
+        } else {
+            authLinks.innerHTML = `
+                <a href="auth.html" class="top-link">Sign In</a>
+                <a href="auth.html" class="top-link">Register</a>
+            `;
+        }
+    }
+}
+
+// Navigate to profile page
+function goToProfile() {
+    window.location.href = 'profile.html';
+}
+
+// Logout function
+function logout() {
+    localStorage.removeItem('currentUser');
+    updateProfileButtonVisibility();
+    showToast('Logged out successfully');
+}
 
 // Load Products
 function loadProducts(tab) {

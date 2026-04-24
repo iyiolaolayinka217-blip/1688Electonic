@@ -190,6 +190,11 @@ body {
     color: white;
 }
 
+.action-btn.profile-btn:hover {
+    background: var(--secondary);
+    color: white;
+}
+
 .cart-count {
     position: absolute;
     top: -5px;
