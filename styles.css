@@ -1333,6 +1333,8 @@ body {
     
     .header-main .container {
         flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .logo {
@@ -1348,7 +1350,7 @@ body {
         order: 3;
         max-width: 100%;
         width: 100%;
-        margin: 0;
+        margin: 10px 0 0 0;
     }
     
     .mobile-menu-toggle {
