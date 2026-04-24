@@ -284,8 +284,8 @@ function updateUserMenu() {
                     <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="dropdown-menu" id="userDropdown">
-                    <a href="account.html"><i class="fas fa-user"></i> My Account</a>
-                    <a href="orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                    <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                    <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
                     <div class="dropdown-divider"></div>
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
