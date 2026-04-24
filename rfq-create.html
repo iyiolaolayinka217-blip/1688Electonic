@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create RFQ - 1688 Electronic Mart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="b2b.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="main-nav" id="mainNav">
+            <div class="container">
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-category="all">
+                        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item profile-nav-item">
+                        <a href="b2b-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- RFQ Creation Page -->
+    <main class="rfq-creation-page">
+        <div class="container">
+            <div class="rfq-creation-container">
+                <div class="rfq-header">
+                    <a href="b2b-dashboard.html" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <h1>Create Request for Quotation</h1>
+                    <p>Fill in the details below to request quotes from our suppliers.</p>
+                </div>
+
+                <form class="rfq-form" id="rfqForm" onsubmit="submitRFQ(event)">
+                    <!-- RFQ Details -->
+                    <div class="rfq-section">
+                        <h2><i class="fas fa-file-invoice"></i> RFQ Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="rfqTitle">RFQ Title *</label>
+                            <input type="text" id="rfqTitle" placeholder="e.g., Bulk order of smartphones" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rfqDescription">Description *</label>
+                            <textarea id="rfqDescription" rows="4" placeholder="Describe your requirements, specifications, and any special requests..." required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rfqBudget">Budget (Optional)</label>
+                                <input type="number" id="rfqBudget" placeholder="Total budget amount">
+                            </div>
+                            <div class="form-group">
+                                <label for="rfqDeadline">Deadline *</label>
+                                <input type="date" id="rfqDeadline" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rfqCategory">Category *</label>
+                            <select id="rfqCategory" required>
+                                <option value="">Select category</option>
+                                <option value="phones">Mobile Phones</option>
+                                <option value="laptops">Laptops</option>
+                                <option value="accessories">Accessories</option>
+                                <option value="components">Components</option>
+                                <option value="gaming">Gaming</option>
+                                <option value="home">Home Electronics</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products -->
+                    <div class="rfq-section">
+                        <h2><i class="fas fa-boxes"></i> Products</h2>
+                        
+                        <div id="rfqProducts">
+                            <div class="rfq-product-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Product *</label>
+                                        <select class="product-select" required>
+                                            <option value="">Select product</option>
+                                            <option value="1">iPhone 15 Pro Max 256GB</option>
+                                            <option value="2">Samsung Galaxy S24 Ultra</option>
+                                            <option value="3">MacBook Pro M3 14-inch</option>
+                                            <option value="4">Dell XPS 15 OLED</option>
+                                            <option value="5">Sony WH-1000XM5 Headphones</option>
+                                            <option value="6">AirPods Pro 2nd Gen</option>
+                                            <option value="7">RTX 4090 Graphics Card</option>
+                                            <option value="8">AMD Ryzen 9 7950X</option>
+                                            <option value="9">PlayStation 5 Console</option>
+                                            <option value="10">Xbox Series X</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Quantity *</label>
+                                        <input type="number" class="product-quantity" placeholder="Quantity" min="10" required>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-danger remove-product-btn" onclick="removeProduct(this)">
+                                    <i class="fas fa-times"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-secondary" onclick="addProduct()">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+
+                    <!-- Shipping Information -->
+                    <div class="rfq-section">
+                        <h2><i class="fas fa-shipping-fast"></i> Shipping Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="shippingAddress">Shipping Address *</label>
+                            <textarea id="shippingAddress" rows="3" placeholder="Enter your shipping address..." required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="shippingCity">City *</label>
+                                <input type="text" id="shippingCity" placeholder="City" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shippingCountry">Country *</label>
+                                <input type="text" id="shippingCountry" placeholder="Country" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="shippingMethod">Preferred Shipping Method</label>
+                            <select id="shippingMethod">
+                                <option value="standard">Standard Shipping</option>
+                                <option value="express">Express Shipping</option>
+                                <option value="airfreight">Air Freight</option>
+                                <option value="seafreight">Sea Freight</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Additional Requirements -->
+                    <div class="rfq-section">
+                        <h2><i class="fas fa-cogs"></i> Additional Requirements</h2>
+                        
+                        <div class="form-group">
+                            <label for="paymentTerms">Payment Terms</label>
+                            <select id="paymentTerms">
+                                <option value="net30">Net 30 days</option>
+                                <option value="net60">Net 60 days</option>
+                                <option value="lc">Letter of Credit</option>
+                                <option value="tt">Telegraphic Transfer (TT)</option>
+                                <option value="other">Other (specify in description)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="certifications">Required Certifications</label>
+                            <select id="certifications" multiple>
+                                <option value="iso9001">ISO 9001</option>
+                                <option value="iso14001">ISO 14001</option>
+                                <option value="ce">CE Marking</option>
+                                <option value="fcc">FCC Certification</option>
+                                <option value="rohs">RoHS Compliance</option>
+                            </select>
+                            <small>Hold Ctrl/Cmd to select multiple</small>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="sampleRequired">
+                            <label for="sampleRequired">Request product samples before bulk order</label>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="customPackaging">
+                            <label for="customPackaging">Custom packaging required</label>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="rfq-submit-section">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-paper-plane"></i> Submit RFQ
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-large" onclick="saveDraft()">
+                            <i class="fas fa-save"></i> Save Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p>Your trusted wholesale electronics marketplace. Quality products at factory prices.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="b2b.js"></script>
+    <script src="rfq.js"></script>
+</body>
+</html>

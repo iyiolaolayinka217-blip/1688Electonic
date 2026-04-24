@@ -850,7 +850,160 @@ body {
     outline: none;
 }
 
-/* Footer */
+/* B2B Section on Main Site */
+.b2b-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.b2b-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.b2b-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 12px;
+}
+
+.b2b-header p {
+    font-size: 18px;
+    color: var(--text-muted);
+}
+
+.b2b-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.b2b-feature-card {
+    background: white;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.b2b-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.b2b-feature-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.b2b-feature-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.b2b-feature-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 12px;
+}
+
+.b2b-feature-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.b2b-cta {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.b2b-cta .btn {
+    min-width: 200px;
+}
+
+/* B2B Navigation Item Highlight */
+.b2b-nav-item a {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.b2b-nav-item a:hover {
+    transform: scale(1.05);
+}
+
+/* B2B Section Mobile Responsive */
+@media (max-width: 768px) {
+    .b2b-section {
+        padding: 48px 0;
+    }
+    
+    .b2b-header h2 {
+        font-size: 28px;
+    }
+    
+    .b2b-header p {
+        font-size: 16px;
+    }
+    
+    .b2b-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+    }
+    
+    .b2b-feature-card {
+        padding: 24px;
+    }
+    
+    .b2b-feature-icon {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .b2b-feature-icon i {
+        font-size: 24px;
+    }
+    
+    .b2b-feature-card h3 {
+        font-size: 18px;
+    }
+    
+    .b2b-cta {
+        flex-direction: column;
+    }
+    
+    .b2b-cta .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .b2b-header h2 {
+        font-size: 24px;
+    }
+    
+    .b2b-features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .b2b-nav-item a {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
 .footer {
     background: var(--accent);
     color: white;

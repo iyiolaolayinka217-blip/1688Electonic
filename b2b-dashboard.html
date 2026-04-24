@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Dashboard - 1688 Electronic Mart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="b2b.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-main">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">1688</span>
+                    <span class="logo-text">Electronic Mart</span>
+                </a>
+                
+                <div class="header-actions">
+                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button class="action-btn mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="main-nav" id="mainNav">
+            <div class="container">
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-category="all">
+                        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item profile-nav-item">
+                        <a href="#" onclick="goToProfile()"><i class="fas fa-user"></i> My Profile</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- B2B Dashboard Page -->
+    <main class="b2b-dashboard-page">
+        <div class="container">
+            <div class="b2b-dashboard-container">
+                <!-- Sidebar -->
+                <aside class="b2b-sidebar">
+                    <div class="b2b-user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4 id="dashboardCompanyName">Company Name</h4>
+                            <p id="dashboardBusinessType">Business Type</p>
+                            <span class="b2b-status-badge verified" id="verificationStatus">Verified</span>
+                        </div>
+                    </div>
+                    
+                    <div class="b2b-sidebar-divider"></div>
+                    
+                    <nav class="b2b-sidebar-menu">
+                        <a href="#" class="nav-item active" onclick="showDashboardSection('overview')">
+                            <i class="fas fa-tachometer-alt"></i> Overview
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('orders')">
+                            <i class="fas fa-shopping-cart"></i> Orders
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('invoices')">
+                            <i class="fas fa-file-invoice-dollar"></i> Invoices
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('suppliers')">
+                            <i class="fas fa-truck"></i> Suppliers
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('credit')">
+                            <i class="fas fa-credit-card"></i> Credit
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('support')">
+                            <i class="fas fa-headset"></i> Support
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('analytics')">
+                            <i class="fas fa-chart-bar"></i> Analytics
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('profile')">
+                            <i class="fas fa-user-cog"></i> Profile
+                        </a>
+                        <a href="#" class="nav-item" onclick="showDashboardSection('rfq')">
+                            <i class="fas fa-file-invoice"></i> RFQ
+                        </a>
+                    </nav>
+                    
+                    <div class="b2b-sidebar-divider"></div>
+                    
+                    <div class="b2b-sidebar-footer">
+                        <a href="index.html" class="btn btn-secondary btn-block">
+                            <i class="fas fa-store"></i> Visit Store
+                        </a>
+                        <a href="#" class="btn btn-outline btn-block" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="b2b-main-content">
+                    <!-- Overview Section -->
+                    <div class="dashboard-section" id="overviewSection">
+                        <div class="b2b-section-header">
+                            <h1>Dashboard Overview</h1>
+                            <p>Welcome back! Here's your business summary.</p>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="b2b-stats-grid">
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <div class="stat-value" id="totalOrders">0</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="stat-value" id="totalSpent">¥0</div>
+                                <div class="stat-label">Total Spent</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="stat-value" id="pendingOrders">0</div>
+                                <div class="stat-label">Pending Orders</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="stat-value" id="avgDiscount">0%</div>
+                                <div class="stat-label">Avg. Discount</div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Recent Orders</h3>
+                                <a href="#" onclick="showDashboardSection('orders')">View All</a>
+                            </div>
+                            <div class="b2b-table-container">
+                                <table class="b2b-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersTableBody">
+                                        <!-- Recent orders loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Quick Actions</h3>
+                            </div>
+                            <div class="quick-actions-grid">
+                                <a href="index.html" class="quick-action-card">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>New Order</span>
+                                </a>
+                                <a href="#" onclick="showDashboardSection('rfq')" class="quick-action-card">
+                                    <i class="fas fa-file-invoice"></i>
+                                    <span>Request Quote</span>
+                                </a>
+                                <a href="#" onclick="showDashboardSection('analytics')" class="quick-action-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>View Reports</span>
+                                </a>
+                                <a href="#" onclick="showDashboardSection('profile')" class="quick-action-card">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Section -->
+                    <div class="dashboard-section" id="ordersSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Order Management</h1>
+                            <div class="header-actions">
+                                <select id="orderFilter" onchange="filterB2BOrders()">
+                                    <option value="all">All Orders</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Items</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTableBody">
+                                    <!-- Orders loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Invoices Section -->
+                    <div class="dashboard-section" id="invoicesSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Invoice Management</h1>
+                            <div class="header-actions">
+                                <select id="invoiceFilter" onchange="filterInvoices()">
+                                    <option value="all">All Invoices</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="overdue">Overdue</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Due Date</th>
+                                        <th>Payment Terms</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoicesTableBody">
+                                    <!-- Invoices loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Suppliers Section -->
+                    <div class="dashboard-section" id="suppliersSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Supplier Directory</h1>
+                            <div class="header-actions">
+                                <select id="supplierCategoryFilter" onchange="filterSuppliers()">
+                                    <option value="all">All Categories</option>
+                                    <option value="phones">Mobile Phones</option>
+                                    <option value="laptops">Laptops</option>
+                                    <option value="accessories">Accessories</option>
+                                    <option value="components">Components</option>
+                                    <option value="gaming">Gaming</option>
+                                    <option value="home">Home Electronics</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th>Rating</th>
+                                        <th>On-Time Delivery</th>
+                                        <th>Quality Score</th>
+                                        <th>Response Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliersTableBody">
+                                    <!-- Suppliers loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Credit Section -->
+                    <div class="dashboard-section" id="creditSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Credit Management</h1>
+                        </div>
+
+                        <div class="b2b-stats-grid">
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Credit Score</div>
+                                    <div class="stat-value" id="creditScoreValue">0</div>
+                                    <div class="stat-trend" id="creditTierValue">-</div>
+                                </div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Credit Limit</div>
+                                    <div class="stat-value" id="creditLimitValue">¥0</div>
+                                    <div class="stat-trend">Available</div>
+                                </div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Available Credit</div>
+                                    <div class="stat-value" id="availableCreditValue">¥0</div>
+                                    <div class="stat-trend" id="creditUtilizationValue">0% used</div>
+                                </div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Used Credit</div>
+                                    <div class="stat-value" id="usedCreditValue">¥0</div>
+                                    <div class="stat-trend">Pending invoices</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="b2b-section-header" style="margin-top: 32px;">
+                            <h3>Credit History</h3>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="creditHistoryTableBody">
+                                    <!-- Credit history loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Support Section -->
+                    <div class="dashboard-section" id="supportSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Dedicated Support</h1>
+                            <button class="btn btn-primary" onclick="showSupportTicketModal()">
+                                <i class="fas fa-plus"></i> New Ticket
+                            </button>
+                        </div>
+
+                        <div class="b2b-stats-grid">
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Support Tier</div>
+                                    <div class="stat-value" id="supportTierValue">Basic</div>
+                                    <div class="stat-trend" id="supportResponseTime">24h response</div>
+                                </div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Dedicated Agent</div>
+                                    <div class="stat-value" id="dedicatedAgentValue">-</div>
+                                    <div class="stat-trend" id="agentAvailability">-</div>
+                                </div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-label">Open Tickets</div>
+                                    <div class="stat-value" id="openTicketsValue">0</div>
+                                    <div class="stat-trend">Active</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="b2b-section-header" style="margin-top: 32px;">
+                            <h3>Support Tickets</h3>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket #</th>
+                                        <th>Issue</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="supportTicketsTableBody">
+                                    <!-- Tickets loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Section -->
+                    <div class="dashboard-section" id="analyticsSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Analytics & Reports</h1>
+                            <div class="header-actions">
+                                <select id="analyticsPeriod" onchange="updateB2BAnalytics()">
+                                    <option value="month">This Month</option>
+                                    <option value="quarter">This Quarter</option>
+                                    <option value="year">This Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="b2b-stats-grid">
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-value" id="periodRevenue">¥0</div>
+                                <div class="stat-label">Revenue</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <div class="stat-value" id="periodOrders">0</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <div class="stat-value" id="periodSavings">¥0</div>
+                                <div class="stat-label">Total Savings</div>
+                            </div>
+                            <div class="b2b-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-redo"></i>
+                                </div>
+                                <div class="stat-value" id="repeatRate">0%</div>
+                                <div class="stat-label">Repeat Rate</div>
+                            </div>
+                        </div>
+
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Spending by Category</h3>
+                            </div>
+                            <div class="category-spending" id="categorySpending">
+                                <!-- Category spending loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Export Reports</h3>
+                            </div>
+                            <div class="export-buttons">
+                                <button class="btn btn-secondary" onclick="exportB2BReport('orders')">
+                                    <i class="fas fa-file-excel"></i> Export Orders
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportB2BReport('analytics')">
+                                    <i class="fas fa-file-pdf"></i> Export Analytics
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Section -->
+                    <div class="dashboard-section" id="profileSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Business Profile</h1>
+                            <p>Manage your business information</p>
+                        </div>
+
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Company Information</h3>
+                                <button class="btn btn-sm btn-primary" onclick="editBusinessProfile()">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                            </div>
+                            <div class="profile-details" id="businessProfileDetails">
+                                <!-- Business profile loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Shipping Addresses</h3>
+                                <button class="btn btn-sm btn-primary" onclick="addShippingAddress()">
+                                    <i class="fas fa-plus"></i> Add Address
+                                </button>
+                            </div>
+                            <div class="addresses-list" id="shippingAddresses">
+                                <!-- Addresses loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="b2b-card">
+                            <div class="b2b-card-header">
+                                <h3>Security</h3>
+                            </div>
+                            <div class="security-actions">
+                                <button class="btn btn-secondary" onclick="changePassword()">
+                                    <i class="fas fa-key"></i> Change Password
+                                </button>
+                                <button class="btn btn-outline" onclick="updateDocuments()">
+                                    <i class="fas fa-file-upload"></i> Update Documents
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RFQ Section -->
+                    <div class="dashboard-section" id="rfqSection" style="display: none;">
+                        <div class="b2b-section-header">
+                            <h1>Request for Quotation</h1>
+                            <button class="btn btn-primary" onclick="createNewRFQ()">
+                                <i class="fas fa-plus"></i> New RFQ
+                            </button>
+                        </div>
+
+                        <div class="b2b-table-container">
+                            <table class="b2b-table">
+                                <thead>
+                                    <tr>
+                                        <th>RFQ ID</th>
+                                        <th>Date</th>
+                                        <th>Items</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rfqTableBody">
+                                    <!-- RFQs loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <span class="logo-icon">1688</span>
+                        <span class="logo-text">Electronic Mart</span>
+                    </div>
+                    <p>Your trusted wholesale electronics marketplace. Quality products at factory prices.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 1688 Electronic Mart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="b2b.js"></script>
+    <script src="b2b-dashboard.js"></script>
+</body>
+</html>

@@ -13,6 +13,8 @@ const productData = {
     reviews: 2847,
     stock: 150,
     icon: 'fa-mobile-alt',
+    moq: 10,
+    tieredPricing: { '10-50': 0.95, '51-100': 0.90, '101-500': 0.85, '500+': 0.80 },
     description: 'Experience the future of mobile technology with the iPhone 15 Pro Max. Featuring the revolutionary A17 Pro chip, a stunning Super Retina XDR display, and a pro-grade camera system that captures incredible detail. The titanium design is both lightweight and durable, while the all-day battery keeps you connected longer.',
     shortSpecs: [
         '6.7" Super Retina XDR Display',
@@ -513,10 +515,125 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// B2B Bulk Order Functions
+function setBulkQuantity(quantity) {
+    const input = document.getElementById('bulkQuantity');
+    input.value = quantity;
+    calculateBulkPrice();
+}
+
+function calculateBulkPrice() {
+    const quantity = parseInt(document.getElementById('bulkQuantity').value) || 10;
+    const retailPrice = productData.price;
+    const wholesalePrice = calculateWholesalePrice(productData.id, quantity);
+    const discount = getWholesaleDiscount(productData.id, quantity);
+    const total = wholesalePrice * quantity;
+
+    document.getElementById('retailPrice').textContent = `¥${retailPrice.toLocaleString()}`;
+    document.getElementById('wholesalePrice').textContent = `¥${wholesalePrice.toLocaleString()}`;
+    document.getElementById('discountTag').textContent = `${discount}% off`;
+    document.getElementById('bulkTotal').textContent = `¥${total.toLocaleString()}`;
+}
+
+function calculateWholesalePrice(productId, quantity) {
+    const product = productData;
+    if (!product || !product.tieredPricing) return product.price;
+    
+    let discount = 1;
+    
+    for (const [range, discountRate] of Object.entries(product.tieredPricing)) {
+        const [min, max] = range.replace('+', '').split('-').map(Number);
+        if (max) {
+            if (quantity >= min && quantity <= max) {
+                discount = discountRate;
+                break;
+            }
+        } else {
+            if (quantity >= min) {
+                discount = discountRate;
+                break;
+            }
+        }
+    }
+    
+    return Math.round(product.price * discount);
+}
+
+function getWholesaleDiscount(productId, quantity) {
+    const product = productData;
+    if (!product || !product.tieredPricing) return 0;
+    
+    let discount = 1;
+    
+    for (const [range, discountRate] of Object.entries(product.tieredPricing)) {
+        const [min, max] = range.replace('+', '').split('-').map(Number);
+        if (max) {
+            if (quantity >= min && quantity <= max) {
+                discount = discountRate;
+                break;
+            }
+        } else {
+            if (quantity >= min) {
+                discount = discountRate;
+                break;
+            }
+        }
+    }
+    
+    return Math.round((1 - discount) * 100);
+}
+
+function isB2BVerifiedUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return false;
+    
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const user = b2bUsers.find(u => u.id === currentUser.id);
+    return user && user.verificationStatus === 'verified';
+}
+
+function showBulkOrderSection() {
+    const bulkSection = document.getElementById('bulkOrderSection');
+    const moqBadge = document.getElementById('moqBadge');
+    const tieredDisplay = document.getElementById('tieredPricingDisplay');
+    
+    if (isB2BVerifiedUser()) {
+        bulkSection.style.display = 'block';
+        moqBadge.textContent = `MOQ: ${productData.moq} units`;
+        
+        // Set minimum quantity
+        document.getElementById('bulkQuantity').min = productData.moq;
+        document.getElementById('bulkQuantity').value = productData.moq;
+        
+        // Display tiered pricing
+        let tieredHtml = '<h4>Volume Discounts:</h4><ul>';
+        for (const [range, discountRate] of Object.entries(productData.tieredPricing)) {
+            const discountPercent = Math.round((1 - discountRate) * 100);
+            tieredHtml += `<li>${range} units: ${discountPercent}% off</li>`;
+        }
+        tieredHtml += '</ul>';
+        tieredDisplay.innerHTML = tieredHtml;
+        
+        // Calculate initial price
+        calculateBulkPrice();
+    } else {
+        bulkSection.style.display = 'none';
+    }
+}
+
 // Initialize wishlist status on load
 window.addEventListener('load', () => {
     checkWishlistStatus();
     if (typeof updateWishlistCount === 'function') {
         updateWishlistCount();
     }
+    showBulkOrderSection();
 });
+
+// Exports
+window.setBulkQuantity = setBulkQuantity;
+window.calculateBulkPrice = calculateBulkPrice;
+window.calculateWholesalePrice = calculateWholesalePrice;
+window.getWholesaleDiscount = getWholesaleDiscount;
+window.isB2BVerifiedUser = isB2BVerifiedUser;
+window.showBulkOrderSection = showBulkOrderSection;

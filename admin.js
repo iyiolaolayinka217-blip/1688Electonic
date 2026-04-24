@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDashboard();
     renderProductsTable();
     renderOrdersTable();
+    renderB2BUsersTable();
+    updatePendingB2BBadge();
+    renderRFQTable();
+    updatePendingRFQBadge();
+    renderPromotionsTable();
+    renderAdminInvoicesTable();
+    updatePendingInvoiceBadge();
+    renderSuppliersTable();
 });
 
 function checkAdminAuth() {
@@ -505,6 +513,913 @@ function showCategoryModal() {
     showToast('Feature coming soon');
 }
 
+// B2B User Management Functions
+function renderB2BUsersTable() {
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const tbody = document.getElementById('b2bUsersTableBody');
+    
+    if (!tbody) return;
+    
+    if (b2bUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No B2B users registered yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = b2bUsers.map(user => `
+        <tr>
+            <td><strong>${user.businessInfo.companyName}</strong></td>
+            <td>${user.businessInfo.businessType}</td>
+            <td>${user.businessInfo.contactPerson}</td>
+            <td>${user.email}</td>
+            <td>${user.businessInfo.annualVolume}</td>
+            <td>
+                <span class="b2b-status-badge ${user.verificationStatus}">
+                    ${user.verificationStatus.charAt(0).toUpperCase() + user.verificationStatus.slice(1)}
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-secondary" onclick="viewB2BDocuments(${user.id})">
+                    <i class="fas fa-file-alt"></i> View
+                </button>
+            </td>
+            <td>
+                ${user.verificationStatus === 'pending' ? `
+                    <button class="btn btn-sm btn-success" onclick="verifyB2BUser(${user.id})">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectB2BUser(${user.id})">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                ` : user.verificationStatus === 'verified' ? `
+                    <button class="btn btn-sm btn-secondary" onclick="viewB2BUser(${user.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                ` : `
+                    <button class="btn btn-sm btn-secondary" onclick="viewB2BUser(${user.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                `}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function verifyB2BUser(userId) {
+    if (confirm('Are you sure you want to verify this B2B user?')) {
+        const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+        const userIndex = b2bUsers.findIndex(user => user.id === userId);
+        
+        if (userIndex !== -1) {
+            b2bUsers[userIndex].verificationStatus = 'verified';
+            b2bUsers[userIndex].verificationDate = new Date().toISOString();
+            localStorage.setItem('b2bUsers', JSON.stringify(b2bUsers));
+            
+            renderB2BUsersTable();
+            updatePendingB2BBadge();
+            showToast('B2B user verified successfully');
+        }
+    }
+}
+
+function rejectB2BUser(userId) {
+    const reason = prompt('Please enter rejection reason:');
+    if (reason) {
+        const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+        const userIndex = b2bUsers.findIndex(user => user.id === userId);
+        
+        if (userIndex !== -1) {
+            b2bUsers[userIndex].verificationStatus = 'rejected';
+            b2bUsers[userIndex].rejectionReason = reason;
+            localStorage.setItem('b2bUsers', JSON.stringify(b2bUsers));
+            
+            renderB2BUsersTable();
+            updatePendingB2BBadge();
+            showToast('B2B user rejected');
+        }
+    }
+}
+
+function viewB2BDocuments(userId) {
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const user = b2bUsers.find(u => u.id === userId);
+    
+    if (user) {
+        const docs = user.documents;
+        alert(`Documents for ${user.businessInfo.companyName}:\n\n` +
+              `Business License: ${docs.businessLicense}\n` +
+              `Tax Document: ${docs.taxDocument}\n` +
+              `Address Proof: ${docs.addressProof}\n` +
+              (docs.additionalDoc ? `Additional: ${docs.additionalDoc}` : ''));
+    }
+}
+
+function viewB2BUser(userId) {
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const user = b2bUsers.find(u => u.id === userId);
+    
+    if (user) {
+        const info = user.businessInfo;
+        alert(`Business Information:\n\n` +
+              `Company: ${info.companyName}\n` +
+              `Type: ${info.businessType}\n` +
+              `Tax ID: ${info.taxId}\n` +
+              `Website: ${info.website || 'N/A'}\n` +
+              `Industry: ${info.industrySector}\n` +
+              `Annual Volume: ${info.annualVolume}\n\n` +
+              `Contact:\n` +
+              `Name: ${info.contactPerson}\n` +
+              `Position: ${info.contactPosition}\n` +
+              `Email: ${info.businessEmail}\n` +
+              `Phone: ${info.businessPhone}\n\n` +
+              `Address:\n` +
+              `${info.businessAddress.street}\n` +
+              `${info.businessAddress.city}, ${info.businessAddress.state} ${info.businessAddress.zip}\n` +
+              `${info.businessAddress.country}`);
+    }
+}
+
+function filterB2BUsers() {
+    const filter = document.getElementById('b2bFilter').value;
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const tbody = document.getElementById('b2bUsersTableBody');
+    
+    let filteredUsers = b2bUsers;
+    
+    if (filter !== 'all') {
+        filteredUsers = b2bUsers.filter(user => user.verificationStatus === filter);
+    }
+    
+    if (filteredUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No B2B users found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filteredUsers.map(user => `
+        <tr>
+            <td><strong>${user.businessInfo.companyName}</strong></td>
+            <td>${user.businessInfo.businessType}</td>
+            <td>${user.businessInfo.contactPerson}</td>
+            <td>${user.email}</td>
+            <td>${user.businessInfo.annualVolume}</td>
+            <td>
+                <span class="b2b-status-badge ${user.verificationStatus}">
+                    ${user.verificationStatus.charAt(0).toUpperCase() + user.verificationStatus.slice(1)}
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-secondary" onclick="viewB2BDocuments(${user.id})">
+                    <i class="fas fa-file-alt"></i> View
+                </button>
+            </td>
+            <td>
+                ${user.verificationStatus === 'pending' ? `
+                    <button class="btn btn-sm btn-success" onclick="verifyB2BUser(${user.id})">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectB2BUser(${user.id})">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                ` : user.verificationStatus === 'verified' ? `
+                    <button class="btn btn-sm btn-secondary" onclick="viewB2BUser(${user.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                ` : `
+                    <button class="btn btn-sm btn-secondary" onclick="viewB2BUser(${user.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                `}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updatePendingB2BBadge() {
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const pendingCount = b2bUsers.filter(user => user.verificationStatus === 'pending').length;
+    
+    const badge = document.getElementById('pendingB2BBadge');
+    if (badge) {
+        badge.textContent = pendingCount;
+        badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
+// RFQ Management Functions
+function renderRFQTable() {
+    const rfqs = JSON.parse(localStorage.getItem('b2bRFQs')) || [];
+    const tbody = document.getElementById('rfqTableBody');
+    
+    if (!tbody) return;
+    
+    if (rfqs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No RFQs submitted yet</td></tr>';
+        return;
+    }
+    
+    // Get company names for each RFQ
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    
+    tbody.innerHTML = rfqs.map(rfq => {
+        const b2bUser = b2bUsers.find(u => u.id === rfq.userId);
+        const companyName = b2bUser ? b2bUser.businessInfo.companyName : 'Unknown';
+        
+        return `
+            <tr>
+                <td>#${rfq.id}</td>
+                <td><strong>${rfq.title}</strong></td>
+                <td>${companyName}</td>
+                <td>${rfq.category}</td>
+                <td>${rfq.products.length}</td>
+                <td>${rfq.totalQuantity}</td>
+                <td>${new Date(rfq.deadline).toLocaleDateString()}</td>
+                <td>
+                    <span class="b2b-status-badge ${rfq.status}">${rfq.status.charAt(0).toUpperCase() + rfq.status.slice(1)}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="viewRFQDetails(${rfq.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    ${rfq.status === 'pending' ? `
+                        <button class="btn btn-sm btn-success" onclick="respondToRFQ(${rfq.id})">
+                            <i class="fas fa-reply"></i> Respond
+                        </button>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function filterRFQs() {
+    const filter = document.getElementById('rfqFilter').value;
+    const rfqs = JSON.parse(localStorage.getItem('b2bRFQs')) || [];
+    const tbody = document.getElementById('rfqTableBody');
+    
+    let filteredRFQs = rfqs;
+    
+    if (filter !== 'all') {
+        filteredRFQs = rfqs.filter(r => r.status === filter);
+    }
+    
+    if (filteredRFQs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No RFQs found</td></tr>';
+        return;
+    }
+    
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    
+    tbody.innerHTML = filteredRFQs.map(rfq => {
+        const b2bUser = b2bUsers.find(u => u.id === rfq.userId);
+        const companyName = b2bUser ? b2bUser.businessInfo.companyName : 'Unknown';
+        
+        return `
+            <tr>
+                <td>#${rfq.id}</td>
+                <td><strong>${rfq.title}</strong></td>
+                <td>${companyName}</td>
+                <td>${rfq.category}</td>
+                <td>${rfq.products.length}</td>
+                <td>${rfq.totalQuantity}</td>
+                <td>${new Date(rfq.deadline).toLocaleDateString()}</td>
+                <td>
+                    <span class="b2b-status-badge ${rfq.status}">${rfq.status.charAt(0).toUpperCase() + rfq.status.slice(1)}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="viewRFQDetails(${rfq.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    ${rfq.status === 'pending' ? `
+                        <button class="btn btn-sm btn-success" onclick="respondToRFQ(${rfq.id})">
+                            <i class="fas fa-reply"></i> Respond
+                        </button>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function updatePendingRFQBadge() {
+    const rfqs = JSON.parse(localStorage.getItem('b2bRFQs')) || [];
+    const pendingCount = rfqs.filter(r => r.status === 'pending').length;
+    
+    const badge = document.getElementById('pendingRFQBadge');
+    if (badge) {
+        badge.textContent = pendingCount;
+        badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function viewRFQDetails(rfqId) {
+    const rfqs = JSON.parse(localStorage.getItem('b2bRFQs')) || [];
+    const rfq = rfqs.find(r => r.id === rfqId);
+    
+    if (!rfq) {
+        showToast('RFQ not found');
+        return;
+    }
+    
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const b2bUser = b2bUsers.find(u => u.id === rfq.userId);
+    const companyName = b2bUser ? b2bUser.businessInfo.companyName : 'Unknown';
+    
+    const details = `
+RFQ Details:
+----------------
+ID: #${rfq.id}
+Title: ${rfq.title}
+Company: ${companyName}
+Category: ${rfq.category}
+Status: ${rfq.status.charAt(0).toUpperCase() + rfq.status.slice(1)}
+Deadline: ${new Date(rfq.deadline).toLocaleDateString()}
+
+Description:
+${rfq.description}
+
+Budget: ${rfq.budget ? '¥' + parseInt(rfq.budget).toLocaleString() : 'Not specified'}
+
+Products:
+${rfq.products.map(p => `- ${p.productName}: ${p.quantity} units`).join('\n')}
+
+Shipping:
+Address: ${rfq.shipping.address}
+City: ${rfq.shipping.city}
+Country: ${rfq.shipping.country}
+Method: ${rfq.shipping.method}
+
+Payment Terms: ${rfq.paymentTerms}
+Sample Required: ${rfq.sampleRequired ? 'Yes' : 'No'}
+Custom Packaging: ${rfq.customPackaging ? 'Yes' : 'No'}
+    `;
+    
+    alert(details);
+}
+
+function respondToRFQ(rfqId) {
+    const quotePrice = prompt('Enter your quote price:');
+    if (quotePrice) {
+        const rfqs = JSON.parse(localStorage.getItem('b2bRFQs')) || [];
+        const rfqIndex = rfqs.findIndex(r => r.id === rfqId);
+        
+        if (rfqIndex !== -1) {
+            // Add quote to RFQ
+            if (!rfqs[rfqIndex].quotes) {
+                rfqs[rfqIndex].quotes = [];
+            }
+            
+            rfqs[rfqIndex].quotes.push({
+                id: Date.now(),
+                price: parseFloat(quotePrice),
+                adminId: JSON.parse(localStorage.getItem('currentUser')).id,
+                createdAt: new Date().toISOString()
+            });
+            
+            rfqs[rfqIndex].status = 'quoted';
+            localStorage.setItem('b2bRFQs', JSON.stringify(rfqs));
+            
+            renderRFQTable();
+            updatePendingRFQBadge();
+            showToast('Quote submitted successfully');
+        }
+    }
+}
+
+// Promotional Campaign Management Functions
+function renderPromotionsTable() {
+    const campaigns = JSON.parse(localStorage.getItem('promotionalCampaigns')) || [];
+    const tbody = document.getElementById('promotionsTableBody');
+    
+    if (!tbody) return;
+    
+    if (campaigns.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No promotional campaigns yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = campaigns.map(campaign => {
+        const productCount = campaign.productIds.includes('all') ? 'All Products' : campaign.productIds.length;
+        const isActive = campaign.status === 'active' && 
+                        new Date(campaign.startDate) <= new Date() && 
+                        new Date(campaign.endDate) >= new Date();
+        
+        return `
+            <tr>
+                <td><strong>${campaign.name}</strong></td>
+                <td>${campaign.discountRate * 100}%</td>
+                <td>${productCount}</td>
+                <td>${new Date(campaign.startDate).toLocaleDateString()}</td>
+                <td>${new Date(campaign.endDate).toLocaleDateString()}</td>
+                <td>
+                    <span class="b2b-status-badge ${isActive ? 'approved' : 'rejected'}">${isActive ? 'Active' : 'Inactive'}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="editPromotion(${campaign.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deletePromotion(${campaign.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function showPromotionModal() {
+    const modal = document.getElementById('promotionModal');
+    modal.style.display = 'block';
+    
+    // Set default dates
+    const today = new Date();
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    
+    document.getElementById('promotionStartDate').value = today.toISOString().split('T')[0];
+    document.getElementById('promotionEndDate').value = nextMonth.toISOString().split('T')[0];
+}
+
+function closePromotionModal() {
+    const modal = document.getElementById('promotionModal');
+    modal.style.display = 'none';
+    document.getElementById('promotionForm').reset();
+}
+
+function submitPromotion(event) {
+    event.preventDefault();
+    
+    const productIds = Array.from(document.getElementById('promotionProducts').selectedOptions)
+        .map(opt => opt.value === 'all' ? 'all' : parseInt(opt.value));
+    
+    const campaignData = {
+        name: document.getElementById('promotionName').value,
+        discountRate: parseFloat(document.getElementById('promotionDiscount').value) / 100,
+        productIds: productIds,
+        startDate: document.getElementById('promotionStartDate').value,
+        endDate: document.getElementById('promotionEndDate').value,
+        description: document.getElementById('promotionDescription').value
+    };
+    
+    createPromotionalCampaign(campaignData);
+    
+    closePromotionModal();
+    renderPromotionsTable();
+    showToast('Promotional campaign created successfully');
+}
+
+function editPromotion(campaignId) {
+    const campaigns = JSON.parse(localStorage.getItem('promotionalCampaigns')) || [];
+    const campaign = campaigns.find(c => c.id === campaignId);
+    
+    if (!campaign) {
+        showToast('Campaign not found');
+        return;
+    }
+    
+    // Fill modal with campaign data
+    document.getElementById('promotionName').value = campaign.name;
+    document.getElementById('promotionDiscount').value = campaign.discountRate * 100;
+    document.getElementById('promotionStartDate').value = campaign.startDate.split('T')[0];
+    document.getElementById('promotionEndDate').value = campaign.endDate.split('T')[0];
+    document.getElementById('promotionDescription').value = campaign.description || '';
+    
+    // Show modal
+    const modal = document.getElementById('promotionModal');
+    modal.style.display = 'block';
+    
+    // Change form submit handler to update
+    const form = document.getElementById('promotionForm');
+    form.onsubmit = function(event) {
+        event.preventDefault();
+        
+        const productIds = Array.from(document.getElementById('promotionProducts').selectedOptions)
+            .map(opt => opt.value === 'all' ? 'all' : parseInt(opt.value));
+        
+        const updates = {
+            name: document.getElementById('promotionName').value,
+            discountRate: parseFloat(document.getElementById('promotionDiscount').value) / 100,
+            productIds: productIds,
+            startDate: document.getElementById('promotionStartDate').value,
+            endDate: document.getElementById('promotionEndDate').value,
+            description: document.getElementById('promotionDescription').value
+        };
+        
+        updatePromotionalCampaign(campaignId, updates);
+        
+        closePromotionModal();
+        renderPromotionsTable();
+        showToast('Campaign updated successfully');
+        
+        // Reset form submit handler
+        form.onsubmit = submitPromotion;
+    };
+}
+
+function deletePromotion(campaignId) {
+    if (confirm('Are you sure you want to delete this promotional campaign?')) {
+        deletePromotionalCampaign(campaignId);
+        renderPromotionsTable();
+        showToast('Campaign deleted successfully');
+    }
+}
+
+// Admin Invoice Management Functions
+function renderAdminInvoicesTable() {
+    const invoices = invoiceGenerator.getAllInvoices();
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const tbody = document.getElementById('adminInvoicesTableBody');
+    
+    if (!tbody) return;
+    
+    if (invoices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No invoices yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = invoices.map(invoice => {
+        const b2bUser = b2bUsers.find(u => u.id === invoice.userId);
+        const companyName = b2bUser ? b2bUser.businessInfo.companyName : 'Unknown';
+        const isOverdue = invoiceGenerator.isOverdue(invoice);
+        const termDetails = paymentTermsManager.getTermDetails(invoice.paymentTerms);
+        
+        return `
+            <tr>
+                <td><strong>${invoice.id}</strong></td>
+                <td>${companyName}</td>
+                <td>${new Date(invoice.createdAt).toLocaleDateString()}</td>
+                <td>¥${invoice.total.toLocaleString()}</td>
+                <td>${new Date(invoice.dueDate).toLocaleDateString()}</td>
+                <td>${termDetails.name}</td>
+                <td>
+                    <span class="b2b-status-badge ${isOverdue ? 'rejected' : invoice.status}">${isOverdue ? 'Overdue' : invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="adminViewInvoice('${invoice.id}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    ${invoice.status === 'pending' ? `
+                        <button class="btn btn-sm btn-success" onclick="adminMarkInvoicePaid('${invoice.id}')">
+                            <i class="fas fa-check"></i> Mark Paid
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-sm btn-secondary" onclick="adminDownloadInvoice('${invoice.id}')">
+                        <i class="fas fa-download"></i> PDF
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function filterAdminInvoices() {
+    const filter = document.getElementById('adminInvoiceFilter').value;
+    const invoices = invoiceGenerator.getAllInvoices();
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const tbody = document.getElementById('adminInvoicesTableBody');
+    
+    let filteredInvoices = invoices;
+    
+    if (filter !== 'all') {
+        filteredInvoices = invoices.filter(i => {
+            if (filter === 'overdue') {
+                return invoiceGenerator.isOverdue(i);
+            }
+            return i.status === filter;
+        });
+    }
+    
+    if (filteredInvoices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No invoices found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filteredInvoices.map(invoice => {
+        const b2bUser = b2bUsers.find(u => u.id === invoice.userId);
+        const companyName = b2bUser ? b2bUser.businessInfo.companyName : 'Unknown';
+        const isOverdue = invoiceGenerator.isOverdue(invoice);
+        const termDetails = paymentTermsManager.getTermDetails(invoice.paymentTerms);
+        
+        return `
+            <tr>
+                <td><strong>${invoice.id}</strong></td>
+                <td>${companyName}</td>
+                <td>${new Date(invoice.createdAt).toLocaleDateString()}</td>
+                <td>¥${invoice.total.toLocaleString()}</td>
+                <td>${new Date(invoice.dueDate).toLocaleDateString()}</td>
+                <td>${termDetails.name}</td>
+                <td>
+                    <span class="b2b-status-badge ${isOverdue ? 'rejected' : invoice.status}">${isOverdue ? 'Overdue' : invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="adminViewInvoice('${invoice.id}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    ${invoice.status === 'pending' ? `
+                        <button class="btn btn-sm btn-success" onclick="adminMarkInvoicePaid('${invoice.id}')">
+                            <i class="fas fa-check"></i> Mark Paid
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-sm btn-secondary" onclick="adminDownloadInvoice('${invoice.id}')">
+                        <i class="fas fa-download"></i> PDF
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function updatePendingInvoiceBadge() {
+    const invoices = invoiceGenerator.getAllInvoices();
+    const pendingCount = invoices.filter(i => i.status === 'pending' || invoiceGenerator.isOverdue(i)).length;
+    
+    const badge = document.getElementById('pendingInvoiceBadge');
+    if (badge) {
+        badge.textContent = pendingCount;
+        badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function adminViewInvoice(invoiceId) {
+    const invoices = invoiceGenerator.getAllInvoices();
+    const invoice = invoices.find(i => i.id === invoiceId);
+    
+    if (!invoice) {
+        showToast('Invoice not found');
+        return;
+    }
+    
+    const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
+    const b2bUser = b2bUsers.find(u => u.id === invoice.userId);
+    const termDetails = paymentTermsManager.getTermDetails(invoice.paymentTerms);
+    const compliance = taxCompliance.checkCompliance(invoice);
+    
+    const details = `
+INVOICE DETAILS:
+---------------
+Invoice #: ${invoice.id}
+Date: ${new Date(invoice.createdAt).toLocaleDateString()}
+Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}
+Payment Terms: ${termDetails.name}
+Status: ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+
+COMPANY INFORMATION:
+--------------------
+${b2bUser ? `
+Company: ${b2bUser.businessInfo.companyName}
+Tax ID: ${b2bUser.businessInfo.taxId}
+Email: ${b2bUser.businessInfo.businessEmail}
+Phone: ${b2bUser.businessInfo.businessPhone}
+Address: ${b2bUser.businessInfo.businessAddress.street}, ${b2bUser.businessInfo.businessAddress.city}
+` : 'N/A'}
+
+LINE ITEMS:
+-----------
+${invoice.items.map(item => `
+${item.productName}
+  Quantity: ${item.quantity}
+  Unit Price: ¥${item.unitPrice.toLocaleString()}
+  Line Total: ¥${item.lineTotal.toLocaleString()}
+`).join('')}
+
+SUMMARY:
+--------
+Subtotal: ¥${invoice.subtotal.toLocaleString()}
+Discount: -¥${invoice.discount.toLocaleString()}
+Tax: ¥${invoice.tax.toLocaleString()}
+TOTAL: ¥${invoice.total.toLocaleString()}
+
+COMPLIANCE STATUS: ${compliance.compliant ? '✓ Compliant' : '✗ Non-Compliant'}
+    `;
+    
+    alert(details);
+}
+
+function adminMarkInvoicePaid(invoiceId) {
+    if (confirm('Mark this invoice as paid?')) {
+        invoiceGenerator.updateInvoiceStatus(invoiceId, 'paid');
+        renderAdminInvoicesTable();
+        updatePendingInvoiceBadge();
+        showToast('Invoice marked as paid');
+    }
+}
+
+function adminDownloadInvoice(invoiceId) {
+    showToast('Invoice PDF download coming soon');
+}
+
+// Supplier Management Functions
+function renderSuppliersTable() {
+    const suppliers = supplierManager.getAllSuppliers();
+    const tbody = document.getElementById('suppliersTableBody');
+    
+    if (!tbody) return;
+    
+    if (suppliers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No suppliers yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = suppliers.map(supplier => {
+        const score = supplierManager.calculateSupplierScore(supplier.id);
+        
+        return `
+            <tr>
+                <td><strong>${supplier.name}</strong></td>
+                <td>${supplier.code}</td>
+                <td>${supplier.contact}</td>
+                <td>
+                    <span class="rating-stars">
+                        ${'★'.repeat(Math.floor(supplier.rating))}${'☆'.repeat(5 - Math.floor(supplier.rating))}
+                    </span>
+                    <span style="margin-left: 8px;">${supplier.rating}</span>
+                </td>
+                <td>${supplier.onTimeDelivery}%</td>
+                <td>${supplier.totalOrders}</td>
+                <td>
+                    <span class="b2b-status-badge ${supplier.status}">${supplier.status.charAt(0).toUpperCase() + supplier.status.slice(1)}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" onclick="viewSupplier(${supplier.id})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="editSupplier(${supplier.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    ${supplier.status === 'active' ? `
+                        <button class="btn btn-sm btn-danger" onclick="deactivateSupplier(${supplier.id})">
+                            <i class="fas fa-ban"></i> Deactivate
+                        </button>
+                    ` : `
+                        <button class="btn btn-sm btn-success" onclick="activateSupplier(${supplier.id})">
+                            <i class="fas fa-check"></i> Activate
+                        </button>
+                    `}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function showSupplierModal() {
+    const modal = document.getElementById('supplierModal');
+    modal.style.display = 'block';
+    document.getElementById('supplierModalTitle').textContent = 'Add Supplier';
+}
+
+function closeSupplierModal() {
+    const modal = document.getElementById('supplierModal');
+    modal.style.display = 'none';
+    document.getElementById('supplierForm').reset();
+}
+
+function submitSupplier(event) {
+    event.preventDefault();
+    
+    const categories = Array.from(document.getElementById('supplierCategories').selectedOptions)
+        .map(opt => opt.value);
+    
+    const supplierData = {
+        name: document.getElementById('supplierName').value,
+        code: document.getElementById('supplierCode').value,
+        contact: document.getElementById('supplierContact').value,
+        email: document.getElementById('supplierEmail').value,
+        phone: document.getElementById('supplierPhone').value,
+        address: {
+            street: document.getElementById('supplierStreet').value,
+            city: document.getElementById('supplierCity').value,
+            state: document.getElementById('supplierState').value,
+            zip: document.getElementById('supplierZip').value,
+            country: document.getElementById('supplierCountry').value
+        },
+        productCategories: categories
+    };
+    
+    supplierManager.addSupplier(supplierData);
+    
+    closeSupplierModal();
+    renderSuppliersTable();
+    showToast('Supplier added successfully');
+}
+
+function viewSupplier(supplierId) {
+    const supplier = supplierManager.getSupplierById(supplierId);
+    
+    if (!supplier) {
+        showToast('Supplier not found');
+        return;
+    }
+    
+    const performance = supplierManager.getSupplierPerformance(supplierId);
+    const score = supplierManager.calculateSupplierScore(supplierId);
+    
+    const details = `
+SUPPLIER DETAILS:
+---------------
+Name: ${supplier.name}
+Code: ${supplier.code}
+Contact: ${supplier.contact}
+Email: ${supplier.email}
+Phone: ${supplier.phone}
+Status: ${supplier.status.charAt(0).toUpperCase() + supplier.status.slice(1)}
+
+ADDRESS:
+--------
+${supplier.address.street}
+${supplier.address.city}, ${supplier.address.state} ${supplier.address.zip}
+${supplier.address.country}
+
+PRODUCT CATEGORIES:
+-------------------
+${supplier.productCategories.join(', ')}
+
+PERFORMANCE METRICS:
+--------------------
+Rating: ${supplier.rating}/5
+On-Time Delivery: ${supplier.onTimeDelivery}%
+Quality Score: ${supplier.qualityScore}/5
+Response Time: ${supplier.responseTime} hours
+Total Orders: ${supplier.totalOrders}
+Overall Score: ${score}/100
+    `;
+    
+    alert(details);
+}
+
+function editSupplier(supplierId) {
+    const supplier = supplierManager.getSupplierById(supplierId);
+    
+    if (!supplier) {
+        showToast('Supplier not found');
+        return;
+    }
+    
+    // Fill modal with supplier data
+    document.getElementById('supplierName').value = supplier.name;
+    document.getElementById('supplierCode').value = supplier.code;
+    document.getElementById('supplierContact').value = supplier.contact;
+    document.getElementById('supplierEmail').value = supplier.email;
+    document.getElementById('supplierPhone').value = supplier.phone;
+    document.getElementById('supplierStreet').value = supplier.address.street;
+    document.getElementById('supplierCity').value = supplier.address.city;
+    document.getElementById('supplierState').value = supplier.address.state;
+    document.getElementById('supplierZip').value = supplier.address.zip;
+    document.getElementById('supplierCountry').value = supplier.address.country;
+    
+    // Show modal
+    const modal = document.getElementById('supplierModal');
+    modal.style.display = 'block';
+    document.getElementById('supplierModalTitle').textContent = 'Edit Supplier';
+    
+    // Change form submit handler to update
+    const form = document.getElementById('supplierForm');
+    form.onsubmit = function(event) {
+        event.preventDefault();
+        
+        const categories = Array.from(document.getElementById('supplierCategories').selectedOptions)
+            .map(opt => opt.value);
+        
+        const updates = {
+            name: document.getElementById('supplierName').value,
+            code: document.getElementById('supplierCode').value,
+            contact: document.getElementById('supplierContact').value,
+            email: document.getElementById('supplierEmail').value,
+            phone: document.getElementById('supplierPhone').value,
+            address: {
+                street: document.getElementById('supplierStreet').value,
+                city: document.getElementById('supplierCity').value,
+                state: document.getElementById('supplierState').value,
+                zip: document.getElementById('supplierZip').value,
+                country: document.getElementById('supplierCountry').value
+            },
+            productCategories: categories
+        };
+        
+        supplierManager.updateSupplier(supplierId, updates);
+        
+        closeSupplierModal();
+        renderSuppliersTable();
+        showToast('Supplier updated successfully');
+        
+        // Reset form submit handler
+        form.onsubmit = submitSupplier;
+    };
+}
+
+function deactivateSupplier(supplierId) {
+    if (confirm('Deactivate this supplier?')) {
+        supplierManager.deactivateSupplier(supplierId);
+        renderSuppliersTable();
+        showToast('Supplier deactivated');
+    }
+}
+
+function activateSupplier(supplierId) {
+    if (confirm('Activate this supplier?')) {
+        supplierManager.activateSupplier(supplierId);
+        renderSuppliersTable();
+        showToast('Supplier activated');
+    }
+}
+
 // Exports
 window.showSection = showSection;
 window.toggleSidebar = toggleSidebar;
@@ -530,4 +1445,35 @@ window.showNotifications = showNotifications;
 window.refreshChart = refreshChart;
 window.updateDashboard = updateDashboard;
 window.updateAnalytics = updateAnalytics;
+window.renderB2BUsersTable = renderB2BUsersTable;
+window.verifyB2BUser = verifyB2BUser;
+window.rejectB2BUser = rejectB2BUser;
+window.viewB2BDocuments = viewB2BDocuments;
+window.viewB2BUser = viewB2BUser;
+window.filterB2BUsers = filterB2BUsers;
+window.renderRFQTable = renderRFQTable;
+window.filterRFQs = filterRFQs;
+window.updatePendingRFQBadge = updatePendingRFQBadge;
+window.viewRFQDetails = viewRFQDetails;
+window.respondToRFQ = respondToRFQ;
+window.renderPromotionsTable = renderPromotionsTable;
+window.showPromotionModal = showPromotionModal;
+window.closePromotionModal = closePromotionModal;
+window.submitPromotion = submitPromotion;
+window.editPromotion = editPromotion;
+window.deletePromotion = deletePromotion;
+window.renderAdminInvoicesTable = renderAdminInvoicesTable;
+window.filterAdminInvoices = filterAdminInvoices;
+window.updatePendingInvoiceBadge = updatePendingInvoiceBadge;
+window.adminViewInvoice = adminViewInvoice;
+window.adminMarkInvoicePaid = adminMarkInvoicePaid;
+window.adminDownloadInvoice = adminDownloadInvoice;
+window.renderSuppliersTable = renderSuppliersTable;
+window.showSupplierModal = showSupplierModal;
+window.closeSupplierModal = closeSupplierModal;
+window.submitSupplier = submitSupplier;
+window.viewSupplier = viewSupplier;
+window.editSupplier = editSupplier;
+window.deactivateSupplier = deactivateSupplier;
+window.activateSupplier = activateSupplier;
 window.showCategoryModal = showCategoryModal;
