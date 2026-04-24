@@ -777,7 +777,7 @@ body {
 
 .brand-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 30px;
     align-items: center;
 }
@@ -787,18 +787,22 @@ body {
     align-items: center;
     justify-content: center;
     height: 80px;
-    background: var(--bg-light);
+    background: white;
     border-radius: var(--radius-md);
     transition: var(--transition);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
 }
 
 .brand-item:hover {
     background: var(--primary);
+    color: white;
 }
 
 .brand-item i {
-    font-size: 40px;
-    color: var(--text-muted);
+    font-size: 32px;
+    color: var(--text);
     transition: var(--transition);
 }
 
@@ -850,18 +854,18 @@ body {
 .footer {
     background: var(--accent);
     color: white;
-    padding: 60px 0 0;
+    padding: 30px 0 0;
 }
 
 .footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 40px;
-    margin-bottom: 40px;
+    gap: 25px;
+    margin-bottom: 25px;
 }
 
 .footer-col .logo {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .footer-col .logo-text {
@@ -870,19 +874,19 @@ body {
 
 .footer-col p {
     opacity: 0.8;
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 .social-links {
     display: flex;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .social-links a {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: rgba(255,255,255,0.1);
     display: flex;
@@ -890,6 +894,7 @@ body {
     justify-content: center;
     color: white;
     transition: var(--transition);
+    font-size: 12px;
 }
 
 .social-links a:hover {
@@ -897,9 +902,9 @@ body {
 }
 
 .footer-col h4 {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .footer-col ul {
@@ -907,13 +912,13 @@ body {
 }
 
 .footer-col ul li {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .footer-col ul li a {
     color: rgba(255,255,255,0.7);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 12px;
     transition: var(--transition);
 }
 
@@ -924,19 +929,20 @@ body {
 .contact-info li {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
+    gap: 8px;
+    font-size: 12px;
     color: rgba(255,255,255,0.7);
 }
 
 .contact-info i {
     color: var(--primary);
-    width: 20px;
+    width: 16px;
+    font-size: 12px;
 }
 
 .footer-bottom {
     border-top: 1px solid rgba(255,255,255,0.1);
-    padding: 20px 0;
+    padding: 12px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -944,7 +950,7 @@ body {
 
 .footer-bottom p {
     opacity: 0.6;
-    font-size: 14px;
+    font-size: 11px;
 }
 
 .payment-methods {
@@ -1278,6 +1284,7 @@ body {
     
     .footer-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 }
 
@@ -1332,16 +1339,16 @@ body {
         order: 1;
     }
     
-    .search-box {
+    .header-actions {
         order: 2;
-        max-width: 100%;
-        width: 100%;
-        margin: 0 15px;
+        margin-left: auto;
     }
     
-    .header-actions {
+    .search-box {
         order: 3;
-        margin-left: 0;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
     }
     
     .mobile-menu-toggle {
@@ -1440,12 +1447,12 @@ body {
     
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 20px;
     }
     
     .footer-bottom {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
         text-align: center;
     }
     
