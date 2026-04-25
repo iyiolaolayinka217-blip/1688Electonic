@@ -429,50 +429,26 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts('all');
     loadFlashSaleProducts();
     startCountdown();
-    updateCartCount();
-    updateWishlistCount();
-    updateAuthLinks();
+    if (typeof updateCartCount === 'function') updateCartCount();
+    if (typeof updateWishlistCount === 'function') updateWishlistCount();
+
+    // Auth state is handled by auth.js
+    if (window.Auth && typeof window.Auth.updateUserMenu === 'function') {
+        window.Auth.updateUserMenu();
+    }
     
     // Check if welcome modal should be shown
     checkWelcomeModal();
 });
 
-// Update profile button visibility based on auth state
-function updateProfileButtonVisibility() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const authLinks = document.getElementById('authLinks');
-    
-    if (authLinks) {
-        if (currentUser) {
-            authLinks.innerHTML = `
-                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
-                <a href="profile.html" class="top-link">Profile</a>
-                <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
-            `;
-        } else {
-            authLinks.innerHTML = `
-                <a href="auth.html" class="top-link">Sign In</a>
-                <a href="auth.html" class="top-link">Register</a>
-            `;
-        }
-    }
-}
-
 // Navigate to profile page
 function goToProfile() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
+    if (user) {
         window.location.href = 'profile.html';
     } else {
         window.location.href = 'auth.html';
     }
-}
-
-// Logout function
-function logout() {
-    localStorage.removeItem('currentUser');
-    updateProfileButtonVisibility();
-    showToast('Logged out successfully');
 }
 
 // Wholesale Pricing Functions
@@ -542,12 +518,12 @@ function getTieredPricingDisplay(productId) {
 }
 
 function isB2BVerifiedUser() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) return false;
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
+    if (!user) return false;
     
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const user = b2bUsers.find(u => u.id === currentUser.id);
-    return user && user.verificationStatus === 'verified';
+    const b2bUser = b2bUsers.find(u => u.id === user.id);
+    return b2bUser && b2bUser.verificationStatus === 'verified';
 }
 
 // Dynamic Pricing Engine

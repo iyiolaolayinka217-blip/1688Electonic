@@ -30,28 +30,49 @@ function handleSwipe() {
 
 // B2B Dashboard JavaScript
 
+// Setup Reveal Animations
+function initRevealAnimations() {
+    const reveals = document.querySelectorAll('[data-reveal]');
+
+    const revealCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver(revealCallback, {
+        threshold: 0.1
+    });
+
+    reveals.forEach(el => observer.observe(el));
+}
+
 // Initialize Dashboard
 document.addEventListener('DOMContentLoaded', function() {
     checkB2BAuth();
     loadDashboardData();
     setupEventListeners();
+    initRevealAnimations();
 });
 
 // Check if user is authenticated and verified B2B user
 function checkB2BAuth() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) {
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
+    if (!user) {
         window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.href);
         return;
     }
 
-    if (currentUser.userType !== 'business') {
-        window.location.href = 'dashboard.html';
+    if (user.userType !== 'business') {
+        window.location.href = 'profile.html';
         return;
     }
 
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const b2bUser = b2bUsers.find(u => u.id === currentUser.id);
+    const b2bUser = b2bUsers.find(u => u.id === user.id);
 
     if (!b2bUser || b2bUser.verificationStatus !== 'verified') {
         alert('Your B2B account is pending verification. Please wait for approval.');
@@ -62,9 +83,9 @@ function checkB2BAuth() {
 
 // Load Dashboard Data
 function loadDashboardData() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const b2bUser = b2bUsers.find(u => u.id === currentUser.id);
+    const b2bUser = b2bUsers.find(u => u.id === user.id);
 
     if (!b2bUser) return;
 
@@ -710,9 +731,9 @@ Overall Score: ${score}/100
 
 // Load Credit Info
 function loadCreditInfo() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const b2bUser = b2bUsers.find(u => u.id === currentUser.id);
+    const b2bUser = b2bUsers.find(u => u.id === user.id);
     
     if (!b2bUser) return;
     
@@ -754,9 +775,9 @@ function loadCreditInfo() {
 
 // Load Support Info
 function loadSupportInfo() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const b2bUser = b2bUsers.find(u => u.id === currentUser.id);
+    const b2bUser = b2bUsers.find(u => u.id === user.id);
     
     if (!b2bUser) return;
     

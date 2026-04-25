@@ -16,7 +16,7 @@
 
 .breadcrumb a {
     color: var(--text-light);
-    text-decoration: none;
+    text-decoration: none !important;
     transition: var(--transition);
 }
 

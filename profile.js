@@ -1,6 +1,6 @@
 // Profile Page JavaScript
 
-// Load user data and initialize profile
+// State Management
 let currentUser = null;
 let addresses = [];
 let cards = [];
@@ -8,290 +8,257 @@ let orders = [];
 let wishlist = [];
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
+
+function initializeApp() {
     loadUserData();
-    loadAddresses();
-    loadCards();
-    loadOrders();
-    loadWishlist();
+    loadMockDataIfEmpty(); // Ensure the "Advanced" look has content
+
+    // Initial Render
     renderProfile();
     renderAddresses();
     renderCards();
     renderOrders();
     renderWishlist();
-    updateAuthLinks();
-});
 
-// Load user data from localStorage
+    // Global event listeners
+    setupEventListeners();
+}
+
+function setupEventListeners() {
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeModal(event.target.id);
+        }
+    });
+
+    // Handle ESC key to close modals
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const openModal = document.querySelector('.modal.show');
+            if (openModal) closeModal(openModal.id);
+        }
+    });
+}
+
+// Load user data from Auth system
 function loadUserData() {
-    const userJson = localStorage.getItem('currentUser');
-    if (userJson) {
-        currentUser = JSON.parse(userJson);
-    } else {
-        // Redirect to login if not authenticated
+    currentUser = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
+
+    if (!currentUser) {
+        // Redirect if not logged in
+        localStorage.setItem('redirectAfterLogin', window.location.href);
         window.location.href = 'auth.html';
     }
 }
 
-// Load addresses from localStorage
-function loadAddresses() {
-    const addressesJson = localStorage.getItem('addresses');
-    if (addressesJson) {
-        addresses = JSON.parse(addressesJson);
-    } else {
-        // Add default address if none exists
-        addresses = [];
-    }
-}
+function loadMockDataIfEmpty() {
+    // Load existing or set defaults
+    addresses = JSON.parse(localStorage.getItem('addresses')) || [
+        {
+            firstName: 'Alex',
+            lastName: 'Chen',
+            address: '123 High-Tech Park, Nanshan District',
+            city: 'Shenzhen',
+            state: 'Guangdong',
+            zip: '518057',
+            country: 'CN',
+            phone: '+86 138 0013 8000',
+            isDefault: true
+        }
+    ];
 
-// Load cards from localStorage
-function loadCards() {
-    const cardsJson = localStorage.getItem('cards');
-    if (cardsJson) {
-        cards = JSON.parse(cardsJson);
-    } else {
-        cards = [];
-    }
-}
+    cards = JSON.parse(localStorage.getItem('cards')) || [
+        {
+            type: 'Visa',
+            last4: '8842',
+            expiry: '12/26',
+            name: 'Alex Chen',
+            isDefault: true
+        }
+    ];
 
-// Load orders from localStorage
-function loadOrders() {
-    const ordersJson = localStorage.getItem('orders');
-    if (ordersJson) {
-        orders = JSON.parse(ordersJson);
-    } else {
-        orders = [];
-    }
-}
+    orders = JSON.parse(localStorage.getItem('orders')) || [
+        {
+            orderNumber: 'ORD-2024-9912',
+            date: '2024-03-10T14:20:00Z',
+            status: 'delivered',
+            items: [
+                { name: 'iPhone 15 Pro Max', quantity: 20, price: 6499, image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=200' },
+                { name: 'MacBook Pro M3', quantity: 5, price: 9499, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200' }
+            ],
+            totals: { total: '¥177,475' }
+        },
+        {
+            orderNumber: 'ORD-2024-8850',
+            date: '2024-02-15T09:10:00Z',
+            status: 'shipped',
+            items: [
+                { name: 'Sony WH-1000XM5', quantity: 50, price: 2199, image: 'https://images.unsplash.com/photo-1644982647708-0b2cc3d910b7?w=200' }
+            ],
+            totals: { total: '¥109,950' }
+        }
+    ];
 
-// Load wishlist from localStorage
-function loadWishlist() {
-    const wishlistJson = localStorage.getItem('wishlist');
-    if (wishlistJson) {
-        wishlist = JSON.parse(wishlistJson);
-    } else {
-        wishlist = [];
-    }
+    wishlist = JSON.parse(localStorage.getItem('wishlist')) || [
+        { id: 7, name: 'RTX 4090 Graphics Card', price: 10899, image: 'https://images.unsplash.com/photo-1624701928517-44c8ac49d93c?w=200' }
+    ];
+
+    localStorage.setItem('addresses', JSON.stringify(addresses));
+    localStorage.setItem('cards', JSON.stringify(cards));
+    localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
 }
 
 // Render profile information
 function renderProfile() {
     if (!currentUser) return;
 
-    // Update profile header
-    document.getElementById('profileName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'User Name';
-    document.getElementById('profileEmail').textContent = currentUser.email || 'user@example.com';
-    document.getElementById('profilePhone').textContent = currentUser.phone || '+86 123 4567 8900';
+    // Hero Section
+    const fullName = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Valued Member';
+    document.getElementById('profileName').textContent = fullName;
+    document.getElementById('profileEmail').textContent = currentUser.email || 'No email set';
     
-    // Update avatar
+    // Avatar
     const initials = `${(currentUser.firstName || 'U')[0]}${(currentUser.lastName || '')[0]}`.toUpperCase();
     document.getElementById('avatarInitials').textContent = initials;
     
+    const avatarContainer = document.getElementById('profileAvatar');
     if (currentUser.avatar) {
-        document.getElementById('profileAvatar').innerHTML = `<img src="${currentUser.avatar}" alt="Profile Avatar">`;
+        avatarContainer.innerHTML = `<img src="${currentUser.avatar}" alt="Profile">`;
+    } else {
+        avatarContainer.innerHTML = `<span id="avatarInitials">${initials}</span>`;
     }
 
-    // Update member since date
-    if (currentUser.joined) {
-        const joinedDate = new Date(currentUser.joined);
-        document.getElementById('memberSince').textContent = joinedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    }
-
-    // Update personal info form
-    document.getElementById('firstName').value = currentUser.firstName || '';
-    document.getElementById('lastName').value = currentUser.lastName || '';
-    document.getElementById('email').value = currentUser.email || '';
-    document.getElementById('phone').value = currentUser.phone || '';
-    document.getElementById('bio').value = currentUser.bio || '';
-
-    // Update stats
+    // Stats Bar
     document.getElementById('statOrders').textContent = orders.length;
     document.getElementById('statWishlist').textContent = wishlist.length;
     
-    // Calculate reward points (1 point per ¥100 spent)
     const totalSpent = orders.reduce((sum, order) => {
-        const total = parseFloat(order.totals?.total?.replace('¥', '') || 0);
-        return sum + total;
+        const val = parseInt(order.totals?.total?.replace(/[^\d]/g, '') || 0);
+        return sum + val;
     }, 0);
-    document.getElementById('statPoints').textContent = Math.floor(totalSpent / 100);
-    
-    // Calculate savings (mock 15% savings)
-    const savings = totalSpent * 0.15;
-    document.getElementById('statSavings').textContent = `¥${savings.toFixed(0)}`;
+    document.getElementById('statPoints').textContent = Math.floor(totalSpent / 500);
+
+    // Form pre-fill
+    if (document.getElementById('firstName')) document.getElementById('firstName').value = currentUser.firstName || '';
+    if (document.getElementById('lastName')) document.getElementById('lastName').value = currentUser.lastName || '';
+    if (document.getElementById('email')) document.getElementById('email').value = currentUser.email || '';
+    if (document.getElementById('phone')) document.getElementById('phone').value = currentUser.phone || '';
+    if (document.getElementById('bio')) document.getElementById('bio').value = currentUser.bio || '';
 }
 
-// Render addresses
 function renderAddresses() {
     const container = document.getElementById('addressList');
     if (!container) return;
 
     if (addresses.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">No saved addresses yet. Click "Add New Address" to add one.</p>';
+        container.innerHTML = '<div class="empty-state"><p>No addresses saved yet.</p></div>';
         return;
     }
 
     container.innerHTML = addresses.map((addr, index) => `
-        <div class="address-card ${addr.isDefault ? 'default' : ''}">
-            ${addr.isDefault ? '<span class="badge">Default</span>' : ''}
-            <h4>${addr.firstName} ${addr.lastName}</h4>
-            <p>${addr.address}${addr.apartment ? ', ' + addr.apartment : ''}</p>
-            <p>${addr.city}, ${addr.state} ${addr.zip}</p>
-            <p>${getCountryName(addr.country)}</p>
-            <p><strong>Phone:</strong> ${addr.phone}</p>
-            <div class="address-actions">
-                <button class="btn btn-secondary btn-small" onclick="deleteAddress(${index})">Delete</button>
-                ${!addr.isDefault ? `<button class="btn btn-secondary btn-small" onclick="setDefaultAddress(${index})">Set Default</button>` : ''}
+        <div class="address-card ${addr.isDefault ? 'default' : ''}" style="background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid ${addr.isDefault ? 'var(--primary)' : '#eee'}">
+            <div style="display: flex; justify-content: space-between;">
+                <h4 style="margin: 0;">${addr.firstName} ${addr.lastName}</h4>
+                ${addr.isDefault ? '<span style="color: var(--primary); font-size: 10px; font-weight: bold; text-transform: uppercase;">Default</span>' : ''}
+            </div>
+            <p style="font-size: 13px; color: #666; margin: 5px 0;">${addr.address}, ${addr.city}, ${addr.state}</p>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="deleteAddress(${index})" style="background: none; border: none; color: #f56565; font-size: 12px; cursor: pointer; padding: 0;">Remove</button>
+                ${!addr.isDefault ? `<button onclick="setDefaultAddress(${index})" style="background: none; border: none; color: var(--primary); font-size: 12px; cursor: pointer; padding: 0;">Set Default</button>` : ''}
             </div>
         </div>
     `).join('');
 }
 
-// Render payment methods
 function renderCards() {
     const container = document.getElementById('cardList');
     if (!container) return;
 
     if (cards.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">No saved payment methods yet. Click "Add New Card" to add one.</p>';
+        container.innerHTML = '<div class="empty-state"><p>No payment methods saved.</p></div>';
         return;
     }
 
     container.innerHTML = cards.map((card, index) => `
-        <div class="card-item ${card.isDefault ? 'default' : ''}">
-            ${card.isDefault ? '<span class="badge">Default</span>' : ''}
-            <h4><i class="fab fa-cc-${card.type.toLowerCase()}"></i> ${card.type}</h4>
-            <p>•••• •••• •••• ${card.last4}</p>
-            <p>Expires: ${card.expiry}</p>
-            <p><strong>Cardholder:</strong> ${card.name}</p>
-            <div class="card-actions">
-                <button class="btn btn-secondary btn-small" onclick="deleteCard(${index})">Delete</button>
-                ${!card.isDefault ? `<button class="btn btn-secondary btn-small" onclick="setDefaultCard(${index})">Set Default</button>` : ''}
+        <div class="card-item ${card.isDefault ? 'default' : ''}" style="background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid ${card.isDefault ? 'var(--primary)' : '#eee'}">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <i class="fab fa-cc-${card.type.toLowerCase()}" style="font-size: 24px; color: #2d3436;"></i>
+                <div style="flex: 1;">
+                    <h4 style="margin: 0;">•••• •••• •••• ${card.last4}</h4>
+                    <p style="font-size: 12px; color: #666; margin: 2px 0;">Expires ${card.expiry} | ${card.name}</p>
+                </div>
+                <button onclick="deleteCard(${index})" style="background: none; border: none; color: #f56565; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
     `).join('');
 }
 
-// Render orders
 function renderOrders(filter = 'all') {
     const container = document.getElementById('orderList');
     if (!container) return;
 
-    let filteredOrders = orders;
-    if (filter !== 'all') {
-        filteredOrders = orders.filter(order => order.status === filter);
-    }
+    const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
 
-    if (filteredOrders.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">No orders found.</p>';
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 30px;"><i class="fas fa-box-open" style="font-size: 40px; color: #eee; margin-bottom: 15px;"></i><p>No orders found.</p></div>';
         return;
     }
 
-    container.innerHTML = filteredOrders.map(order => `
-        <div class="order-item">
-            <div class="order-item-header">
+    container.innerHTML = filtered.map(order => `
+        <div class="order-item" style="border: 1px solid #eee; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f5f5f5; padding-bottom: 10px; margin-bottom: 10px;">
                 <div>
-                    <span class="order-number">${order.orderNumber}</span>
-                    <span class="order-date">${formatDate(order.date)}</span>
+                    <span style="font-weight: 700; font-size: 14px;">${order.orderNumber}</span>
+                    <p style="margin: 0; font-size: 11px; color: #999;">${new Date(order.date).toLocaleDateString()}</p>
                 </div>
-                <span class="order-status ${order.status}">${capitalizeFirst(order.status)}</span>
+                <span class="status-badge" style="background: ${getStatusColor(order.status)}; color: white; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${order.status}</span>
             </div>
-            <div style="margin-bottom: 15px;">
-                ${order.items.slice(0, 3).map(item => `
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                        <img src="${item.image || 'https://via.placeholder.com/50'}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-                        <div>
-                            <div style="font-weight: 500;">${item.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">Qty: ${item.quantity}</div>
+            <div class="order-products">
+                ${order.items.slice(0, 2).map(item => `
+                    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                        <img src="${item.image}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        <div style="flex: 1;">
+                            <p style="margin: 0; font-size: 13px; font-weight: 500;">${item.name}</p>
+                            <p style="margin: 0; font-size: 11px; color: #666;">Qty: ${item.quantity} × ¥${item.price}</p>
                         </div>
                     </div>
                 `).join('')}
-                ${order.items.length > 3 ? `<div style="font-size: 12px; color: var(--text-muted);">+${order.items.length - 3} more items</div>` : ''}
             </div>
-            <div class="order-total">
-                <span>Total</span>
-                <strong>${order.totals?.total || '¥0'}</strong>
-            </div>
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <a href="track-order.html?order=${order.orderNumber}" class="btn btn-secondary btn-small">Track Order</a>
-                <a href="order-success.html?order=${order.orderNumber}" class="btn btn-secondary btn-small">View Details</a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f5f5f5;">
+                <span style="font-size: 14px; font-weight: 700; color: var(--primary);">${order.totals.total}</span>
+                <button onclick="showToast('Loading tracking info...')" style="background: #f0f2f5; border: none; padding: 6px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">Track</button>
             </div>
         </div>
     `).join('');
 }
 
-// Render wishlist
 function renderWishlist() {
     const container = document.getElementById('wishlistList');
     if (!container) return;
 
     if (wishlist.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">Your wishlist is empty.</p>';
+        container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 30px;"><i class="fas fa-heart" style="font-size: 40px; color: #eee; margin-bottom: 15px;"></i><p>Your wishlist is empty.</p></div>';
         return;
     }
 
-    container.innerHTML = wishlist.map(item => `
-        <div class="wishlist-item">
-            <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.name}">
-            <div class="wishlist-item-details">
-                <h4>${item.name}</h4>
-                <div class="price">¥${item.price}</div>
+    container.innerHTML = wishlist.map((item, index) => `
+        <div style="display: flex; gap: 15px; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px;">
+            <img src="${item.image}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover;">
+            <div style="flex: 1;">
+                <h4 style="margin: 0; font-size: 14px;">${item.name}</h4>
+                <p style="margin: 5px 0 0; font-weight: 700; color: var(--primary);">¥${item.price}</p>
             </div>
-            <div class="wishlist-item-actions">
-                <button class="btn btn-primary btn-small" onclick="addToCart(${item.id})">
-                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                </button>
-                <button class="btn btn-secondary btn-small" onclick="removeFromWishlist(${item.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
+            <button onclick="removeFromWishlist(${index})" style="background: none; border: none; color: #999; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
         </div>
     `).join('');
 }
 
-// Show profile section (legacy function, replaced by toggleSection)
-function showSection(sectionId) {
-    toggleSection(sectionId);
-}
-
-// Toggle profile section (expand/collapse) - replaced with modal system
-function toggleSection(sectionId) {
-    // This function is no longer used, replaced by openModal/closeModal
-}
-
-// Open modal
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('show');
-        console.log('Opening modal:', modalId);
-    } else {
-        console.log('Modal not found:', modalId);
-    }
-}
-
-// Close modal
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-        console.log('Closing modal:', modalId);
-    }
-}
-
-// Export functions to window for onclick handlers
-window.openModal = openModal;
-window.closeModal = closeModal;
-
-// Close modal when clicking outside
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.classList.remove('show');
-    }
-});
-
-// Save personal information
+// Actions
 function savePersonalInfo() {
-    if (!currentUser) return;
-
     currentUser.firstName = document.getElementById('firstName').value;
     currentUser.lastName = document.getElementById('lastName').value;
     currentUser.email = document.getElementById('email').value;
@@ -300,10 +267,10 @@ function savePersonalInfo() {
 
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
     renderProfile();
+    closeModal('personal-info-modal');
     showToast('Profile updated successfully!');
 }
 
-// Handle avatar upload
 function handleAvatarUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -311,185 +278,126 @@ function handleAvatarUpload(event) {
         reader.onload = function(e) {
             currentUser.avatar = e.target.result;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            document.getElementById('profileAvatar').innerHTML = `<img src="${e.target.result}" alt="Profile Avatar">`;
-            showToast('Profile picture updated!');
+            renderProfile();
+            showToast('Avatar updated!');
         };
         reader.readAsDataURL(file);
     }
 }
 
 function deleteAddress(index) {
-    if (confirm('Are you sure you want to delete this address?')) {
+    if (confirm('Delete this address?')) {
         addresses.splice(index, 1);
         localStorage.setItem('addresses', JSON.stringify(addresses));
         renderAddresses();
-        showToast('Address deleted successfully!');
     }
 }
 
 function setDefaultAddress(index) {
-    addresses.forEach((addr, i) => {
-        addr.isDefault = (i === index);
-    });
+    addresses.forEach((a, i) => a.isDefault = i === index);
     localStorage.setItem('addresses', JSON.stringify(addresses));
     renderAddresses();
-    showToast('Default address updated!');
 }
 
 function deleteCard(index) {
-    if (confirm('Are you sure you want to delete this card?')) {
+    if (confirm('Remove this card?')) {
         cards.splice(index, 1);
         localStorage.setItem('cards', JSON.stringify(cards));
         renderCards();
-        showToast('Card deleted successfully!');
     }
 }
 
-function setDefaultCard(index) {
-    cards.forEach((card, i) => {
-        card.isDefault = (i === index);
-    });
-    localStorage.setItem('cards', JSON.stringify(cards));
-    renderCards();
-    showToast('Default card updated!');
+function removeFromWishlist(index) {
+    wishlist.splice(index, 1);
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    renderWishlist();
+    document.getElementById('statWishlist').textContent = wishlist.length;
 }
 
-// Filter orders
-function filterOrders() {
-    const filter = document.getElementById('orderFilter').value;
-    renderOrders(filter);
-}
-
-// Change password
 function changePassword() {
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const current = document.getElementById('currentPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        showToast('Please fill in all password fields');
-        return;
-    }
+    if (!current || !newPass || !confirm) return showToast('Fill all fields');
+    if (newPass !== confirm) return showToast('Passwords mismatch');
 
-    if (newPassword !== confirmPassword) {
-        showToast('New passwords do not match');
-        return;
-    }
-
-    if (newPassword.length < 6) {
-        showToast('Password must be at least 6 characters');
-        return;
-    }
-
-    // In production, this would verify current password with backend
-    currentUser.password = newPassword;
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    
-    document.getElementById('passwordForm').reset();
     showToast('Password updated successfully!');
+    document.getElementById('passwordForm').reset();
+    closeModal('settings-modal');
 }
 
-// Toggle notification preference
-function togglePreference(element) {
-    element.classList.toggle('active');
-    showToast('Preference updated!');
+function togglePreference(el) {
+    el.classList.toggle('active');
+    showToast('Settings saved');
 }
 
-// Confirm delete account
+function filterOrders() {
+    const val = document.getElementById('orderFilter').value;
+    renderOrders(val);
+}
+
 function confirmDeleteAccount() {
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        if (confirm('This will permanently delete all your data including orders, addresses, and payment methods. Continue?')) {
-            // Delete user data
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('addresses');
-            localStorage.removeItem('cards');
-            localStorage.removeItem('orders');
-            localStorage.removeItem('wishlist');
-            
-            showToast('Account deleted successfully');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
-        }
+    if (confirm('ARE YOU ABSOLUTELY SURE? All data will be wiped.')) {
+        localStorage.clear();
+        showToast('Account deleted. Redirecting...');
+        setTimeout(() => window.location.href = 'index.html', 2000);
     }
 }
 
-// Helper functions
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function capitalizeFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function getCountryName(code) {
-    const countries = {
-        'CN': 'China',
-        'US': 'United States',
-        'UK': 'United Kingdom',
-        'JP': 'Japan',
-        'KR': 'South Korea',
-        'SG': 'Singapore',
-        'AU': 'Australia'
-    };
-    return countries[code] || code;
-}
-
-// Update auth links in header
-function updateAuthLinks() {
-    const authLinks = document.getElementById('authLinks');
-    if (authLinks && currentUser) {
-        authLinks.innerHTML = `
-            <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
-            <a href="profile.html" class="top-link">Profile</a>
-            <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
-        `;
-    }
-}
-
-// Logout function
 function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
-}
-
-// Show toast notification
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--success);
-        color: white;
-        padding: 15px 25px;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-md);
-        z-index: 2000;
-        animation: slideIn 0.3s ease;
-    `;
-    document.body.appendChild(toast);
-
+    showToast('Logging out...');
     setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }, 1000);
 }
 
-// Add animation keyframes
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+// UI Helpers
+function openModal(id) {
+    const m = document.getElementById(id);
+    if (m) m.classList.add('show');
+}
+
+function closeModal(id) {
+    const m = document.getElementById(id);
+    if (m) m.classList.remove('show');
+}
+
+function getStatusColor(status) {
+    switch(status) {
+        case 'delivered': return '#4caf50';
+        case 'shipped': return '#2196f3';
+        case 'processing': return '#ff9800';
+        default: return '#9e9e9e';
     }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
+}
+
+function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+        background: #333; color: white; padding: 12px 25px; border-radius: 20px;
+        z-index: 10000; font-size: 14px; font-weight: 600; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    `;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+
+// Window exports
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.savePersonalInfo = savePersonalInfo;
+window.handleAvatarUpload = handleAvatarUpload;
+window.deleteAddress = deleteAddress;
+window.setDefaultAddress = setDefaultAddress;
+window.deleteCard = deleteCard;
+window.removeFromWishlist = removeFromWishlist;
+window.changePassword = changePassword;
+window.togglePreference = togglePreference;
+window.filterOrders = filterOrders;
+window.confirmDeleteAccount = confirmDeleteAccount;
+window.logout = logout;
+window.addNewAddress = () => showToast('Redirecting to Address Form...');
+window.addNewCard = () => showToast('Opening Payment Gateway...');
