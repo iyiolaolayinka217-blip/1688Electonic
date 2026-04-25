@@ -138,7 +138,6 @@ function renderAddresses() {
             <p>${getCountryName(addr.country)}</p>
             <p><strong>Phone:</strong> ${addr.phone}</p>
             <div class="address-actions">
-                <button class="btn btn-secondary btn-small" onclick="editAddress(${index})">Edit</button>
                 <button class="btn btn-secondary btn-small" onclick="deleteAddress(${index})">Delete</button>
                 ${!addr.isDefault ? `<button class="btn btn-secondary btn-small" onclick="setDefaultAddress(${index})">Set Default</button>` : ''}
             </div>
@@ -164,7 +163,6 @@ function renderCards() {
             <p>Expires: ${card.expiry}</p>
             <p><strong>Cardholder:</strong> ${card.name}</p>
             <div class="card-actions">
-                <button class="btn btn-secondary btn-small" onclick="editCard(${index})">Edit</button>
                 <button class="btn btn-secondary btn-small" onclick="deleteCard(${index})">Delete</button>
                 ${!card.isDefault ? `<button class="btn btn-secondary btn-small" onclick="setDefaultCard(${index})">Set Default</button>` : ''}
             </div>
@@ -249,22 +247,46 @@ function renderWishlist() {
     `).join('');
 }
 
-// Show profile section
+// Show profile section (legacy function, replaced by toggleSection)
 function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.profile-section').forEach(section => {
-        section.classList.remove('active');
-    });
-
-    // Show selected section
-    document.getElementById(sectionId).classList.add('active');
-
-    // Update sidebar menu
-    document.querySelectorAll('.sidebar-menu a').forEach(link => {
-        link.classList.remove('active');
-    });
-    event.target.classList.add('active');
+    toggleSection(sectionId);
 }
+
+// Toggle profile section (expand/collapse) - replaced with modal system
+function toggleSection(sectionId) {
+    // This function is no longer used, replaced by openModal/closeModal
+}
+
+// Open modal
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        console.log('Opening modal:', modalId);
+    } else {
+        console.log('Modal not found:', modalId);
+    }
+}
+
+// Close modal
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        console.log('Closing modal:', modalId);
+    }
+}
+
+// Export functions to window for onclick handlers
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('show');
+    }
+});
 
 // Save personal information
 function savePersonalInfo() {
@@ -296,63 +318,6 @@ function handleAvatarUpload(event) {
     }
 }
 
-// Address Modal Functions
-function showAddressModal() {
-    document.getElementById('addressModal').classList.add('show');
-}
-
-function closeAddressModal() {
-    document.getElementById('addressModal').classList.remove('show');
-    document.getElementById('addressForm').reset();
-}
-
-// Handle address form submission
-document.getElementById('addressForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const newAddress = {
-        firstName: document.getElementById('addrFirstName').value,
-        lastName: document.getElementById('addrLastName').value,
-        address: document.getElementById('addrLine1').value,
-        apartment: document.getElementById('addrLine2').value,
-        city: document.getElementById('addrCity').value,
-        state: document.getElementById('addrState').value,
-        zip: document.getElementById('addrZip').value,
-        country: document.getElementById('addrCountry').value,
-        phone: document.getElementById('addrPhone').value,
-        isDefault: document.getElementById('addrDefault').checked
-    };
-
-    // If setting as default, remove default from others
-    if (newAddress.isDefault) {
-        addresses.forEach(addr => addr.isDefault = false);
-    }
-
-    addresses.push(newAddress);
-    localStorage.setItem('addresses', JSON.stringify(addresses));
-    renderAddresses();
-    closeAddressModal();
-    showToast('Address saved successfully!');
-});
-
-function editAddress(index) {
-    const addr = addresses[index];
-    document.getElementById('addrFirstName').value = addr.firstName;
-    document.getElementById('addrLastName').value = addr.lastName;
-    document.getElementById('addrLine1').value = addr.address;
-    document.getElementById('addrLine2').value = addr.apartment || '';
-    document.getElementById('addrCity').value = addr.city;
-    document.getElementById('addrState').value = addr.state;
-    document.getElementById('addrZip').value = addr.zip;
-    document.getElementById('addrCountry').value = addr.country;
-    document.getElementById('addrPhone').value = addr.phone;
-    document.getElementById('addrDefault').checked = addr.isDefault;
-
-    // Remove old address and show modal
-    addresses.splice(index, 1);
-    showAddressModal();
-}
-
 function deleteAddress(index) {
     if (confirm('Are you sure you want to delete this address?')) {
         addresses.splice(index, 1);
@@ -369,65 +334,6 @@ function setDefaultAddress(index) {
     localStorage.setItem('addresses', JSON.stringify(addresses));
     renderAddresses();
     showToast('Default address updated!');
-}
-
-// Card Modal Functions
-function showCardModal() {
-    document.getElementById('cardModal').classList.add('show');
-}
-
-function closeCardModal() {
-    document.getElementById('cardModal').classList.remove('show');
-    document.getElementById('cardForm').reset();
-}
-
-// Handle card form submission
-document.getElementById('cardForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
-    const cardType = detectCardType(cardNumber);
-
-    const newCard = {
-        number: cardNumber,
-        last4: cardNumber.slice(-4),
-        name: document.getElementById('cardName').value,
-        expiry: document.getElementById('cardExpiry').value,
-        cvv: document.getElementById('cardCvv').value,
-        type: cardType,
-        isDefault: document.getElementById('cardDefault').checked
-    };
-
-    // If setting as default, remove default from others
-    if (newCard.isDefault) {
-        cards.forEach(card => card.isDefault = false);
-    }
-
-    cards.push(newCard);
-    localStorage.setItem('cards', JSON.stringify(cards));
-    renderCards();
-    closeCardModal();
-    showToast('Card saved successfully!');
-});
-
-function detectCardType(number) {
-    if (number.startsWith('4')) return 'Visa';
-    if (number.startsWith('5')) return 'Mastercard';
-    if (number.startsWith('3')) return 'American Express';
-    return 'Credit Card';
-}
-
-function editCard(index) {
-    const card = cards[index];
-    document.getElementById('cardNumber').value = card.number.replace(/(\d{4})/g, '$1 ').trim();
-    document.getElementById('cardName').value = card.name;
-    document.getElementById('cardExpiry').value = card.expiry;
-    document.getElementById('cardCvv').value = card.cvv;
-    document.getElementById('cardDefault').checked = card.isDefault;
-
-    // Remove old card and show modal
-    cards.splice(index, 1);
-    showCardModal();
 }
 
 function deleteCard(index) {

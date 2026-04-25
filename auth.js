@@ -1,7 +1,58 @@
+// Mobile Swipe Back Navigation
+let touchStartX = 0;
+let touchEndX = 0;
+const swipeThreshold = 100;
+const edgeThreshold = 50;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', function(e) {
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    
+    // Check if swipe is from left edge and exceeds threshold
+    if (touchStartX < edgeThreshold && swipeDistance > swipeThreshold) {
+        // Check if there's a previous page to go back to
+        if (window.history.length > 1) {
+            window.history.back();
+        }
+    }
+}
+
 // Authentication JavaScript
 
 // User State Management
 let currentUser = null;
+
+// Update profile button visibility based on auth state
+function updateProfileButtonVisibility() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const authLinks = document.getElementById('authLinks');
+    
+    if (authLinks) {
+        if (currentUser) {
+            authLinks.innerHTML = `
+                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
+                <a href="profile.html" class="top-link">Profile</a>
+                <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
+            `;
+        } else {
+            authLinks.innerHTML = `
+                <a href="auth.html" class="top-link">Sign In</a>
+                <a href="auth.html" class="top-link">Register</a>
+            `;
+        }
+    }
+}
 
 // Check if user is already logged in
 window.addEventListener('DOMContentLoaded', () => {
@@ -13,6 +64,9 @@ window.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         }
     }
+    
+    // Update header auth links
+    updateProfileButtonVisibility();
     
     // Update header if on main page
     if (document.getElementById('userMenu')) {
@@ -121,6 +175,9 @@ function handleLogin(event) {
             }
             
             showToast('Login successful! Welcome back.');
+            
+            // Update header immediately
+            updateProfileButtonVisibility();
             
             // Redirect after short delay
             setTimeout(() => {

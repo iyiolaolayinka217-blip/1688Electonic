@@ -120,74 +120,128 @@
 
         .profile-content {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
         .profile-sidebar {
-            background: white;
-            padding: 25px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            height: fit-content;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            color: var(--text);
-            transition: var(--transition);
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: var(--bg-light);
-            color: var(--primary);
-        }
-
-        .sidebar-menu a i {
-            width: 20px;
+            display: none;
         }
 
         .profile-main {
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
+            max-width: 200px;
+            margin: 0;
         }
 
         .profile-section {
-            display: none;
-        }
-
-        .profile-section.active {
             display: block;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 8px 12px;
+            background: var(--bg-light);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: none;
+            margin-bottom: 0;
+            min-height: auto;
+        }
+
+        .section-header:hover {
+            background: var(--border);
         }
 
         .section-header h2 {
-            font-size: 24px;
+            font-size: 14px;
+            color: var(--text);
+            margin: 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header h2 i {
+            font-size: 12px;
+            width: 14px;
+        }
+
+        .section-header .chevron {
+            transition: transform 0.3s ease;
+            font-size: 10px;
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal.show {
+            display: flex !important;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
             color: var(--secondary);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 5px;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--text);
         }
 
         .form-group {
@@ -605,269 +659,226 @@
 
         <!-- Profile Content -->
         <div class="profile-content">
-            <!-- Sidebar Menu -->
-            <aside class="profile-sidebar">
-                <ul class="sidebar-menu">
-                    <li><a href="#" class="active" onclick="showSection('personal-info')"><i class="fas fa-user"></i> Personal Info</a></li>
-                    <li><a href="#" onclick="showSection('addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
-                    <li><a href="#" onclick="showSection('payment-methods')"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
-                    <li><a href="#" onclick="showSection('orders')"><i class="fas fa-box"></i> Order History</a></li>
-                    <li><a href="#" onclick="showSection('wishlist')"><i class="fas fa-heart"></i> Wishlist</a></li>
-                    <li><a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> Account Settings</a></li>
-                    <li><a href="#" onclick="showSection('danger')"><i class="fas fa-exclamation-triangle"></i> Danger Zone</a></li>
-                </ul>
-            </aside>
-
             <!-- Main Content -->
             <main class="profile-main">
                 <!-- Personal Info Section -->
-                <div class="profile-section active" id="personal-info">
-                    <div class="section-header">
-                        <h2>Personal Information</h2>
-                        <button class="btn btn-primary" onclick="savePersonalInfo()">Save Changes</button>
+                <div class="profile-section" id="personal-info">
+                    <div class="section-header" onclick="openModal('personal-info-modal')">
+                        <h2><i class="fas fa-user"></i> Personal Info</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
-                    <form id="personalInfoForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>First Name</label>
-                                <input type="text" id="firstName" placeholder="Enter first name">
-                            </div>
-                            <div class="form-group">
-                                <label>Last Name</label>
-                                <input type="text" id="lastName" placeholder="Enter last name">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="email" placeholder="Enter email address">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone Number</label>
-                            <input type="tel" id="phone" placeholder="Enter phone number">
-                        </div>
-                        <div class="form-group">
-                            <label>Bio (Optional)</label>
-                            <textarea id="bio" rows="3" placeholder="Tell us about yourself"></textarea>
-                        </div>
-                    </form>
                 </div>
 
                 <!-- Addresses Section -->
                 <div class="profile-section" id="addresses">
-                    <div class="section-header">
-                        <h2>Saved Addresses</h2>
-                        <button class="btn btn-primary" onclick="showAddressModal()">Add New Address</button>
-                    </div>
-                    <div id="addressList">
-                        <!-- Addresses will be loaded dynamically -->
+                    <div class="section-header" onclick="openModal('addresses-modal')">
+                        <h2><i class="fas fa-map-marker-alt"></i> Addresses</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
 
                 <!-- Payment Methods Section -->
                 <div class="profile-section" id="payment-methods">
-                    <div class="section-header">
-                        <h2>Payment Methods</h2>
-                        <button class="btn btn-primary" onclick="showCardModal()">Add New Card</button>
-                    </div>
-                    <div id="cardList">
-                        <!-- Cards will be loaded dynamically -->
+                    <div class="section-header" onclick="openModal('payment-methods-modal')">
+                        <h2><i class="fas fa-credit-card"></i> Payment Methods</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
 
                 <!-- Orders Section -->
                 <div class="profile-section" id="orders">
-                    <div class="section-header">
-                        <h2>Order History</h2>
-                        <select id="orderFilter" onchange="filterOrders()" style="padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-                            <option value="all">All Orders</option>
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <div id="orderList">
-                        <!-- Orders will be loaded dynamically -->
+                    <div class="section-header" onclick="openModal('orders-modal')">
+                        <h2><i class="fas fa-box"></i> Order History</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
 
                 <!-- Wishlist Section -->
                 <div class="profile-section" id="wishlist">
-                    <div class="section-header">
-                        <h2>My Wishlist</h2>
-                    </div>
-                    <div id="wishlistList">
-                        <!-- Wishlist items will be loaded dynamically -->
+                    <div class="section-header" onclick="openModal('wishlist-modal')">
+                        <h2><i class="fas fa-heart"></i> Wishlist</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
 
                 <!-- Settings Section -->
                 <div class="profile-section" id="settings">
-                    <div class="section-header">
-                        <h2>Account Settings</h2>
-                    </div>
-                    
-                    <h3>Change Password</h3>
-                    <form id="passwordForm" style="margin-bottom: 30px;">
-                        <div class="form-group">
-                            <label>Current Password</label>
-                            <input type="password" id="currentPassword" placeholder="Enter current password">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>New Password</label>
-                                <input type="password" id="newPassword" placeholder="Enter new password">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm New Password</label>
-                                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="changePassword()">Update Password</button>
-                    </form>
-
-                    <h3>Notification Preferences</h3>
-                    <div class="notification-preferences">
-                        <div class="preference-item">
-                            <label>Email Notifications</label>
-                            <div class="toggle active" onclick="togglePreference(this)"></div>
-                        </div>
-                        <div class="preference-item">
-                            <label>SMS Notifications</label>
-                            <div class="toggle" onclick="togglePreference(this)"></div>
-                        </div>
-                        <div class="preference-item">
-                            <label>Order Updates</label>
-                            <div class="toggle active" onclick="togglePreference(this)"></div>
-                        </div>
-                        <div class="preference-item">
-                            <label>Promotional Emails</label>
-                            <div class="toggle" onclick="togglePreference(this)"></div>
-                        </div>
-                        <div class="preference-item">
-                            <label>Product Recommendations</label>
-                            <div class="toggle active" onclick="togglePreference(this)"></div>
-                        </div>
+                    <div class="section-header" onclick="openModal('settings-modal')">
+                        <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
 
                 <!-- Danger Zone Section -->
                 <div class="profile-section" id="danger">
-                    <div class="section-header">
-                        <h2>Danger Zone</h2>
-                    </div>
-                    <div class="danger-zone">
-                        <h3>Delete Account</h3>
-                        <p>Once you delete your account, there is no going back. Please be certain.</p>
-                        <button class="btn-danger" onclick="confirmDeleteAccount()">Delete My Account</button>
+                    <div class="section-header" onclick="openModal('danger-modal')">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+                        <i class="fas fa-chevron-right chevron"></i>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Address Modal -->
-    <div class="modal" id="addressModal">
+    <!-- Personal Info Modal -->
+    <div class="modal" id="personal-info-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Add New Address</h3>
-                <button class="close-modal" onclick="closeAddressModal()"><i class="fas fa-times"></i></button>
+                <h3>Personal Information</h3>
+                <button class="close-modal" onclick="closeModal('personal-info-modal')"><i class="fas fa-times"></i></button>
             </div>
-            <form id="addressForm">
+            <form id="personalInfoForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" id="addrFirstName" required>
+                        <input type="text" id="firstName" placeholder="Enter first name">
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" id="addrLastName" required>
+                        <input type="text" id="lastName" placeholder="Enter last name">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Address Line 1</label>
-                    <input type="text" id="addrLine1" required>
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter email address">
                 </div>
                 <div class="form-group">
-                    <label>Address Line 2 (Optional)</label>
-                    <input type="text" id="addrLine2">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>City</label>
-                        <input type="text" id="addrCity" required>
-                    </div>
-                    <div class="form-group">
-                        <label>State/Province</label>
-                        <input type="text" id="addrState" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Postal Code</label>
-                        <input type="text" id="addrZip" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Country</label>
-                        <select id="addrCountry" required>
-                            <option value="CN">China</option>
-                            <option value="US">United States</option>
-                            <option value="UK">United Kingdom</option>
-                            <option value="JP">Japan</option>
-                            <option value="KR">South Korea</option>
-                            <option value="SG">Singapore</option>
-                            <option value="AU">Australia</option>
-                        </select>
-                    </div>
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter phone number">
                 </div>
                 <div class="form-group">
-                    <label>Phone</label>
-                    <input type="tel" id="addrPhone" required>
+                    <label>Bio (Optional)</label>
+                    <textarea id="bio" rows="3" placeholder="Tell us about yourself"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="addrDefault"> Set as default address
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Save Address</button>
+                <button type="button" class="btn btn-primary" onclick="savePersonalInfo()">Save Changes</button>
             </form>
         </div>
     </div>
 
-    <!-- Card Modal -->
-    <div class="modal" id="cardModal">
+    <!-- Addresses Modal -->
+    <div class="modal" id="addresses-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Add New Card</h3>
-                <button class="close-modal" onclick="closeCardModal()"><i class="fas fa-times"></i></button>
+                <h3>Saved Addresses</h3>
+                <button class="close-modal" onclick="closeModal('addresses-modal')"><i class="fas fa-times"></i></button>
             </div>
-            <form id="cardForm">
+            <div id="addressList">
+                <!-- Addresses will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Modal -->
+    <div class="modal" id="payment-methods-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Payment Methods</h3>
+                <button class="close-modal" onclick="closeModal('payment-methods-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cardList">
+                <!-- Cards will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Modal -->
+    <div class="modal" id="orders-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order History</h3>
+                <button class="close-modal" onclick="closeModal('orders-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <select id="orderFilter" onchange="filterOrders()" style="padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 15px; width: 100%;">
+                <option value="all">All Orders</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <div id="orderList">
+                <!-- Orders will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal" id="wishlist-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>My Wishlist</h3>
+                <button class="close-modal" onclick="closeModal('wishlist-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="wishlistList">
+                <!-- Wishlist items will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Account Settings</h3>
+                <button class="close-modal" onclick="closeModal('settings-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <h4>Change Password</h4>
+            <form id="passwordForm" style="margin-bottom: 30px;">
                 <div class="form-group">
-                    <label>Card Number</label>
-                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
-                </div>
-                <div class="form-group">
-                    <label>Cardholder Name</label>
-                    <input type="text" id="cardName" placeholder="Name on card" required>
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Expiry Date</label>
-                        <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
                     </div>
                     <div class="form-group">
-                        <label>CVV</label>
-                        <input type="text" id="cardCvv" placeholder="123" maxlength="3" required>
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="cardDefault"> Set as default card
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Save Card</button>
+                <button type="button" class="btn btn-primary" onclick="changePassword()">Update Password</button>
             </form>
+
+            <h4>Notification Preferences</h4>
+            <div class="notification-preferences">
+                <div class="preference-item">
+                    <label>Email Notifications</label>
+                    <div class="toggle active" onclick="togglePreference(this)"></div>
+                </div>
+                <div class="preference-item">
+                    <label>SMS Notifications</label>
+                    <div class="toggle" onclick="togglePreference(this)"></div>
+                </div>
+                <div class="preference-item">
+                    <label>Order Updates</label>
+                    <div class="toggle active" onclick="togglePreference(this)"></div>
+                </div>
+                <div class="preference-item">
+                    <label>Promotional Emails</label>
+                    <div class="toggle" onclick="togglePreference(this)"></div>
+                </div>
+                <div class="preference-item">
+                    <label>Product Recommendations</label>
+                    <div class="toggle active" onclick="togglePreference(this)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danger Zone Modal -->
+    <div class="modal" id="danger-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Danger Zone</h3>
+                <button class="close-modal" onclick="closeModal('danger-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="danger-zone">
+                <h4>Delete Account</h4>
+                <p>Once you delete your account, there is no going back. Please be certain.</p>
+                <button class="btn-danger" onclick="confirmDeleteAccount()">Delete My Account</button>
+            </div>
         </div>
     </div>
 

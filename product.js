@@ -1,3 +1,33 @@
+// Mobile Swipe Back Navigation
+let touchStartX = 0;
+let touchEndX = 0;
+const swipeThreshold = 100;
+const edgeThreshold = 50;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', function(e) {
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    
+    // Check if swipe is from left edge and exceeds threshold
+    if (touchStartX < edgeThreshold && swipeDistance > swipeThreshold) {
+        // Check if there's a previous page to go back to
+        if (window.history.length > 1) {
+            window.history.back();
+        }
+    }
+}
+
 // Product Detail Page JavaScript
 
 // Product data - in production, this would come from an API

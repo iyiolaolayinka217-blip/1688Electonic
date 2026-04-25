@@ -20,7 +20,11 @@
                 </a>
                 
                 <div class="header-actions">
-                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()">
+                    <div id="authLinks">
+                        <a href="auth.html" class="top-link">Sign In</a>
+                        <a href="auth.html" class="top-link">Register</a>
+                    </div>
+                    <button class="action-btn profile-btn" id="profileBtn" onclick="goToProfile()" style="display: none;">
                         <i class="fas fa-user"></i>
                     </button>
                 </div>

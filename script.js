@@ -1309,6 +1309,36 @@ const supportManager = {
     }
 };
 
+// Mobile Swipe Back Navigation
+let touchStartX = 0;
+let touchEndX = 0;
+const swipeThreshold = 100;
+const edgeThreshold = 50;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', function(e) {
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    
+    // Check if swipe is from left edge and exceeds threshold
+    if (touchStartX < edgeThreshold && swipeDistance > swipeThreshold) {
+        // Check if there's a previous page to go back to
+        if (window.history.length > 1) {
+            window.history.back();
+        }
+    }
+}
+
 // Welcome Modal for First-Time Visitors
 function checkWelcomeModal() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -1453,7 +1483,10 @@ function setupEventListeners() {
             item.classList.add('active');
             const category = item.dataset.category;
             if (category && category !== 'all') {
-                filterByCategory(category);
+                window.filterByCategory(category);
+            } else if (category === 'all') {
+                loadProducts('all');
+                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
@@ -1478,6 +1511,16 @@ function filterByCategory(category) {
     
     showToast(`${getCategoryName(category)} products loaded`);
 }
+
+// Export functions to window for HTML onclick handlers
+window.filterByCategory = filterByCategory;
+window.loadAllProducts = function(event) {
+    event.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('.nav-item[data-category="all"]').classList.add('active');
+    loadProducts('all');
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+};
 
 function performSearch() {
     const query = document.getElementById('searchInput').value.toLowerCase();
@@ -1723,9 +1766,6 @@ function toggleMobileMenu() {
 }
 
 // Swipe gesture to open mobile menu
-let touchStartX = 0;
-let touchEndX = 0;
-
 document.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
 }, false);
