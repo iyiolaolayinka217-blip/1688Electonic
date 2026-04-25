@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSavedForLater();
     loadRecommendations();
     updateCartDisplay();
+    showBonusNotification();
 });
 
 // Load cart from localStorage
@@ -29,6 +30,51 @@ function loadSavedForLater() {
     if (saved) {
         savedForLater = JSON.parse(saved);
     }
+}
+
+// Show bonus notification for new customers
+function showBonusNotification() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+    
+    // Check if user is a new customer
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.id === currentUser.id);
+    
+    if (!user || !user.registrationDate) return;
+    
+    const registrationDate = new Date(user.registrationDate);
+    const now = new Date();
+    const daysSinceRegistration = (now - registrationDate) / (1000 * 60 * 60 * 24);
+    
+    if (daysSinceRegistration > 30) return; // Not a new customer
+    
+    const bonusNotification = document.getElementById('cartBonusNotification');
+    const bonusTitle = document.getElementById('bonusTitle');
+    const bonusMessage = document.getElementById('bonusMessage');
+    
+    if (!bonusNotification) return;
+    
+    // Check if first purchase bonus is available
+    const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+    const userUsage = bonusUsage.find(b => b.userId === currentUser.id);
+    const hasUsedFirstPurchase = userUsage && userUsage.firstPurchaseUsed;
+    
+    if (!hasUsedFirstPurchase) {
+        bonusTitle.textContent = 'Welcome Bonus!';
+        bonusMessage.textContent = 'Get 20% OFF + Free Shipping on orders ¥500+';
+    } else if (daysSinceRegistration <= 7) {
+        bonusTitle.textContent = 'First Week Bonus!';
+        bonusMessage.textContent = 'Get 20% OFF + Free Shipping on orders ¥500+';
+    } else if (daysSinceRegistration <= 14) {
+        bonusTitle.textContent = 'First Week Bonus!';
+        bonusMessage.textContent = 'Get 15% OFF + Free Shipping on orders ¥500+';
+    } else if (daysSinceRegistration <= 30) {
+        bonusTitle.textContent = 'First Month Bonus!';
+        bonusMessage.textContent = 'Get 10% OFF + Free Shipping on orders ¥500+';
+    }
+    
+    bonusNotification.style.display = 'block';
 }
 
 // Update cart display

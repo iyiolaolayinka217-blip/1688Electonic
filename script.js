@@ -29,6 +29,388 @@ let cart = [];
 let currentTab = 'all';
 let loadedProducts = 10;
 
+// New Customer Bonus System
+const newCustomerBonus = {
+    // Check if user is a new customer (registered within last 30 days)
+    isNewCustomer(userId) {
+        if (!userId) return false;
+        
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.id === userId);
+        
+        if (!user || !user.registrationDate) return false;
+        
+        const registrationDate = new Date(user.registrationDate);
+        const now = new Date();
+        const daysSinceRegistration = (now - registrationDate) / (1000 * 60 * 60 * 24);
+        
+        return daysSinceRegistration <= 30;
+    },
+    
+    // Get discount tier based on days since registration
+    getDiscountTier(userId) {
+        if (!userId) return 0;
+        
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.id === userId);
+        
+        if (!user || !user.registrationDate) return 0;
+        
+        const registrationDate = new Date(user.registrationDate);
+        const now = new Date();
+        const daysSinceRegistration = (now - registrationDate) / (1000 * 60 * 60 * 24);
+        
+        // Tier 1: First 7 days - 20% discount
+        if (daysSinceRegistration <= 7) return 0.20;
+        // Tier 2: 8-14 days - 15% discount
+        if (daysSinceRegistration <= 14) return 0.15;
+        // Tier 3: 15-30 days - 10% discount
+        if (daysSinceRegistration <= 30) return 0.10;
+        
+        return 0;
+    },
+    
+    // Check if user has already used their first purchase bonus
+    hasUsedFirstPurchaseBonus(userId) {
+        if (!userId) return true;
+        
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const userUsage = bonusUsage.find(b => b.userId === userId);
+        
+        return userUsage && userUsage.firstPurchaseUsed;
+    },
+    
+    // Mark first purchase bonus as used
+    markFirstPurchaseBonusUsed(userId) {
+        if (!userId) return;
+        
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const existingIndex = bonusUsage.findIndex(b => b.userId === userId);
+        
+        if (existingIndex >= 0) {
+            bonusUsage[existingIndex].firstPurchaseUsed = true;
+            bonusUsage[existingIndex].usedAt = new Date().toISOString();
+        } else {
+            bonusUsage.push({
+                userId,
+                firstPurchaseUsed: true,
+                usedAt: new Date().toISOString()
+            });
+        }
+        
+        localStorage.setItem('bonusUsage', JSON.stringify(bonusUsage));
+    },
+    
+    // Get new customer discount for cart
+    getNewCustomerDiscount(userId, cartTotal) {
+        if (!userId || !this.isNewCustomer(userId)) return 0;
+        
+        // Check if first purchase bonus is available
+        if (!this.hasUsedFirstPurchaseBonus(userId)) {
+            return Math.min(cartTotal * 0.20, 500); // Max ¥500 discount
+        }
+        
+        // Otherwise use tiered discount
+        const tierDiscount = this.getDiscountTier(userId);
+        return cartTotal * tierDiscount;
+    },
+    
+    // Get discount percentage for display
+    getDiscountPercentage(userId) {
+        if (!userId || !this.isNewCustomer(userId)) return 0;
+        
+        if (!this.hasUsedFirstPurchaseBonus(userId)) return 20;
+        
+        return Math.round(this.getDiscountTier(userId) * 100);
+    },
+    
+    // Get discount tier name
+    getDiscountTierName(userId) {
+        if (!userId || !this.isNewCustomer(userId)) return null;
+        
+        if (!this.hasUsedFirstPurchaseBonus(userId)) return 'Welcome Bonus';
+        
+        const daysSinceRegistration = this.getDaysSinceRegistration(userId);
+        
+        if (daysSinceRegistration <= 7) return 'Welcome Bonus';
+        if (daysSinceRegistration <= 14) return 'First Week Bonus';
+        if (daysSinceRegistration <= 30) return 'First Month Bonus';
+        
+        return null;
+    },
+    
+    // Helper to get days since registration
+    getDaysSinceRegistration(userId) {
+        if (!userId) return 0;
+        
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.id === userId);
+        
+        if (!user || !user.registrationDate) return 0;
+        
+        const registrationDate = new Date(user.registrationDate);
+        const now = new Date();
+        return (now - registrationDate) / (1000 * 60 * 60 * 24);
+    }
+};
+
+// Free Shipping System
+const freeShipping = {
+    // Shipping thresholds
+    thresholds: {
+        standard: 1000,  // Free standard shipping for orders ¥1000+
+        express: 2000,   // Free express shipping for orders ¥2000+
+        priority: 5000,  // Free priority shipping for orders ¥5000+
+        newCustomer: 500 // Lower threshold for new customers (¥500+)
+    },
+    
+    // Shipping costs
+    shippingCosts: {
+        standard: 50,
+        express: 100,
+        priority: 200
+    },
+    
+    // Check if order qualifies for free shipping
+    qualifiesForFreeShipping(orderTotal, userId = null, shippingType = 'standard') {
+        const threshold = this.getFreeShippingThreshold(userId, shippingType);
+        return orderTotal >= threshold;
+    },
+    
+    // Get free shipping threshold (lower for new customers)
+    getFreeShippingThreshold(userId = null, shippingType = 'standard') {
+        // Check if user is a new customer for lower threshold
+        if (userId && newCustomerBonus.isNewCustomer(userId)) {
+            if (shippingType === 'standard') return this.thresholds.newCustomer;
+            if (shippingType === 'express') return this.thresholds.standard;
+            if (shippingType === 'priority') return this.thresholds.express;
+        }
+        
+        // Standard thresholds
+        if (shippingType === 'standard') return this.thresholds.standard;
+        if (shippingType === 'express') return this.thresholds.express;
+        if (shippingType === 'priority') return this.thresholds.priority;
+        
+        return this.thresholds.standard;
+    },
+    
+    // Calculate shipping cost
+    calculateShippingCost(orderTotal, userId = null, shippingType = 'standard') {
+        if (this.qualifiesForFreeShipping(orderTotal, userId, shippingType)) {
+            return 0;
+        }
+        
+        return this.shippingCosts[shippingType] || this.shippingCosts.standard;
+    },
+    
+    // Get amount needed for free shipping
+    getAmountNeededForFreeShipping(orderTotal, userId = null, shippingType = 'standard') {
+        const threshold = this.getFreeShippingThreshold(userId, shippingType);
+        return Math.max(0, threshold - orderTotal);
+    },
+    
+    // Get shipping type name
+    getShippingTypeName(shippingType) {
+        const names = {
+            standard: 'Standard Shipping',
+            express: 'Express Shipping',
+            priority: 'Priority Shipping'
+        };
+        return names[shippingType] || 'Standard Shipping';
+    }
+};
+
+// Bonus Tracking System
+const bonusTracking = {
+    // Record bonus usage
+    recordBonusUsage(userId, orderId, discountAmount, bonusType) {
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        
+        const usageRecord = {
+            userId,
+            orderId,
+            bonusType,
+            discountAmount,
+            usedAt: new Date().toISOString(),
+            expiryDate: this.getExpiryDate(userId)
+        };
+        
+        bonusUsage.push(usageRecord);
+        localStorage.setItem('bonusUsage', JSON.stringify(bonusUsage));
+        
+        // Mark first purchase as used if applicable
+        if (bonusType === 'first_purchase') {
+            newCustomerBonus.markFirstPurchaseBonusUsed(userId);
+        }
+    },
+    
+    // Get expiry date for user's bonus
+    getExpiryDate(userId) {
+        if (!userId) return null;
+        
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.id === userId);
+        
+        if (!user || !user.registrationDate) return null;
+        
+        const registrationDate = new Date(user.registrationDate);
+        const expiryDate = new Date(registrationDate);
+        expiryDate.setDate(expiryDate.getDate() + 30); // 30 days from registration
+        
+        return expiryDate.toISOString();
+    },
+    
+    // Check if bonus has expired
+    isBonusExpired(userId) {
+        const expiryDate = this.getExpiryDate(userId);
+        if (!expiryDate) return true;
+        
+        return new Date() > new Date(expiryDate);
+    },
+    
+    // Get user's bonus usage history
+    getUserBonusHistory(userId) {
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        return bonusUsage.filter(record => record.userId === userId);
+    },
+    
+    // Get total bonus savings for a user
+    getTotalBonusSavings(userId) {
+        const history = this.getUserBonusHistory(userId);
+        return history.reduce((total, record) => total + record.discountAmount, 0);
+    },
+    
+    // Track customer status transition
+    trackStatusTransition(userId, fromStatus, toStatus) {
+        const statusTransitions = JSON.parse(localStorage.getItem('statusTransitions')) || [];
+        
+        statusTransitions.push({
+            userId,
+            fromStatus,
+            toStatus,
+            timestamp: new Date().toISOString()
+        });
+        
+        localStorage.setItem('statusTransitions', JSON.stringify(statusTransitions));
+    },
+    
+    // Get current customer status
+    getCustomerStatus(userId) {
+        if (!userId) return 'guest';
+        
+        if (newCustomerBonus.isNewCustomer(userId)) {
+            return 'new_customer';
+        }
+        
+        return 'regular_customer';
+    },
+    
+    // Update customer status and track transition
+    updateCustomerStatus(userId) {
+        const currentStatus = this.getCustomerStatus(userId);
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(u => u.id === userId);
+        
+        if (userIndex >= 0) {
+            const previousStatus = users[userIndex].customerStatus || 'new';
+            
+            if (previousStatus !== currentStatus) {
+                users[userIndex].customerStatus = currentStatus;
+                users[userIndex].statusUpdatedAt = new Date().toISOString();
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                this.trackStatusTransition(userId, previousStatus, currentStatus);
+            }
+        }
+        
+        return currentStatus;
+    },
+    
+    // Get bonus usage statistics
+    getBonusStatistics() {
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        const totalBonusUsed = bonusUsage.reduce((sum, record) => sum + record.discountAmount, 0);
+        const totalUsersWithBonus = new Set(bonusUsage.map(r => r.userId)).size;
+        const expiredBonuses = bonusUsage.filter(r => new Date(r.expiryDate) < new Date()).length;
+        
+        return {
+            totalBonusUsed,
+            totalUsersWithBonus,
+            expiredBonuses,
+            totalBonusesIssued: bonusUsage.length,
+            averageBonusValue: totalBonusUsed / (bonusUsage.length || 1)
+        };
+    },
+    
+    // Get expiring bonuses (bonuses expiring within X days)
+    getExpiringBonuses(days = 7) {
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const now = new Date();
+        const expiryThreshold = new Date();
+        expiryThreshold.setDate(expiryThreshold.getDate() + days);
+        
+        return bonusUsage.filter(record => {
+            const expiryDate = new Date(record.expiryDate);
+            return expiryDate > now && expiryDate <= expiryThreshold;
+        });
+    },
+    
+    // Check and send expiry notifications
+    checkExpiryNotifications() {
+        const expiringBonuses = this.getExpiringBonuses(7);
+        const notifications = JSON.parse(localStorage.getItem('expiryNotifications')) || [];
+        
+        expiringBonuses.forEach(bonus => {
+            const notificationKey = `${bonus.userId}_${bonus.orderId}`;
+            const alreadyNotified = notifications.some(n => n.key === notificationKey);
+            
+            if (!alreadyNotified) {
+                // Send notification (in a real app, this would be an email or push notification)
+                console.log(`Bonus expiring soon for user ${bonus.userId}: ¥${bonus.discountAmount}`);
+                
+                notifications.push({
+                    key: notificationKey,
+                    userId: bonus.userId,
+                    orderId: bonus.orderId,
+                    expiryDate: bonus.expiryDate,
+                    sentAt: new Date().toISOString()
+                });
+            }
+        });
+        
+        localStorage.setItem('expiryNotifications', JSON.stringify(notifications));
+        return expiringBonuses.length;
+    },
+    
+    // Get redemption rate for a time period
+    getRedemptionRate(startDate, endDate) {
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        const newCustomersInPeriod = users.filter(u => {
+            if (!u.registrationDate) return false;
+            const registrationDate = new Date(u.registrationDate);
+            return registrationDate >= new Date(startDate) && registrationDate <= new Date(endDate);
+        });
+        
+        const usersWhoRedeemed = new Set(
+            bonusUsage
+                .filter(r => new Date(r.usedAt) >= new Date(startDate) && new Date(r.usedAt) <= new Date(endDate))
+                .map(r => r.userId)
+        );
+        
+        return {
+            totalNewCustomers: newCustomersInPeriod.length,
+            customersWhoRedeemed: usersWhoRedeemed.size,
+            redemptionRate: newCustomersInPeriod.length > 0 
+                ? (usersWhoRedeemed.size / newCustomersInPeriod.length) * 100 
+                : 0
+        };
+    }
+};
+
 // DOM Elements
 const productGrid = document.getElementById('productGrid');
 const flashProducts = document.getElementById('flashProducts');

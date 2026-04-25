@@ -1,5 +1,90 @@
 /* Authentication Page Styles */
 
+/* Bonus Banner */
+.bonus-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, #e63946 100%);
+    margin-bottom: 20px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: slideDown 0.5s ease;
+}
+
+.bonus-banner-content {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+    position: relative;
+}
+
+.bonus-icon {
+    background: rgba(255, 255, 255, 0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bonus-icon i {
+    font-size: 24px;
+    color: white;
+}
+
+.bonus-text {
+    flex: 1;
+}
+
+.bonus-text h3 {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+}
+
+.bonus-text p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    margin: 0;
+}
+
+.bonus-text strong {
+    color: #ffd700;
+    font-weight: 700;
+}
+
+.bonus-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.bonus-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .auth-page {
     min-height: calc(100vh - 80px);
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -340,5 +425,27 @@ a.logo {
     .form-options {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    /* Bonus Banner Mobile */
+    .bonus-banner-content {
+        padding: 15px;
+    }
+    
+    .bonus-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .bonus-icon i {
+        font-size: 18px;
+    }
+    
+    .bonus-text h3 {
+        font-size: 16px;
+    }
+    
+    .bonus-text p {
+        font-size: 13px;
     }
 }

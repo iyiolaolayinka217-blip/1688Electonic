@@ -3,6 +3,157 @@
    Mobile-First Responsive Design
    ============================================ */
 
+/* Bonus Campaigns Section */
+.bonus-campaigns-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.campaign-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.campaign-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--secondary, #1a1a2e);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.campaign-card h3 i {
+    color: var(--primary, #ff6600);
+}
+
+.campaign-card .form-group {
+    margin-bottom: 1rem;
+}
+
+.campaign-card .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.campaign-card input[type="number"],
+.campaign-card input[type="date"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border, #e0e0e0);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+}
+
+.campaign-card input[type="number"]:focus,
+.campaign-card input[type="date"]:focus {
+    outline: none;
+    border-color: var(--primary, #ff6600);
+}
+
+.campaign-card .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.campaign-card .checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary, #ff6600);
+}
+
+.bonus-statistics {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.bonus-statistics h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--secondary, #1a1a2e);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bonus-statistics h3 i {
+    color: var(--primary, #ff6600);
+}
+
+.bonus-statistics .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.bonus-statistics .stat-card {
+    background: var(--bg-light, #f8f9fa);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.bonus-statistics .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary, #ff6600);
+    margin-bottom: 0.25rem;
+}
+
+.bonus-statistics .stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted, #666);
+}
+
+.bonus-history-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 1.5rem;
+}
+
+.bonus-history-section h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--secondary, #1a1a2e);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bonus-history-section h3 i {
+    color: var(--primary, #ff6600);
+}
+
+/* Mobile Responsive for Bonus Campaigns */
+@media (max-width: 768px) {
+    .bonus-campaigns-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .bonus-statistics .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .bonus-statistics .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Admin Header */
 .admin-header {
     background: var(--secondary, #1a1a2e);

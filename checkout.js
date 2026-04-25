@@ -227,16 +227,43 @@ function calculateTotals() {
     
     // Get shipping cost
     const shippingOption = document.querySelector('input[name="shippingMethod"]:checked');
-    const shippingCost = shippingOption ? 
-        parseFloat(shippingOption.closest('.shipping-option').querySelector('.option-price').dataset.price) : 9.99;
+    const shippingMethod = shippingOption ? shippingOption.value : 'standard';
     
     // Calculate discount
     let discount = 0;
+    let discountSource = '';
+    
+    // Check for new customer bonus discount
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        // Import newCustomerBonus and freeShipping from script.js
+        if (typeof newCustomerBonus !== 'undefined') {
+            const newCustomerDiscount = newCustomerBonus.getNewCustomerDiscount(currentUser.id, subtotal);
+            if (newCustomerDiscount > 0) {
+                discount += newCustomerDiscount;
+                discountSource = 'New Customer Bonus';
+            }
+        }
+    }
+    
+    // Add promo code discount (if any)
     if (appliedPromo) {
         if (appliedPromo.type === 'percentage') {
-            discount = subtotal * (appliedPromo.value / 100);
+            discount += subtotal * (appliedPromo.value / 100);
         } else {
-            discount = appliedPromo.value;
+            discount += appliedPromo.value;
+        }
+        discountSource = discountSource ? discountSource + ' + Promo' : 'Promo Code';
+    }
+    
+    // Calculate shipping cost with free shipping logic
+    let shippingCost = shippingOption ? 
+        parseFloat(shippingOption.closest('.shipping-option').querySelector('.option-price').dataset.price) : 50;
+    
+    // Check for free shipping
+    if (currentUser && typeof freeShipping !== 'undefined') {
+        if (freeShipping.qualifiesForFreeShipping(subtotal, currentUser.id, shippingMethod)) {
+            shippingCost = 0;
         }
     }
     
@@ -257,7 +284,7 @@ function calculateTotals() {
     if (currentStep === 1) {
         shippingDisplay.textContent = 'Calculated at next step';
     } else {
-        shippingDisplay.textContent = `¥${shippingCost.toFixed(0)}`;
+        shippingDisplay.textContent = shippingCost === 0 ? 'FREE' : `¥${shippingCost.toFixed(0)}`;
     }
     
     // Update discount display
@@ -265,6 +292,11 @@ function calculateTotals() {
     if (discount > 0) {
         discountRow.style.display = 'flex';
         document.getElementById('discountAmount').textContent = `-¥${discount.toFixed(0)}`;
+        // Update discount label if it exists
+        const discountLabel = document.getElementById('discountLabel');
+        if (discountLabel) {
+            discountLabel.textContent = discountSource;
+        }
     } else {
         discountRow.style.display = 'none';
     }
@@ -551,46 +583,11 @@ function placeOrder() {
     
     // Simulate order processing
     setTimeout(() => {
-        // Generate order number
-        const orderNumber = 'ORD-' + Date.now();
-        
-        // Create order object
-        const order = {
-            orderNumber: orderNumber,
-            date: new Date().toISOString(),
-            items: cart,
-            shipping: shippingData,
-            payment: paymentData,
-            totals: {
-                subtotal: document.getElementById('subtotal').textContent,
-                shipping: document.getElementById('shippingCost').textContent,
-                discount: appliedPromo ? document.getElementById('discountAmount').textContent : null,
-                tax: document.getElementById('taxAmount').textContent,
-                total: document.getElementById('totalAmount').textContent
-            },
-            status: 'confirmed'
-        };
-        
-        // Save order to localStorage
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        orders.push(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        
-        // Clear cart
-        localStorage.removeItem('cart');
-        
-        // Clear checkout data
-        localStorage.removeItem('checkoutData');
-        
-        // Track conversion for analytics
-        trackConversion(order);
-        
-        // Redirect to success page
-        window.location.href = `order-success.html?order=${orderNumber}`;
+        handleOrderSubmit();
     }, 2000);
 }
 
-// Save checkout progress
+// ...
 function saveCheckoutProgress() {
     const data = {
         step: currentStep,
@@ -761,6 +758,134 @@ function trackConversion(order) {
             currency: 'CNY'
         });
     }
+}
+
+// Handle order submission
+function handleOrderSubmit() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    if (!currentUser) {
+        showToast('Please log in to complete your order');
+        return;
+    }
+    
+    // Generate order ID
+    const orderId = 'ORD-' + Date.now();
+    
+    // Calculate discount amount for tracking
+    const discountAmount = calculateDiscountAmount();
+    const bonusType = determineBonusType(currentUser.id);
+    
+    // Record bonus usage if applicable
+    if (discountAmount > 0 && typeof bonusTracking !== 'undefined') {
+        bonusTracking.recordBonusUsage(currentUser.id, orderId, discountAmount, bonusType);
+        
+        // Update customer status
+        bonusTracking.updateCustomerStatus(currentUser.id);
+    }
+    
+    // Create order object
+    const order = {
+        id: orderId,
+        userId: currentUser.id,
+        items: cart,
+        shipping: shippingData,
+        payment: paymentData,
+        totals: {
+            subtotal: document.getElementById('subtotal').textContent,
+            discount: appliedPromo ? document.getElementById('discountAmount').textContent : null,
+            tax: document.getElementById('taxAmount').textContent,
+            shipping: document.getElementById('shippingCost').textContent,
+            total: document.getElementById('totalAmount').textContent
+        },
+        bonusApplied: discountAmount > 0,
+        bonusType: bonusType,
+        bonusAmount: discountAmount,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+    
+    // Save order to localStorage
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders.push(order);
+    localStorage.setItem('orders', JSON.stringify(orders));
+    
+    // Clear cart
+    cart = [];
+    localStorage.removeItem('cart');
+    
+    // Show success message
+    showToast('Order placed successfully!');
+    
+    // Redirect to order confirmation
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 2000);
+}
+
+// Calculate discount amount for tracking
+function calculateDiscountAmount() {
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    if (!currentUser) return 0;
+    
+    let discount = 0;
+    
+    // Check for new customer bonus discount
+    if (typeof newCustomerBonus !== 'undefined') {
+        const newCustomerDiscount = newCustomerBonus.getNewCustomerDiscount(currentUser.id, subtotal);
+        if (newCustomerDiscount > 0) {
+            discount += newCustomerDiscount;
+        }
+    }
+    
+    // Add promo code discount (if any)
+    if (appliedPromo) {
+        if (appliedPromo.type === 'percentage') {
+            discount += subtotal * (appliedPromo.value / 100);
+        } else {
+            discount += appliedPromo.value;
+        }
+    }
+    
+    return discount;
+}
+
+// Determine bonus type
+function determineBonusType(userId) {
+    if (!userId) return null;
+    
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return null;
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.id === userId);
+    
+    if (!user || !user.registrationDate) return null;
+    
+    const registrationDate = new Date(user.registrationDate);
+    const now = new Date();
+    const daysSinceRegistration = (now - registrationDate) / (1000 * 60 * 60 * 24);
+    
+    // Check if first purchase bonus
+    const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+    const userUsage = bonusUsage.find(b => b.userId === userId);
+    const hasUsedFirstPurchase = userUsage && userUsage.firstPurchaseUsed;
+    
+    if (!hasUsedFirstPurchase) {
+        return 'first_purchase';
+    }
+    
+    if (daysSinceRegistration <= 7) {
+        return 'first_week';
+    } else if (daysSinceRegistration <= 14) {
+        return 'first_week_tier2';
+    } else if (daysSinceRegistration <= 30) {
+        return 'first_month';
+    }
+    
+    return null;
 }
 
 // Show toast notification

@@ -221,6 +221,9 @@ function handleRegister(event) {
             
             showToast('Account created successfully!');
             
+            // Show welcome bonus banner
+            showWelcomeBonusBanner();
+            
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);
@@ -228,6 +231,22 @@ function handleRegister(event) {
         .catch(error => {
             showToast(error.message || 'Registration failed. Please try again.');
         });
+}
+
+// Show welcome bonus banner
+function showWelcomeBonusBanner() {
+    const banner = document.getElementById('welcomeBonusBanner');
+    if (banner) {
+        banner.style.display = 'block';
+    }
+}
+
+// Close welcome bonus banner
+function closeBonusBanner() {
+    const banner = document.getElementById('welcomeBonusBanner');
+    if (banner) {
+        banner.style.display = 'none';
+    }
 }
 
 // Handle Forgot Password

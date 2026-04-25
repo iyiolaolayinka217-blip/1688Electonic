@@ -78,6 +78,10 @@
                     <i class="fas fa-tags"></i>
                     <span>Promotions</span>
                 </a>
+                <a href="#" class="nav-item" data-section="bonus-campaigns" onclick="showSection('bonus-campaigns')">
+                    <i class="fas fa-gift"></i>
+                    <span>Bonus Campaigns</span>
+                </a>
                 <a href="#" class="nav-item" data-section="invoices" onclick="showSection('invoices')">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <span>Invoices</span>
@@ -460,6 +464,141 @@
                             <!-- Promotions loaded dynamically -->
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- Bonus Campaigns Section -->
+            <section class="admin-section" id="bonus-campaignsSection">
+                <div class="section-header">
+                    <h1>New Customer Bonus Campaigns</h1>
+                    <button class="btn btn-primary" onclick="saveBonusCampaignSettings()">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+
+                <div class="bonus-campaigns-container">
+                    <!-- Discount Tiers -->
+                    <div class="campaign-card">
+                        <h3><i class="fas fa-percent"></i> Discount Tiers</h3>
+                        <div class="form-group">
+                            <label>First Purchase Discount (%)</label>
+                            <input type="number" id="firstPurchaseDiscount" value="20" min="0" max="50" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>First 7 Days Discount (%)</label>
+                            <input type="number" id="firstWeekDiscount" value="20" min="0" max="50" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Days 8-14 Discount (%)</label>
+                            <input type="number" id="secondWeekDiscount" value="15" min="0" max="50" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Days 15-30 Discount (%)</label>
+                            <input type="number" id="firstMonthDiscount" value="10" min="0" max="50" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum Discount Amount (¥)</label>
+                            <input type="number" id="maxDiscountAmount" value="500" min="0" step="10">
+                        </div>
+                    </div>
+
+                    <!-- Free Shipping -->
+                    <div class="campaign-card">
+                        <h3><i class="fas fa-truck"></i> Free Shipping Thresholds</h3>
+                        <div class="form-group">
+                            <label>New Customer Threshold (¥)</label>
+                            <input type="number" id="newCustomerShippingThreshold" value="500" min="0" step="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Standard Shipping Threshold (¥)</label>
+                            <input type="number" id="standardShippingThreshold" value="1000" min="0" step="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Express Shipping Threshold (¥)</label>
+                            <input type="number" id="expressShippingThreshold" value="2000" min="0" step="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Priority Shipping Threshold (¥)</label>
+                            <input type="number" id="priorityShippingThreshold" value="5000" min="0" step="50">
+                        </div>
+                    </div>
+
+                    <!-- Campaign Status -->
+                    <div class="campaign-card">
+                        <h3><i class="fas fa-toggle-on"></i> Campaign Status</h3>
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="bonusCampaignEnabled" checked>
+                                <span>Enable New Customer Bonus Campaign</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Bonus Duration (days)</label>
+                            <input type="number" id="bonusDuration" value="30" min="1" max="90" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Campaign Start Date</label>
+                            <input type="date" id="campaignStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Campaign End Date</label>
+                            <input type="date" id="campaignEndDate">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bonus Statistics -->
+                <div class="bonus-statistics">
+                    <h3><i class="fas fa-chart-line"></i> Bonus Usage Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalBonusUsed">¥0</div>
+                            <div class="stat-label">Total Bonus Given</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="usersWithBonus">0</div>
+                            <div class="stat-label">Users Used Bonus</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="expiredBonuses">0</div>
+                            <div class="stat-label">Expired Bonuses</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="averageBonusValue">¥0</div>
+                            <div class="stat-label">Average Bonus Value</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="bonusRedemptionRate">0%</div>
+                            <div class="stat-label">Redemption Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="activeNewCustomers">0</div>
+                            <div class="stat-label">Active New Customers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bonus Usage History Table -->
+                <div class="bonus-history-section">
+                    <h3><i class="fas fa-history"></i> Bonus Usage History</h3>
+                    <div class="table-container">
+                        <table class="b2b-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Order ID</th>
+                                    <th>Bonus Type</th>
+                                    <th>Discount Amount</th>
+                                    <th>Used At</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bonusHistoryTableBody">
+                                <!-- Bonus history loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 

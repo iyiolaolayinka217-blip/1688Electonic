@@ -207,6 +207,11 @@ function showSection(section) {
     document.getElementById(section + 'Section').classList.add('active');
     document.querySelector(`.nav-item[data-section="${section}"]`).classList.add('active');
     
+    // Load section-specific data
+    if (section === 'bonus-campaigns') {
+        loadBonusCampaignSettings();
+    }
+    
     // On mobile, close sidebar
     if (window.innerWidth < 768) {
         document.getElementById('adminSidebar').classList.remove('show');
@@ -493,6 +498,154 @@ function searchCustomers() {
 
 function exportCustomers() {
     showToast('Customers exported');
+}
+
+function loadBonusCampaignSettings() {
+    const settings = JSON.parse(localStorage.getItem('bonusCampaignSettings')) || {
+        firstPurchaseDiscount: 20,
+        firstWeekDiscount: 20,
+        secondWeekDiscount: 15,
+        firstMonthDiscount: 10,
+        maxDiscountAmount: 500,
+        newCustomerShippingThreshold: 500,
+        standardShippingThreshold: 1000,
+        expressShippingThreshold: 2000,
+        priorityShippingThreshold: 5000,
+        bonusCampaignEnabled: true,
+        bonusDuration: 30,
+        campaignStartDate: null,
+        campaignEndDate: null
+    };
+    
+    // Populate form fields
+    document.getElementById('firstPurchaseDiscount').value = settings.firstPurchaseDiscount;
+    document.getElementById('firstWeekDiscount').value = settings.firstWeekDiscount;
+    document.getElementById('secondWeekDiscount').value = settings.secondWeekDiscount;
+    document.getElementById('firstMonthDiscount').value = settings.firstMonthDiscount;
+    document.getElementById('maxDiscountAmount').value = settings.maxDiscountAmount;
+    document.getElementById('newCustomerShippingThreshold').value = settings.newCustomerShippingThreshold;
+    document.getElementById('standardShippingThreshold').value = settings.standardShippingThreshold;
+    document.getElementById('expressShippingThreshold').value = settings.expressShippingThreshold;
+    document.getElementById('priorityShippingThreshold').value = settings.priorityShippingThreshold;
+    document.getElementById('bonusCampaignEnabled').checked = settings.bonusCampaignEnabled;
+    document.getElementById('bonusDuration').value = settings.bonusDuration;
+    
+    if (settings.campaignStartDate) {
+        document.getElementById('campaignStartDate').value = settings.campaignStartDate;
+    }
+    
+    if (settings.campaignEndDate) {
+        document.getElementById('campaignEndDate').value = settings.campaignEndDate;
+    }
+    
+    // Load bonus statistics
+    loadBonusStatistics();
+}
+
+function saveBonusCampaignSettings() {
+    const settings = {
+        firstPurchaseDiscount: parseFloat(document.getElementById('firstPurchaseDiscount').value),
+        firstWeekDiscount: parseFloat(document.getElementById('firstWeekDiscount').value),
+        secondWeekDiscount: parseFloat(document.getElementById('secondWeekDiscount').value),
+        firstMonthDiscount: parseFloat(document.getElementById('firstMonthDiscount').value),
+        maxDiscountAmount: parseFloat(document.getElementById('maxDiscountAmount').value),
+        newCustomerShippingThreshold: parseFloat(document.getElementById('newCustomerShippingThreshold').value),
+        standardShippingThreshold: parseFloat(document.getElementById('standardShippingThreshold').value),
+        expressShippingThreshold: parseFloat(document.getElementById('expressShippingThreshold').value),
+        priorityShippingThreshold: parseFloat(document.getElementById('priorityShippingThreshold').value),
+        bonusCampaignEnabled: document.getElementById('bonusCampaignEnabled').checked,
+        bonusDuration: parseInt(document.getElementById('bonusDuration').value),
+        campaignStartDate: document.getElementById('campaignStartDate').value || null,
+        campaignEndDate: document.getElementById('campaignEndDate').value || null
+    };
+    
+    localStorage.setItem('bonusCampaignSettings', JSON.stringify(settings));
+    
+    // Update the global bonus settings in script.js
+    if (typeof newCustomerBonus !== 'undefined' && typeof freeShipping !== 'undefined') {
+        newCustomerBonus.settings = settings;
+        freeShipping.thresholds.newCustomer = settings.newCustomerShippingThreshold;
+        freeShipping.thresholds.standard = settings.standardShippingThreshold;
+        freeShipping.thresholds.express = settings.expressShippingThreshold;
+        freeShipping.thresholds.priority = settings.priorityShippingThreshold;
+    }
+    
+    showToast('Bonus campaign settings saved successfully!');
+}
+
+function loadBonusStatistics() {
+    if (typeof bonusTracking !== 'undefined') {
+        const stats = bonusTracking.getBonusStatistics();
+        
+        document.getElementById('totalBonusUsed').textContent = `¥${stats.totalBonusUsed.toFixed(0)}`;
+        document.getElementById('usersWithBonus').textContent = stats.totalUsersWithBonus;
+        document.getElementById('expiredBonuses').textContent = stats.expiredBonuses;
+        document.getElementById('averageBonusValue').textContent = `¥${stats.averageBonusValue.toFixed(0)}`;
+        
+        // Calculate redemption rate
+        const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const newCustomers = users.filter(u => {
+            if (!u.registrationDate) return false;
+            const registrationDate = new Date(u.registrationDate);
+            const now = new Date();
+            const daysSinceRegistration = (now - registrationDate) / (1000 * 60 * 60 * 24);
+            return daysSinceRegistration <= 30;
+        });
+        
+        const redemptionRate = newCustomers.length > 0 
+            ? ((stats.totalUsersWithBonus / newCustomers.length) * 100).toFixed(1) 
+            : 0;
+        
+        document.getElementById('bonusRedemptionRate').textContent = `${redemptionRate}%`;
+        document.getElementById('activeNewCustomers').textContent = newCustomers.length;
+        
+        // Load bonus history table
+        loadBonusHistoryTable();
+    }
+}
+
+function loadBonusHistoryTable() {
+    const bonusUsage = JSON.parse(localStorage.getItem('bonusUsage')) || [];
+    const tbody = document.getElementById('bonusHistoryTableBody');
+    
+    if (!tbody) return;
+    
+    if (bonusUsage.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No bonus usage history yet</td></tr>';
+        return;
+    }
+    
+    // Sort by most recent
+    const sortedUsage = [...bonusUsage].sort((a, b) => new Date(b.usedAt) - new Date(a.usedAt));
+    
+    tbody.innerHTML = sortedUsage.map(record => {
+        const isExpired = new Date(record.expiryDate) < new Date();
+        const statusClass = isExpired ? 'expired' : 'active';
+        const statusText = isExpired ? 'Expired' : 'Active';
+        
+        return `
+            <tr>
+                <td>${record.userId}</td>
+                <td>${record.orderId}</td>
+                <td>${formatBonusType(record.bonusType)}</td>
+                <td>¥${record.discountAmount.toFixed(0)}</td>
+                <td>${new Date(record.usedAt).toLocaleDateString()}</td>
+                <td>${new Date(record.expiryDate).toLocaleDateString()}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function formatBonusType(type) {
+    const types = {
+        'first_purchase': 'First Purchase',
+        'first_week': 'First Week (20%)',
+        'first_week_tier2': 'First Week (15%)',
+        'first_month': 'First Month (10%)'
+    };
+    return types[type] || type;
 }
 
 // Helpers
