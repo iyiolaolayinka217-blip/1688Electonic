@@ -1,403 +1,858 @@
-// Profile Page JavaScript
+// Profile Page JavaScript - Mobile & Desktop Functionality
 
-// State Management
+// ========== STATE MANAGEMENT ==========
 let currentUser = null;
-let addresses = [];
-let cards = [];
-let orders = [];
-let wishlist = [];
+let userData = {};
+let activeSection = 'dashboard';
 
+// ========== INITIALIZATION ==========
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    initializeProfile();
 });
 
-function initializeApp() {
-    loadUserData();
-    loadMockDataIfEmpty(); // Ensure the "Advanced" look has content
-
-    // Initial Render
-    renderProfile();
-    renderAddresses();
-    renderCards();
-    renderOrders();
-    renderWishlist();
-
-    // Global event listeners
-    setupEventListeners();
-}
-
-function setupEventListeners() {
-    // Close modal when clicking outside
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeModal(event.target.id);
-        }
-    });
-
-    // Handle ESC key to close modals
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            const openModal = document.querySelector('.modal.show');
-            if (openModal) closeModal(openModal.id);
-        }
-    });
-}
-
-// Load user data from Auth system
-function loadUserData() {
-    currentUser = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
-
+function initializeProfile() {
+    // Check if user is logged in
+    currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
     if (!currentUser) {
-        // Redirect if not logged in
-        localStorage.setItem('redirectAfterLogin', window.location.href);
         window.location.href = 'auth.html';
+        return;
+    }
+    
+    // Load user data
+    loadUserData();
+    
+    // Update UI
+    updateProfileUI();
+    
+    // Load section data
+    loadDashboardData();
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Update cart/wishlist counts
+    updateCartCount();
+    updateWishlistCount();
+    
+    // Initialize interface mode (from global script.js)
+    if (typeof initializeInterfaceMode === 'function') {
+        initializeInterfaceMode();
     }
 }
 
-function loadMockDataIfEmpty() {
-    // Load existing or set defaults
-    addresses = JSON.parse(localStorage.getItem('addresses')) || [
-        {
-            firstName: 'Alex',
-            lastName: 'Chen',
-            address: '123 High-Tech Park, Nanshan District',
-            city: 'Shenzhen',
-            state: 'Guangdong',
-            zip: '518057',
-            country: 'CN',
-            phone: '+86 138 0013 8000',
-            isDefault: true
-        }
-    ];
+// Note: Interface mode functions are in global script.js
+// setInterfaceMode(), toggleInterfaceMode(), etc.
 
-    cards = JSON.parse(localStorage.getItem('cards')) || [
-        {
-            type: 'Visa',
-            last4: '8842',
-            expiry: '12/26',
-            name: 'Alex Chen',
-            isDefault: true
-        }
-    ];
-
-    orders = JSON.parse(localStorage.getItem('orders')) || [
-        {
-            orderNumber: 'ORD-2024-9912',
-            date: '2024-03-10T14:20:00Z',
-            status: 'delivered',
-            items: [
-                { name: 'iPhone 15 Pro Max', quantity: 20, price: 6499, image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=200' },
-                { name: 'MacBook Pro M3', quantity: 5, price: 9499, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200' }
-            ],
-            totals: { total: '¥177,475' }
-        },
-        {
-            orderNumber: 'ORD-2024-8850',
-            date: '2024-02-15T09:10:00Z',
-            status: 'shipped',
-            items: [
-                { name: 'Sony WH-1000XM5', quantity: 50, price: 2199, image: 'https://images.unsplash.com/photo-1644982647708-0b2cc3d910b7?w=200' }
-            ],
-            totals: { total: '¥109,950' }
-        }
-    ];
-
-    wishlist = JSON.parse(localStorage.getItem('wishlist')) || [
-        { id: 7, name: 'RTX 4090 Graphics Card', price: 10899, image: 'https://images.unsplash.com/photo-1624701928517-44c8ac49d93c?w=200' }
-    ];
-
-    localStorage.setItem('addresses', JSON.stringify(addresses));
-    localStorage.setItem('cards', JSON.stringify(cards));
-    localStorage.setItem('orders', JSON.stringify(orders));
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-}
-
-// Render profile information
-function renderProfile() {
-    if (!currentUser) return;
-
-    // Hero Section
-    const fullName = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Valued Member';
-    document.getElementById('profileName').textContent = fullName;
-    document.getElementById('profileEmail').textContent = currentUser.email || 'No email set';
+function setInterfaceMode(mode, save = true) {
+    currentInterfaceMode = mode;
     
-    // Avatar
-    const initials = `${(currentUser.firstName || 'U')[0]}${(currentUser.lastName || '')[0]}`.toUpperCase();
-    document.getElementById('avatarInitials').textContent = initials;
+    // Update settings page buttons
+    const desktopBtn = document.getElementById('desktopModeBtn');
+    const mobileBtn = document.getElementById('mobileModeBtn');
+    const modeIndicator = document.getElementById('modeIndicator');
     
-    const avatarContainer = document.getElementById('profileAvatar');
-    if (currentUser.avatar) {
-        avatarContainer.innerHTML = `<img src="${currentUser.avatar}" alt="Profile">`;
+    if (desktopBtn && mobileBtn) {
+        if (mode === 'desktop') {
+            desktopBtn.classList.add('active');
+            mobileBtn.classList.remove('active');
+        } else {
+            desktopBtn.classList.remove('active');
+            mobileBtn.classList.add('active');
+        }
+    }
+    
+    // Update indicator text in settings
+    if (modeIndicator) {
+        const currentModeSpan = modeIndicator.querySelector('.current-mode');
+        const modeHintSpan = modeIndicator.querySelector('.mode-hint');
+        
+        if (currentModeSpan) {
+            currentModeSpan.textContent = `Current: ${mode === 'desktop' ? 'Desktop' : 'Mobile'} Mode`;
+        }
+        if (modeHintSpan) {
+            modeHintSpan.textContent = mode === 'desktop' 
+                ? 'Optimized for large screens with sidebar navigation'
+                : 'Optimized for touch with mobile-style interface';
+        }
+    }
+    
+    // Update header compact button
+    const headerModeIcon = document.getElementById('headerModeIcon');
+    const headerModeLabel = document.getElementById('headerModeLabel');
+    const headerModeToggle = document.getElementById('headerModeToggle');
+    
+    if (headerModeIcon && headerModeLabel && headerModeToggle) {
+        if (mode === 'mobile') {
+            headerModeIcon.className = 'fas fa-mobile-alt';
+            headerModeLabel.textContent = 'Mob';
+            headerModeToggle.classList.add('active-mobile-mode');
+            headerModeToggle.title = 'Switch to Desktop Mode';
+        } else {
+            headerModeIcon.className = 'fas fa-desktop';
+            headerModeLabel.textContent = 'Dek';
+            headerModeToggle.classList.remove('active-mobile-mode');
+            headerModeToggle.title = 'Switch to Mobile Mode';
+        }
+        
+        // Add pulse animation
+        headerModeToggle.classList.add('pulse');
+        setTimeout(() => {
+            headerModeToggle.classList.remove('pulse');
+        }, 400);
+    }
+    
+    // Apply/remove mobile simulation class
+    if (mode === 'mobile') {
+        document.body.classList.add('mobile-simulated');
+        // Reset any active section to show menu grid
+        const contentArea = document.querySelector('.profile-content-area');
+        const mobileMenu = document.getElementById('mobileMenuGrid');
+        
+        if (contentArea) {
+            contentArea.classList.remove('active-mobile');
+            // Ensure content area is visible in desktop mode inside mobile-simulated
+            if (window.innerWidth > 768) {
+                contentArea.style.display = 'block';
+            }
+        }
+        if (mobileMenu) mobileMenu.style.display = 'grid';
+        
+        // Add back button if not exists
+        addMobileBackButton();
+        
+        showToast('Mobile interface mode activated');
     } else {
-        avatarContainer.innerHTML = `<span id="avatarInitials">${initials}</span>`;
+        document.body.classList.remove('mobile-simulated');
+        
+        // Reset all mobile-specific states
+        const contentArea = document.querySelector('.profile-content-area');
+        const mobileMenu = document.getElementById('mobileMenuGrid');
+        
+        if (contentArea) {
+            contentArea.classList.remove('active-mobile');
+            contentArea.style.display = 'block';
+        }
+        if (mobileMenu) mobileMenu.style.display = 'none';
+        
+        // Restore sidebar visibility on desktop
+        const sidebar = document.querySelector('.profile-sidebar');
+        if (sidebar && window.innerWidth > 768) {
+            sidebar.style.display = 'block';
+        }
+        
+        showToast('Desktop interface mode activated');
     }
-
-    // Stats Bar
-    document.getElementById('statOrders').textContent = orders.length;
-    document.getElementById('statWishlist').textContent = wishlist.length;
     
-    const totalSpent = orders.reduce((sum, order) => {
-        const val = parseInt(order.totals?.total?.replace(/[^\d]/g, '') || 0);
-        return sum + val;
-    }, 0);
-    document.getElementById('statPoints').textContent = Math.floor(totalSpent / 500);
-
-    // Form pre-fill
-    if (document.getElementById('firstName')) document.getElementById('firstName').value = currentUser.firstName || '';
-    if (document.getElementById('lastName')) document.getElementById('lastName').value = currentUser.lastName || '';
-    if (document.getElementById('email')) document.getElementById('email').value = currentUser.email || '';
-    if (document.getElementById('phone')) document.getElementById('phone').value = currentUser.phone || '';
-    if (document.getElementById('bio')) document.getElementById('bio').value = currentUser.bio || '';
-}
-
-function renderAddresses() {
-    const container = document.getElementById('addressList');
-    if (!container) return;
-
-    if (addresses.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p>No addresses saved yet.</p></div>';
-        return;
+    // Save preference
+    if (save) {
+        localStorage.setItem('interfaceMode', mode);
     }
-
-    container.innerHTML = addresses.map((addr, index) => `
-        <div class="address-card ${addr.isDefault ? 'default' : ''}" style="background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid ${addr.isDefault ? 'var(--primary)' : '#eee'}">
-            <div style="display: flex; justify-content: space-between;">
-                <h4 style="margin: 0;">${addr.firstName} ${addr.lastName}</h4>
-                ${addr.isDefault ? '<span style="color: var(--primary); font-size: 10px; font-weight: bold; text-transform: uppercase;">Default</span>' : ''}
-            </div>
-            <p style="font-size: 13px; color: #666; margin: 5px 0;">${addr.address}, ${addr.city}, ${addr.state}</p>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="deleteAddress(${index})" style="background: none; border: none; color: #f56565; font-size: 12px; cursor: pointer; padding: 0;">Remove</button>
-                ${!addr.isDefault ? `<button onclick="setDefaultAddress(${index})" style="background: none; border: none; color: var(--primary); font-size: 12px; cursor: pointer; padding: 0;">Set Default</button>` : ''}
-            </div>
-        </div>
-    `).join('');
+    
+    // Trigger resize to adjust layout
+    window.dispatchEvent(new Event('resize'));
 }
 
-function renderCards() {
-    const container = document.getElementById('cardList');
-    if (!container) return;
-
-    if (cards.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p>No payment methods saved.</p></div>';
-        return;
-    }
-
-    container.innerHTML = cards.map((card, index) => `
-        <div class="card-item ${card.isDefault ? 'default' : ''}" style="background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid ${card.isDefault ? 'var(--primary)' : '#eee'}">
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <i class="fab fa-cc-${card.type.toLowerCase()}" style="font-size: 24px; color: #2d3436;"></i>
-                <div style="flex: 1;">
-                    <h4 style="margin: 0;">•••• •••• •••• ${card.last4}</h4>
-                    <p style="font-size: 12px; color: #666; margin: 2px 0;">Expires ${card.expiry} | ${card.name}</p>
-                </div>
-                <button onclick="deleteCard(${index})" style="background: none; border: none; color: #f56565; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </div>
-    `).join('');
+function toggleInterfaceMode() {
+    const newMode = currentInterfaceMode === 'desktop' ? 'mobile' : 'desktop';
+    setInterfaceMode(newMode);
 }
 
-function renderOrders(filter = 'all') {
-    const container = document.getElementById('orderList');
-    if (!container) return;
-
-    const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
-
-    if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 30px;"><i class="fas fa-box-open" style="font-size: 40px; color: #eee; margin-bottom: 15px;"></i><p>No orders found.</p></div>';
-        return;
-    }
-
-    container.innerHTML = filtered.map(order => `
-        <div class="order-item" style="border: 1px solid #eee; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f5f5f5; padding-bottom: 10px; margin-bottom: 10px;">
-                <div>
-                    <span style="font-weight: 700; font-size: 14px;">${order.orderNumber}</span>
-                    <p style="margin: 0; font-size: 11px; color: #999;">${new Date(order.date).toLocaleDateString()}</p>
-                </div>
-                <span class="status-badge" style="background: ${getStatusColor(order.status)}; color: white; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${order.status}</span>
-            </div>
-            <div class="order-products">
-                ${order.items.slice(0, 2).map(item => `
-                    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
-                        <img src="${item.image}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
-                        <div style="flex: 1;">
-                            <p style="margin: 0; font-size: 13px; font-weight: 500;">${item.name}</p>
-                            <p style="margin: 0; font-size: 11px; color: #666;">Qty: ${item.quantity} × ¥${item.price}</p>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f5f5f5;">
-                <span style="font-size: 14px; font-weight: 700; color: var(--primary);">${order.totals.total}</span>
-                <button onclick="showToast('Loading tracking info...')" style="background: #f0f2f5; border: none; padding: 6px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">Track</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderWishlist() {
-    const container = document.getElementById('wishlistList');
-    if (!container) return;
-
-    if (wishlist.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 30px;"><i class="fas fa-heart" style="font-size: 40px; color: #eee; margin-bottom: 15px;"></i><p>Your wishlist is empty.</p></div>';
-        return;
-    }
-
-    container.innerHTML = wishlist.map((item, index) => `
-        <div style="display: flex; gap: 15px; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px;">
-            <img src="${item.image}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover;">
-            <div style="flex: 1;">
-                <h4 style="margin: 0; font-size: 14px;">${item.name}</h4>
-                <p style="margin: 5px 0 0; font-weight: 700; color: var(--primary);">¥${item.price}</p>
-            </div>
-            <button onclick="removeFromWishlist(${index})" style="background: none; border: none; color: #999; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
-        </div>
-    `).join('');
-}
-
-// Actions
-function savePersonalInfo() {
-    currentUser.firstName = document.getElementById('firstName').value;
-    currentUser.lastName = document.getElementById('lastName').value;
-    currentUser.email = document.getElementById('email').value;
-    currentUser.phone = document.getElementById('phone').value;
-    currentUser.bio = document.getElementById('bio').value;
-
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    renderProfile();
-    closeModal('personal-info-modal');
-    showToast('Profile updated successfully!');
-}
-
-function handleAvatarUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            currentUser.avatar = e.target.result;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            renderProfile();
-            showToast('Avatar updated!');
+// ========== USER DATA MANAGEMENT ==========
+function loadUserData() {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.id === currentUser.id);
+    
+    if (user) {
+        userData = {
+            ...user,
+            orders: JSON.parse(localStorage.getItem(`orders_${currentUser.id}`)) || [],
+            addresses: JSON.parse(localStorage.getItem(`addresses_${currentUser.id}`)) || [],
+            paymentMethods: JSON.parse(localStorage.getItem(`payment_${currentUser.id}`)) || [],
+            wishlist: JSON.parse(localStorage.getItem(`wishlist_${currentUser.id}`)) || [],
+            stats: {
+                totalOrders: 0,
+                totalSpent: 0,
+                totalSavings: 0,
+                rewardPoints: user.rewardPoints || 0
+            }
         };
-        reader.readAsDataURL(file);
+        
+        // Calculate stats
+        calculateUserStats();
     }
+}
+
+function calculateUserStats() {
+    if (userData.orders) {
+        userData.stats.totalOrders = userData.orders.length;
+        userData.stats.totalSpent = userData.orders.reduce((sum, order) => sum + (order.total || 0), 0);
+        userData.stats.totalSavings = userData.orders.reduce((sum, order) => sum + (order.discount || 0), 0);
+    }
+}
+
+function saveUserData() {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    
+    if (userIndex !== -1) {
+        users[userIndex] = { ...users[userIndex], ...userData };
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    
+    // Save specific data
+    localStorage.setItem(`orders_${currentUser.id}`, JSON.stringify(userData.orders || []));
+    localStorage.setItem(`addresses_${currentUser.id}`, JSON.stringify(userData.addresses || []));
+    localStorage.setItem(`payment_${currentUser.id}`, JSON.stringify(userData.paymentMethods || []));
+    localStorage.setItem(`wishlist_${currentUser.id}`, JSON.stringify(userData.wishlist || []));
+}
+
+// ========== UI UPDATES ==========
+function updateProfileUI() {
+    if (!userData) return;
+    
+    const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'User';
+    const initials = getInitials(fullName);
+    const email = userData.email || 'user@email.com';
+    
+    // Mobile header
+    document.getElementById('mobileUserName').textContent = fullName;
+    document.getElementById('mobileUserEmail').textContent = email;
+    document.getElementById('mobileAvatarInitials').textContent = initials;
+    
+    // Desktop header
+    document.getElementById('desktopUserName').textContent = fullName;
+    document.getElementById('desktopUserEmail').textContent = email;
+    document.getElementById('desktopAvatarInitials').textContent = initials;
+    
+    // Account badge
+    const badgeText = userData.userType === 'business' ? 'B2B Business' : 'Regular Customer';
+    const badgeElement = document.getElementById('mobileAccountBadge');
+    if (badgeElement) badgeElement.textContent = badgeText;
+    
+    const desktopBadge = document.getElementById('desktopAccountBadge');
+    if (desktopBadge) desktopBadge.textContent = badgeText;
+    
+    // Settings form
+    document.getElementById('firstName').value = userData.firstName || '';
+    document.getElementById('lastName').value = userData.lastName || '';
+    document.getElementById('email').value = userData.email || '';
+    document.getElementById('phone').value = userData.phone || '';
+    
+    // Update nav badges
+    updateNavBadges();
+}
+
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function updateNavBadges() {
+    const orderBadge = document.getElementById('orderBadge');
+    const wishlistBadge = document.getElementById('wishlistBadge');
+    
+    if (orderBadge) {
+        const pendingOrders = userData.orders?.filter(o => o.status === 'pending').length || 0;
+        orderBadge.textContent = pendingOrders;
+        orderBadge.style.display = pendingOrders > 0 ? 'block' : 'none';
+    }
+    
+    if (wishlistBadge) {
+        const wishlistCount = userData.wishlist?.length || 0;
+        wishlistBadge.textContent = wishlistCount;
+        wishlistBadge.style.display = wishlistCount > 0 ? 'block' : 'none';
+    }
+}
+
+// ========== SECTION NAVIGATION ==========
+function showSection(sectionName) {
+    activeSection = sectionName;
+    const isMobileSimulated = document.body.classList.contains('mobile-simulated');
+    
+    // Desktop: Update sidebar active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.section === sectionName) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Update content sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    const activeSectionElement = document.getElementById(`${sectionName}-section`);
+    if (activeSectionElement) {
+        activeSectionElement.classList.add('active');
+    }
+    
+    // Mobile or Simulated Mobile: Show content area as overlay
+    if (window.innerWidth <= 768 || isMobileSimulated) {
+        const contentArea = document.querySelector('.profile-content-area');
+        if (contentArea) {
+            contentArea.classList.add('active-mobile');
+            // For simulated mode on desktop, ensure content area is visible
+            if (isMobileSimulated && window.innerWidth > 768) {
+                contentArea.style.display = 'block';
+            }
+        }
+        
+        // Hide mobile menu grid
+        const mobileMenu = document.getElementById('mobileMenuGrid');
+        if (mobileMenu) mobileMenu.style.display = 'none';
+        
+        // Add back button for simulated mode
+        if (isMobileSimulated && window.innerWidth > 768) {
+            addMobileBackButton();
+        }
+    }
+    
+    // Load section data
+    loadSectionData(sectionName);
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+}
+
+function loadSectionData(sectionName) {
+    switch(sectionName) {
+        case 'dashboard':
+            loadDashboardData();
+            break;
+        case 'orders':
+            loadOrdersData();
+            break;
+        case 'addresses':
+            loadAddressesData();
+            break;
+        case 'payment':
+            loadPaymentData();
+            break;
+        case 'wishlist':
+            loadWishlistData();
+            break;
+        case 'settings':
+            // Settings form is pre-filled
+            break;
+        case 'support':
+            // Support section is static
+            break;
+    }
+}
+
+function goBackMobile() {
+    const contentArea = document.querySelector('.profile-content-area');
+    const isMobileSimulated = document.body.classList.contains('mobile-simulated');
+    
+    if (contentArea) {
+        contentArea.classList.remove('active-mobile');
+        
+        // In simulated mobile mode on desktop, show the menu grid
+        if (isMobileSimulated && window.innerWidth > 768) {
+            contentArea.style.display = 'none';
+        }
+    }
+    
+    const mobileMenu = document.getElementById('mobileMenuGrid');
+    if (mobileMenu) {
+        mobileMenu.style.display = 'grid';
+    }
+    
+    window.scrollTo(0, 0);
+}
+
+// ========== DASHBOARD ==========
+function loadDashboardData() {
+    // Update stats
+    document.getElementById('statOrders').textContent = userData.stats.totalOrders;
+    document.getElementById('statWishlist').textContent = userData.wishlist?.length || 0;
+    document.getElementById('statPoints').textContent = userData.stats.rewardPoints;
+    document.getElementById('statSavings').textContent = `¥${userData.stats.totalSavings.toFixed(0)}`;
+    
+    // Load recent orders (last 3)
+    const recentOrdersList = document.getElementById('recentOrdersList');
+    if (recentOrdersList) {
+        const recentOrders = userData.orders?.slice(0, 3) || [];
+        
+        if (recentOrders.length === 0) {
+            recentOrdersList.innerHTML = '<p class="empty-state">No recent orders</p>';
+        } else {
+            recentOrdersList.innerHTML = recentOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-info">
+                        <h4>Order #${order.id || '0000'}</h4>
+                        <p class="order-meta">${formatDate(order.date)} • ${order.items?.length || 0} items</p>
+                    </div>
+                    <span class="order-status status-${order.status}">${capitalize(order.status)}</span>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+// ========== ORDERS ==========
+let currentOrderFilter = 'all';
+
+function loadOrdersData() {
+    const ordersList = document.getElementById('ordersList');
+    if (!ordersList) return;
+    
+    let orders = userData.orders || [];
+    
+    // Apply filter
+    if (currentOrderFilter !== 'all') {
+        orders = orders.filter(o => o.status === currentOrderFilter);
+    }
+    
+    // Apply search
+    const searchTerm = document.getElementById('orderSearch')?.value?.toLowerCase() || '';
+    if (searchTerm) {
+        orders = orders.filter(o => 
+            (o.id || '').toLowerCase().includes(searchTerm) ||
+            (o.items || []).some(item => (item.name || '').toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    if (orders.length === 0) {
+        ordersList.innerHTML = '<p class="empty-state">No orders found</p>';
+    } else {
+        ordersList.innerHTML = orders.map(order => createOrderCard(order)).join('');
+    }
+}
+
+function createOrderCard(order) {
+    return `
+        <div class="order-card">
+            <div class="order-info">
+                <h4>Order #${order.id || '0000'}</h4>
+                <p class="order-meta">${formatDate(order.date)} • ${order.items?.length || 0} items • ¥${order.total?.toFixed(2) || '0.00'}</p>
+            </div>
+            <div class="order-actions">
+                <span class="order-status status-${order.status}">${capitalize(order.status)}</span>
+                <button class="btn btn-sm btn-outline" onclick="viewOrder('${order.id}')">View</button>
+            </div>
+        </div>
+    `;
+}
+
+function filterOrders() {
+    currentOrderFilter = document.getElementById('orderFilter')?.value || 'all';
+    loadOrdersData();
+}
+
+function searchOrders() {
+    loadOrdersData();
+}
+
+function viewOrder(orderId) {
+    showToast(`Viewing order #${orderId}`);
+    // Navigate to order details or show modal
+}
+
+// ========== ADDRESSES ==========
+function loadAddressesData() {
+    const addressesGrid = document.getElementById('addressesGrid');
+    if (!addressesGrid) return;
+    
+    const addresses = userData.addresses || [];
+    
+    if (addresses.length === 0) {
+        addressesGrid.innerHTML = '<p class="empty-state">No saved addresses. Add your first address!</p>';
+    } else {
+        addressesGrid.innerHTML = addresses.map((addr, index) => createAddressCard(addr, index)).join('');
+    }
+}
+
+function createAddressCard(address, index) {
+    const isDefault = address.isDefault;
+    
+    return `
+        <div class="address-card ${isDefault ? 'default' : ''}">
+            ${isDefault ? '<span class="address-label">Default</span>' : `<span class="address-label">${address.label || 'Address'}</span>`}
+            <p class="address-name">${address.name}</p>
+            <p class="address-text">${address.street}, ${address.city}, ${address.state} ${address.zip}</p>
+            <p class="address-phone">${address.phone}</p>
+            <div class="address-actions">
+                <button class="btn-edit" onclick="editAddress(${index})">Edit</button>
+                <button class="btn-delete" onclick="deleteAddress(${index})">Delete</button>
+                ${!isDefault ? `<button class="btn-edit" onclick="setDefaultAddress(${index})">Set Default</button>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function openAddressModal() {
+    showToast('Add address modal - implement with your modal system');
+}
+
+function editAddress(index) {
+    showToast(`Editing address ${index + 1}`);
 }
 
 function deleteAddress(index) {
-    if (confirm('Delete this address?')) {
-        addresses.splice(index, 1);
-        localStorage.setItem('addresses', JSON.stringify(addresses));
-        renderAddresses();
+    if (confirm('Are you sure you want to delete this address?')) {
+        userData.addresses.splice(index, 1);
+        saveUserData();
+        loadAddressesData();
+        showToast('Address deleted');
     }
 }
 
 function setDefaultAddress(index) {
-    addresses.forEach((a, i) => a.isDefault = i === index);
-    localStorage.setItem('addresses', JSON.stringify(addresses));
-    renderAddresses();
+    userData.addresses.forEach((addr, i) => {
+        addr.isDefault = i === index;
+    });
+    saveUserData();
+    loadAddressesData();
+    showToast('Default address updated');
 }
 
-function deleteCard(index) {
-    if (confirm('Remove this card?')) {
-        cards.splice(index, 1);
-        localStorage.setItem('cards', JSON.stringify(cards));
-        renderCards();
+// ========== PAYMENT METHODS ==========
+function loadPaymentData() {
+    const paymentList = document.getElementById('paymentMethodsList');
+    if (!paymentList) return;
+    
+    const methods = userData.paymentMethods || [];
+    
+    if (methods.length === 0) {
+        paymentList.innerHTML = '<p class="empty-state">No saved payment methods. Add a card for faster checkout!</p>';
+    } else {
+        paymentList.innerHTML = methods.map((method, index) => createPaymentCard(method, index)).join('');
+    }
+}
+
+function createPaymentCard(method, index) {
+    const isDefault = method.isDefault;
+    const cardIcon = getCardIcon(method.type);
+    
+    return `
+        <div class="payment-card ${isDefault ? 'default' : ''}">
+            <div class="card-icon">${cardIcon}</div>
+            <div class="card-info">
+                <p class="card-number">**** **** **** ${method.last4}</p>
+                <p class="card-expiry">Expires ${method.expiry}</p>
+            </div>
+            ${isDefault ? '<span class="card-default-badge">Default</span>' : ''}
+            <div class="address-actions">
+                ${!isDefault ? `<button class="btn-edit" onclick="setDefaultPayment(${index})">Set Default</button>` : ''}
+                <button class="btn-delete" onclick="deletePayment(${index})">Remove</button>
+            </div>
+        </div>
+    `;
+}
+
+function getCardIcon(type) {
+    const icons = {
+        visa: '<i class="fab fa-cc-visa"></i>',
+        mastercard: '<i class="fab fa-cc-mastercard"></i>',
+        amex: '<i class="fab fa-cc-amex"></i>',
+        default: '<i class="fas fa-credit-card"></i>'
+    };
+    return icons[type?.toLowerCase()] || icons.default;
+}
+
+function openPaymentModal() {
+    showToast('Add payment modal - implement with your modal system');
+}
+
+function setDefaultPayment(index) {
+    userData.paymentMethods.forEach((method, i) => {
+        method.isDefault = i === index;
+    });
+    saveUserData();
+    loadPaymentData();
+    showToast('Default payment method updated');
+}
+
+function deletePayment(index) {
+    if (confirm('Are you sure you want to remove this payment method?')) {
+        userData.paymentMethods.splice(index, 1);
+        saveUserData();
+        loadPaymentData();
+        showToast('Payment method removed');
+    }
+}
+
+// ========== WISHLIST ==========
+function loadWishlistData() {
+    const wishlistGrid = document.getElementById('wishlistGrid');
+    if (!wishlistGrid) return;
+    
+    const wishlist = userData.wishlist || [];
+    
+    if (wishlist.length === 0) {
+        wishlistGrid.innerHTML = '<p class="empty-state">Your wishlist is empty. Start adding products you love!</p>';
+    } else {
+        wishlistGrid.innerHTML = wishlist.map((item, index) => createWishlistCard(item, index)).join('');
+    }
+}
+
+function createWishlistCard(item, index) {
+    return `
+        <div class="wishlist-item">
+            <div class="wishlist-image">
+                <img src="${item.image || 'placeholder.jpg'}" alt="${item.name}">
+            </div>
+            <div class="wishlist-details">
+                <h4 class="wishlist-name">${item.name}</h4>
+                <p class="wishlist-price">¥${item.price?.toFixed(2) || '0.00'}</p>
+                <div class="wishlist-actions">
+                    <button class="btn-add-cart" onclick="addToCartFromWishlist(${index})">Add to Cart</button>
+                    <button class="btn-remove" onclick="removeFromWishlist(${index})"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function addToCartFromWishlist(index) {
+    const item = userData.wishlist[index];
+    if (item) {
+        addToCart(item);
+        showToast('Added to cart');
     }
 }
 
 function removeFromWishlist(index) {
-    wishlist.splice(index, 1);
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    renderWishlist();
-    document.getElementById('statWishlist').textContent = wishlist.length;
+    userData.wishlist.splice(index, 1);
+    saveUserData();
+    loadWishlistData();
+    updateWishlistCount();
+    updateNavBadges();
+    showToast('Removed from wishlist');
+}
+
+// ========== SETTINGS ==========
+function setupEventListeners() {
+    // Personal info form
+    const personalForm = document.getElementById('personalInfoForm');
+    if (personalForm) {
+        personalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            savePersonalInfo();
+        });
+    }
+    
+    // Password form
+    const passwordForm = document.getElementById('passwordForm');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            changePassword();
+        });
+    }
+    
+    // Password strength meter
+    const newPassword = document.getElementById('newPassword');
+    if (newPassword) {
+        newPassword.addEventListener('input', checkPasswordStrength);
+    }
+    
+    // Support form
+    const supportForm = document.getElementById('supportForm');
+    if (supportForm) {
+        supportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitSupportTicket();
+        });
+    }
+    
+    // Mobile back button (add dynamically for mobile)
+    if (window.innerWidth <= 768) {
+        addMobileBackButton();
+    }
+}
+
+function savePersonalInfo() {
+    userData.firstName = document.getElementById('firstName').value;
+    userData.lastName = document.getElementById('lastName').value;
+    userData.email = document.getElementById('email').value;
+    userData.phone = document.getElementById('phone').value;
+    
+    saveUserData();
+    updateProfileUI();
+    showToast('Personal information saved');
 }
 
 function changePassword() {
-    const current = document.getElementById('currentPassword').value;
+    const currentPass = document.getElementById('currentPassword').value;
     const newPass = document.getElementById('newPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
-
-    if (!current || !newPass || !confirm) return showToast('Fill all fields');
-    if (newPass !== confirm) return showToast('Passwords mismatch');
-
-    showToast('Password updated successfully!');
+    const confirmPass = document.getElementById('confirmPassword').value;
+    
+    // Validate
+    if (newPass !== confirmPass) {
+        showToast('Passwords do not match');
+        return;
+    }
+    
+    if (newPass.length < 8) {
+        showToast('Password must be at least 8 characters');
+        return;
+    }
+    
+    // In real app, verify current password with server
+    showToast('Password updated successfully');
     document.getElementById('passwordForm').reset();
-    closeModal('settings-modal');
 }
 
-function togglePreference(el) {
-    el.classList.toggle('active');
-    showToast('Settings saved');
-}
-
-function filterOrders() {
-    const val = document.getElementById('orderFilter').value;
-    renderOrders(val);
+function checkPasswordStrength() {
+    const password = document.getElementById('newPassword').value;
+    const strengthBar = document.getElementById('passwordStrength');
+    
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    const colors = ['#e0e0e0', '#ff4d4d', '#ffa64d', '#ffff4d', '#4dff4d'];
+    const widths = ['0%', '25%', '50%', '75%', '100%'];
+    
+    if (strengthBar) {
+        strengthBar.style.background = colors[strength];
+        strengthBar.style.width = widths[strength];
+    }
 }
 
 function confirmDeleteAccount() {
-    if (confirm('ARE YOU ABSOLUTELY SURE? All data will be wiped.')) {
-        localStorage.clear();
-        showToast('Account deleted. Redirecting...');
-        setTimeout(() => window.location.href = 'index.html', 2000);
+    if (confirm('WARNING: This will permanently delete your account and all data. This action cannot be undone. Are you absolutely sure?')) {
+        if (prompt('Type "DELETE" to confirm:') === 'DELETE') {
+            // Delete account
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const filteredUsers = users.filter(u => u.id !== currentUser.id);
+            localStorage.setItem('users', JSON.stringify(filteredUsers));
+            
+            // Clear user data
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem(`orders_${currentUser.id}`);
+            localStorage.removeItem(`addresses_${currentUser.id}`);
+            localStorage.removeItem(`payment_${currentUser.id}`);
+            localStorage.removeItem(`wishlist_${currentUser.id}`);
+            
+            showToast('Account deleted');
+            window.location.href = 'index.html';
+        }
     }
 }
 
-function logout() {
-    showToast('Logging out...');
-    setTimeout(() => {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'index.html';
-    }, 1000);
+function submitSupportTicket() {
+    const issueType = document.getElementById('issueType').value;
+    const message = document.getElementById('supportMessage').value;
+    
+    // In real app, send to server
+    showToast('Support ticket submitted. We will contact you soon!');
+    document.getElementById('supportForm').reset();
 }
 
-// UI Helpers
-function openModal(id) {
-    const m = document.getElementById(id);
-    if (m) m.classList.add('show');
+// ========== UTILITY FUNCTIONS ==========
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
 }
 
-function closeModal(id) {
-    const m = document.getElementById(id);
-    if (m) m.classList.remove('show');
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function getStatusColor(status) {
-    switch(status) {
-        case 'delivered': return '#4caf50';
-        case 'shipped': return '#2196f3';
-        case 'processing': return '#ff9800';
-        default: return '#9e9e9e';
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    if (toast && toastMessage) {
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
     }
 }
 
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-        background: #333; color: white; padding: 12px 25px; border-radius: 20px;
-        z-index: 10000; font-size: 14px; font-weight: 600; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    `;
-    toast.textContent = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    cartCountElements.forEach(el => {
+        el.textContent = count;
+        el.style.display = count > 0 ? 'block' : 'none';
+    });
 }
 
-// Window exports
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.savePersonalInfo = savePersonalInfo;
-window.handleAvatarUpload = handleAvatarUpload;
-window.deleteAddress = deleteAddress;
-window.setDefaultAddress = setDefaultAddress;
-window.deleteCard = deleteCard;
-window.removeFromWishlist = removeFromWishlist;
-window.changePassword = changePassword;
-window.togglePreference = togglePreference;
-window.filterOrders = filterOrders;
-window.confirmDeleteAccount = confirmDeleteAccount;
-window.logout = logout;
-window.addNewAddress = () => showToast('Redirecting to Address Form...');
-window.addNewCard = () => showToast('Opening Payment Gateway...');
+function updateWishlistCount() {
+    const wishlist = JSON.parse(localStorage.getItem(`wishlist_${currentUser?.id}`)) || [];
+    const count = wishlist.length;
+    
+    const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+    wishlistCountElements.forEach(el => {
+        el.textContent = count;
+        el.style.display = count > 0 ? 'block' : 'none';
+    });
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addMobileBackButton() {
+    const contentArea = document.querySelector('.profile-content-area');
+    if (contentArea && !contentArea.querySelector('.mobile-back-btn')) {
+        const backBtn = document.createElement('button');
+        backBtn.className = 'mobile-back-btn';
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
+        backBtn.onclick = goBackMobile;
+        contentArea.appendChild(backBtn);
+    }
+}
+
+function uploadAvatar() {
+    showToast('Avatar upload - implement with file input');
+}
+
+function enableEditMode() {
+    showSection('settings');
+    showToast('Edit mode enabled');
+}
+
+// ========== RESPONSIVE HANDLING ==========
+window.addEventListener('resize', function() {
+    // Check if mobile mode is forced via interface mode setting
+    const isMobileSimulated = document.body.classList.contains('mobile-simulated');
+    
+    if (window.innerWidth > 768 && !isMobileSimulated) {
+        // Desktop: Show both sidebar and content
+        const contentArea = document.querySelector('.profile-content-area');
+        const mobileMenu = document.getElementById('mobileMenuGrid');
+        
+        if (contentArea) {
+            contentArea.classList.remove('active-mobile');
+            contentArea.style.display = 'block';
+        }
+        if (mobileMenu) mobileMenu.style.display = 'none';
+    } else if (window.innerWidth <= 768 && !isMobileSimulated) {
+        // Mobile: Show menu grid by default (natural mobile)
+        const mobileMenu = document.getElementById('mobileMenuGrid');
+        const contentArea = document.querySelector('.profile-content-area');
+        
+        if (mobileMenu) mobileMenu.style.display = 'grid';
+        if (contentArea && !contentArea.classList.contains('active-mobile')) {
+            contentArea.style.display = 'none';
+        }
+        
+        // Add back button
+        addMobileBackButton();
+    }
+    // Note: When isMobileSimulated is true, the CSS handles everything
+});
+
+// Initialize on load
+if (window.innerWidth <= 768) {
+    addMobileBackButton();
+}

@@ -183,77 +183,9 @@
     min-width: 200px;
 }
 
-/* B2B Dashboard Glassmorphism & Modern Aesthetic */
-:root {
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-}
-
-.glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-[data-reveal] {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s cubic-bezier(0.5, 1, 0.89, 1), transform 0.6s cubic-bezier(0.5, 1, 0.89, 1);
-}
-
-[data-reveal].revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.b2b-sidebar {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-.b2b-main-content {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-}
-
-.b2b-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-.b2b-stat-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-.quick-action-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-}
-
-.b2b-user-info {
-    border-radius: 20px;
-}
-
+/* B2B Dashboard */
 .b2b-dashboard-page {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    min-height: 100vh;
+    padding: 40px 0 80px;
 }
 
 .b2b-dashboard-container {

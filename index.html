@@ -127,6 +127,10 @@
                 </div>
                 
                 <div class="header-actions">
+                    <button class="action-btn mode-toggle-compact" id="headerModeToggle" onclick="toggleInterfaceMode()" title="Toggle Desktop/Mobile Mode">
+                        <i class="fas fa-desktop" id="headerModeIcon"></i>
+                        <span class="mode-label" id="headerModeLabel">Dek</span>
+                    </button>
                     <button class="action-btn" onclick="toggleCart()">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-count" id="cartCount">0</span>
@@ -152,7 +156,7 @@
                         <a href="#" onclick="loadAllProducts(event)"><i class="fas fa-home"></i> Home</a>
                     </li>
                     <li class="nav-item" data-category="phones">
-                        <a href="#" onclick="filterByCategory('phones')"><i class="fas fa-mobile-alt"></i> Mobile Phones</a>
+                        <a href="#" onclick="filterByCategory('phones')"><i class="fas fa-mobile-alt"></i> Phones</a>
                     </li>
                     <li class="nav-item" data-category="laptops">
                         <a href="#" onclick="filterByCategory('laptops')"><i class="fas fa-laptop"></i> Laptops</a>
@@ -167,10 +171,7 @@
                         <a href="#" onclick="filterByCategory('gaming')"><i class="fas fa-gamepad"></i> Gaming</a>
                     </li>
                     <li class="nav-item" data-category="home">
-                        <a href="#" onclick="filterByCategory('home')"><i class="fas fa-tv"></i> Home Electronics</a>
-                    </li>
-                    <li class="nav-item profile-nav-item">
-                        <a href="#" onclick="goToProfile()"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="#" onclick="filterByCategory('home')"><i class="fas fa-tv"></i> Home</a>
                     </li>
                 </ul>
             </div>
@@ -306,35 +307,45 @@
                 <h2 class="section-title">B2B Wholesale Platform</h2>
                 <p>Special benefits for business customers - Join our B2B program today</p>
             </div>
+            <div class="b2b-features-carousel">
+                <div class="b2b-carousel-container">
+                    <div class="b2b-feature-card">
+                        <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h3>Tiered Pricing</h3>
+                        <p>Volume discounts up to 40% off</p>
+                    </div>
+                    <div class="b2b-feature-card">
+                        <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3>Request for Quotes</h3>
+                        <p>Get competitive quotes from suppliers</p>
+                    </div>
+                    <div class="b2b-feature-card">
+                        <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h3>Credit System</h3>
+                        <p>Flexible payment terms & credit limits</p>
+                    </div>
+                    <div class="b2b-feature-card">
+                        <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3>Business Shipping</h3>
+                        <p>Freight options & warehouse integration</p>
+                    </div>
+                </div>
+                <div class="b2b-carousel-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
             <div class="b2b-features-grid">
-                <div class="b2b-feature-card">
-                    <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <h3>Tiered Pricing</h3>
-                    <p>Volume discounts up to 40% off</p>
-                </div>
-                <div class="b2b-feature-card">
-                    <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <h3>Request for Quotes</h3>
-                    <p>Get competitive quotes from suppliers</p>
-                </div>
-                <div class="b2b-feature-card">
-                    <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                    <h3>Credit System</h3>
-                    <p>Flexible payment terms & credit limits</p>
-                </div>
-                <div class="b2b-feature-card">
-                    <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <h3>Business Shipping</h3>
-                    <p>Freight options & warehouse integration</p>
-                </div>
                 <div class="b2b-feature-card">
                     <div class="b2b-feature-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
                         <i class="fas fa-headset"></i>

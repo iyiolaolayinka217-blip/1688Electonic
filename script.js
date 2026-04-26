@@ -429,27 +429,136 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts('all');
     loadFlashSaleProducts();
     startCountdown();
-    if (typeof updateCartCount === 'function') updateCartCount();
-    if (typeof updateWishlistCount === 'function') updateWishlistCount();
-
-    // Auth state is handled by auth.js
-    if (window.Auth && typeof window.Auth.updateUserMenu === 'function') {
-        window.Auth.updateUserMenu();
-    }
+    initB2BCarousel();
+    updateCartCount();
+    updateWishlistCount();
+    updateAuthLinks();
     
     // Check if welcome modal should be shown
     checkWelcomeModal();
 });
 
+// Update profile button visibility based on auth state
+function updateProfileButtonVisibility() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const authLinks = document.getElementById('authLinks');
+    
+    if (authLinks) {
+        if (currentUser) {
+            authLinks.innerHTML = `
+                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
+                <a href="profile.html" class="top-link">Profile</a>
+                <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
+            `;
+        } else {
+            authLinks.innerHTML = `
+                <a href="auth.html" class="top-link">Sign In</a>
+                <a href="auth.html" class="top-link">Register</a>
+            `;
+        }
+    }
+}
+
 // Navigate to profile page
 function goToProfile() {
-    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
-    if (user) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
         window.location.href = 'profile.html';
     } else {
         window.location.href = 'auth.html';
     }
 }
+
+// Logout function
+function logout() {
+    localStorage.removeItem('currentUser');
+    updateProfileButtonVisibility();
+    showToast('Logged out successfully');
+}
+
+// ========== INTERFACE MODE TOGGLE (Global) ==========
+let currentInterfaceMode = 'desktop';
+
+function initializeInterfaceMode() {
+    // Load saved preference
+    const savedMode = localStorage.getItem('interfaceMode') || 'desktop';
+    currentInterfaceMode = savedMode;
+    updateHeaderModeButton(savedMode);
+}
+
+function toggleInterfaceMode() {
+    const newMode = currentInterfaceMode === 'desktop' ? 'mobile' : 'desktop';
+    currentInterfaceMode = newMode;
+    localStorage.setItem('interfaceMode', newMode);
+    updateHeaderModeButton(newMode);
+    applyInterfaceMode(newMode);
+    showToast(newMode === 'mobile' ? 'Mobile mode activated' : 'Desktop mode activated');
+}
+
+function updateHeaderModeButton(mode) {
+    const headerModeIcon = document.getElementById('headerModeIcon');
+    const headerModeLabel = document.getElementById('headerModeLabel');
+    const headerModeToggle = document.getElementById('headerModeToggle');
+    
+    if (headerModeIcon && headerModeLabel && headerModeToggle) {
+        if (mode === 'mobile') {
+            headerModeIcon.className = 'fas fa-mobile-alt';
+            headerModeLabel.textContent = 'Mob';
+            headerModeToggle.classList.add('active-mobile-mode');
+            headerModeToggle.title = 'Switch to Desktop Mode';
+        } else {
+            headerModeIcon.className = 'fas fa-desktop';
+            headerModeLabel.textContent = 'Dek';
+            headerModeToggle.classList.remove('active-mobile-mode');
+            headerModeToggle.title = 'Switch to Mobile Mode';
+        }
+        
+        // Add pulse animation
+        headerModeToggle.classList.add('pulse');
+        setTimeout(() => {
+            headerModeToggle.classList.remove('pulse');
+        }, 400);
+    }
+}
+
+function applyInterfaceMode(mode) {
+    console.log('Applying interface mode:', mode);
+    if (mode === 'mobile') {
+        document.body.classList.add('mobile-simulated');
+        document.body.classList.add('mobile-view-active');
+        // Force mobile layout by adding inline styles
+        document.body.style.maxWidth = '100%';
+        document.body.style.overflowX = 'hidden';
+        // Hide elements immediately
+        const searchBox = document.querySelector('.search-box');
+        const mainNav = document.querySelector('.main-nav');
+        const headerTop = document.querySelector('.header-top');
+        const hamburgerMenu = document.querySelector('.mobile-menu-toggle');
+        if (searchBox) searchBox.style.display = 'none';
+        if (mainNav) mainNav.style.display = 'none';
+        if (headerTop) headerTop.style.display = 'none';
+        if (hamburgerMenu) hamburgerMenu.style.display = 'none';
+    } else {
+        document.body.classList.remove('mobile-simulated');
+        document.body.classList.remove('mobile-view-active');
+        document.body.style.maxWidth = '';
+        document.body.style.overflowX = '';
+        // Restore elements
+        const searchBox = document.querySelector('.search-box');
+        const mainNav = document.querySelector('.main-nav');
+        const headerTop = document.querySelector('.header-top');
+        const hamburgerMenu = document.querySelector('.mobile-menu-toggle');
+        if (searchBox) searchBox.style.display = '';
+        if (mainNav) mainNav.style.display = '';
+        if (headerTop) headerTop.style.display = '';
+        if (hamburgerMenu) hamburgerMenu.style.display = '';
+    }
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeInterfaceMode();
+});
 
 // Wholesale Pricing Functions
 function calculateWholesalePrice(productId, quantity) {
@@ -518,12 +627,12 @@ function getTieredPricingDisplay(productId) {
 }
 
 function isB2BVerifiedUser() {
-    const user = window.Auth ? window.Auth.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser'));
-    if (!user) return false;
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return false;
     
     const b2bUsers = JSON.parse(localStorage.getItem('b2bUsers')) || [];
-    const b2bUser = b2bUsers.find(u => u.id === user.id);
-    return b2bUser && b2bUser.verificationStatus === 'verified';
+    const user = b2bUsers.find(u => u.id === currentUser.id);
+    return user && user.verificationStatus === 'verified';
 }
 
 // Dynamic Pricing Engine
@@ -2118,9 +2227,51 @@ function showToast(message) {
 }
 
 // Mobile Menu
-function toggleMobileMenu() {
+function toggleMobileMenu(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
     const nav = document.getElementById('mainNav');
+    const body = document.body;
+    
     nav.classList.toggle('active');
+    body.classList.toggle('menu-open');
+    
+    // Create or remove overlay
+    let overlay = document.querySelector('.mobile-menu-overlay');
+    if (nav.classList.contains('active')) {
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'mobile-menu-overlay';
+            overlay.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMobileMenu();
+            };
+            document.body.appendChild(overlay);
+        }
+        // Add close button if not exists
+        let closeBtn = nav.querySelector('.mobile-menu-close');
+        if (!closeBtn) {
+            closeBtn = document.createElement('button');
+            closeBtn.className = 'mobile-menu-close';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMobileMenu();
+            };
+            closeBtn.type = 'button';
+            nav.insertBefore(closeBtn, nav.firstChild);
+        }
+    } else {
+        if (overlay) overlay.remove();
+        // Remove close button when closing
+        let closeBtn = nav.querySelector('.mobile-menu-close');
+        if (closeBtn) closeBtn.remove();
+    }
 }
 
 // Swipe gesture to open mobile menu
@@ -2240,6 +2391,126 @@ window.addEventListener('load', () => {
         performSearch();
     }
 });
+
+// B2B Carousel Swipe Functionality
+function initB2BCarousel() {
+    const carousel = document.querySelector('.b2b-carousel-container');
+    const dots = document.querySelectorAll('.b2b-carousel-dots .dot');
+    
+    if (!carousel) return;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let autoScrollInterval;
+    
+    // Touch events for mobile swipe
+    carousel.addEventListener('touchstart', (e) => {
+        isDown = true;
+        startX = e.touches[0].pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+        stopAutoScroll();
+    }, {passive: true});
+    
+    carousel.addEventListener('touchend', () => {
+        isDown = false;
+        updateActiveDot();
+        startAutoScroll();
+    }, {passive: true});
+    
+    carousel.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.touches[0].pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+    }, {passive: false});
+    
+    // Mouse events for desktop drag
+    carousel.addEventListener('mousedown', (e) => {
+        isDown = true;
+        carousel.classList.add('grabbing');
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+        stopAutoScroll();
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+        isDown = false;
+        carousel.classList.remove('grabbing');
+        startAutoScroll();
+    });
+    
+    carousel.addEventListener('mouseup', () => {
+        isDown = false;
+        carousel.classList.remove('grabbing');
+        updateActiveDot();
+        startAutoScroll();
+    });
+    
+    carousel.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Dot navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            const cardWidth = carousel.querySelector('.b2b-feature-card').offsetWidth + 24;
+            carousel.scrollTo({
+                left: cardWidth * index,
+                behavior: 'smooth'
+            });
+            updateActiveDot(index);
+        });
+    });
+    
+    // Update active dot based on scroll position
+    function updateActiveDot(activeIndex = null) {
+        if (activeIndex !== null) {
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
+            return;
+        }
+        
+        const cardWidth = carousel.querySelector('.b2b-feature-card').offsetWidth + 24;
+        const scrollPos = carousel.scrollLeft;
+        const index = Math.round(scrollPos / cardWidth);
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    }
+    
+    // Auto-scroll functionality
+    function startAutoScroll() {
+        stopAutoScroll();
+        autoScrollInterval = setInterval(() => {
+            const cardWidth = carousel.querySelector('.b2b-feature-card').offsetWidth + 24;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            
+            if (carousel.scrollLeft >= maxScroll - 10) {
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+            }
+            setTimeout(updateActiveDot, 300);
+        }, 4000);
+    }
+    
+    function stopAutoScroll() {
+        clearInterval(autoScrollInterval);
+    }
+    
+    // Start auto-scroll on load
+    startAutoScroll();
+    
+    // Pause on hover
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+}
 
 // ============================================
 // ANALYTICS & TRACKING

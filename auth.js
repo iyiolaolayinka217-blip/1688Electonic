@@ -35,14 +35,13 @@ let currentUser = null;
 
 // Update profile button visibility based on auth state
 function updateProfileButtonVisibility() {
-    const user = getCurrentUser();
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const authLinks = document.getElementById('authLinks');
     
     if (authLinks) {
-        if (user) {
-            const displayName = user.firstName || (user.name ? user.name.split(' ')[0] : 'User');
+        if (currentUser) {
             authLinks.innerHTML = `
-                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${displayName}</span>
+                <span style="color: rgba(255,255,255,0.9); margin-right: 15px;">Hello, ${currentUser.firstName || 'User'}</span>
                 <a href="profile.html" class="top-link">Profile</a>
                 <a href="#" class="top-link" onclick="logout(); return false;">Logout</a>
             `;
@@ -57,7 +56,7 @@ function updateProfileButtonVisibility() {
 
 // Check if user is already logged in
 window.addEventListener('DOMContentLoaded', () => {
-    const savedUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
         // If on auth page and already logged in, redirect to home
@@ -344,12 +343,6 @@ function requireAuth() {
 
 // Get current user
 function getCurrentUser() {
-    if (!currentUser) {
-        const savedUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-        }
-    }
     return currentUser;
 }
 
