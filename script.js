@@ -2284,6 +2284,79 @@ document.addEventListener('touchend', (e) => {
     handleSwipe();
 }, false);
 
+// Features carousel swipe functionality
+function initFeaturesCarousel() {
+    const featureGrid = document.querySelector('.feature-grid');
+    if (!featureGrid) return;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    // Mouse events for desktop drag
+    featureGrid.addEventListener('mousedown', (e) => {
+        isDown = true;
+        featureGrid.style.cursor = 'grabbing';
+        startX = e.pageX - featureGrid.offsetLeft;
+        scrollLeft = featureGrid.scrollLeft;
+    });
+    
+    featureGrid.addEventListener('mouseleave', () => {
+        isDown = false;
+        featureGrid.style.cursor = 'grab';
+    });
+    
+    featureGrid.addEventListener('mouseup', () => {
+        isDown = false;
+        featureGrid.style.cursor = 'grab';
+    });
+    
+    featureGrid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - featureGrid.offsetLeft;
+        const walk = (x - startX) * 2;
+        featureGrid.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Touch events for mobile swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    featureGrid.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    featureGrid.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleFeatureSwipe();
+    }, { passive: true });
+    
+    function handleFeatureSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        const itemWidth = 172; // 160px + 12px gap
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - scroll to next
+                featureGrid.scrollBy({ left: itemWidth, behavior: 'smooth' });
+            } else {
+                // Swipe right - scroll to previous
+                featureGrid.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+            }
+        }
+    }
+    
+    // Set initial cursor style
+    featureGrid.style.cursor = 'grab';
+}
+
+// Initialize features carousel on load
+document.addEventListener('DOMContentLoaded', function() {
+    initFeaturesCarousel();
+});
+
 function handleSwipe() {
     const nav = document.getElementById('mainNav');
     const swipeThreshold = 100;
